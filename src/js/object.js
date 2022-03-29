@@ -22,6 +22,14 @@ function ship(length, axis, coordinate) {
     });
   }
 
+  function isSunk() {
+    if (damage.length === length) {
+      return true;
+    }
+
+    return false;
+  }
+
   const damage = [];
   const position = expander();
   return {
@@ -30,6 +38,7 @@ function ship(length, axis, coordinate) {
     axis,
     position,
     hit,
+    isSunk,
   };
 }
 
