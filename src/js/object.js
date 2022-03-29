@@ -17,11 +17,14 @@ function Ship(length, axis, coordinate) {
   }
 
   function hit(value) {
+    let check = false;
     position.forEach((pos) => {
       if (value[0] === pos[0] && value[1] === pos[1] && !damage.includes(value)) {
         damage.push(value);
+        check = true;
       }
     });
+    return check;
   }
 
   function isSunk() {
@@ -80,6 +83,8 @@ function Ship(length, axis, coordinate) {
 
 function Gameboard() {
   const list = [];
+  const hits = [];
+  const misses = [];
   function place(ship, axis, coordinate) {
     let obj;
     switch (ship) {
@@ -107,9 +112,23 @@ function Gameboard() {
     }
     return false;
   }
+
+  function receiveAttack(cord) {
+    const hit = list.every((ship) => ship.hit(cord));
+    if (hit) {
+      hits.push(cord);
+      return true;
+    }
+    misses.push(cord);
+    return false;
+  }
+
   return {
     list,
+    hits,
+    misses,
     place,
+    receiveAttack,
   };
 }
 

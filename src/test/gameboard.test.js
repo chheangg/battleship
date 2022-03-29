@@ -124,3 +124,18 @@ it('Path #2.3 cancel invalid placement (out of boundary + overlap)', () => {
     });
 });
 
+it('Path #3.1 Check hits', () => {
+  const board = Gameboard();
+  board.place('patrol', 'horizontal', [0, 0]);
+  board.receiveAttack([0, 0]);
+  expect(board.hits[0])
+    .toMatchObject([0, 0]);
+});
+
+it('Path #3.2 Check misses', () => {
+  const board = Gameboard();
+  board.place('patrol', 'vertical', [0, 0]);
+  board.receiveAttack([0, 1]);
+  expect(board.misses[0])
+    .toMatchObject([0, 1]);
+});
