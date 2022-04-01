@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable no-plusplus */
 /* eslint-disable no-use-before-define */
 function Ship(length, axis, coordinate) {
@@ -83,6 +84,7 @@ function Ship(length, axis, coordinate) {
 
 function Gameboard() {
   const list = [];
+  const attacks = [];
   const hits = [];
   const misses = [];
   function place(ship, axis, coordinate) {
@@ -115,6 +117,7 @@ function Gameboard() {
 
   function receiveAttack(cord) {
     const hit = list.every((ship) => ship.hit(cord));
+    attacks.push(cord);
     if (hit) {
       hits.push(cord);
       return true;
@@ -127,10 +130,82 @@ function Gameboard() {
     list,
     hits,
     misses,
+    attacks,
     place,
     receiveAttack,
   };
 }
 
+const Player = (function handler() {
+  const list = [];
+  function decideTurn() {
+    if (list[0]) {
+      return false;
+    }
+    return true;
+  }
+  function substantiate(isBot) {
+    const isTurn = decideTurn();
+
+    function changeTurn() {
+      list.forEach((obj) => {
+        if (obj.isTurn === true) {
+          obj.isTurn = false;
+          return;
+        }
+        obj.isTurn = true;
+      });
+    }
+
+    function getRand() {
+      return [Math.floor(Math.random() * 9), Math.floor(Math.random() * 9)];
+    }
+    function botEval(player) {
+      const rand = getRand();
+      let checkExist;
+      if (player.board.attacks[0]) {
+        checkExist = player.board.attacks.every((attack) => {
+          if (attack[0] === rand[0] && attack[1] === rand[1]) {
+            return true;
+          }
+          return false;
+        });
+      }
+      if (checkExist === true) {
+        botEval();
+      }
+      return rand;
+    }
+
+    function attack(player, coordinate) {
+      if (isBot === false) {
+        player.board.receiveAttack(coordinate);
+        changeTurn();
+      }
+      if (isBot === true) {
+        player.board.receiveAttack(botEval(player));
+      }
+    }
+
+    return {
+      isTurn,
+      board: Gameboard(),
+      attack,
+      isBot,
+    };
+  }
+
+  function create(isBot) {
+    const obj = substantiate(isBot);
+    list.push(obj);
+    return obj;
+  }
+
+  function clear() {
+    list.splice(0);
+  }
+
+  return { create, clear };
+}());
 // eslint-disable-next-line import/prefer-default-export
-export { Ship, Gameboard };
+export { Ship, Gameboard, Player };
