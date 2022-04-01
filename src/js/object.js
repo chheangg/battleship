@@ -136,76 +136,69 @@ function Gameboard() {
   };
 }
 
-const Player = (function handler() {
-  const list = [];
+function PlayerObj(isBot) {
   function decideTurn() {
-    if (list[0]) {
+    if (Player.list[0]) {
       return false;
     }
     return true;
   }
-  function substantiate(isBot) {
-    const isTurn = decideTurn();
 
-    function changeTurn() {
-      list.forEach((obj) => {
-        if (obj.isTurn === true) {
-          obj.isTurn = false;
-          return;
-        }
-        obj.isTurn = true;
-      });
-    }
-
-    function getRand() {
-      return [Math.floor(Math.random() * 9), Math.floor(Math.random() * 9)];
-    }
-    function botEval(player) {
-      const rand = getRand();
-      let checkExist;
-      if (player.board.attacks[0]) {
-        checkExist = player.board.attacks.every((attack) => {
-          if (attack[0] === rand[0] && attack[1] === rand[1]) {
-            return true;
-          }
-          return false;
-        });
+  function changeTurn() {
+    Player.list.forEach((obj) => {
+      if (obj.isTurn === true) {
+        obj.isTurn = false;
+        return;
       }
-      if (checkExist === true) {
-        botEval();
-      }
-      return rand;
-    }
-
-    function attack(player, coordinate) {
-      if (isBot === false) {
-        player.board.receiveAttack(coordinate);
-        changeTurn();
-      }
-      if (isBot === true) {
-        player.board.receiveAttack(botEval(player));
-      }
-    }
-
-    return {
-      isTurn,
-      board: Gameboard(),
-      attack,
-      isBot,
-    };
+      obj.isTurn = true;
+    });
   }
 
+  function botEval(player) {
+    const rand = [Math.floor(Math.random() * 9), Math.floor(Math.random() * 9)];
+    let checkExist;
+    if (player.board.attacks[0]) {
+      checkExist = player.board.attacks.every((attack) => {
+        if (attack[0] === rand[0] && attack[1] === rand[1]) {
+          return true;
+        }
+        return false;
+      });
+    }
+    if (checkExist === true) {
+      botEval();
+    }
+    return rand;
+  }
+
+  function attack(player, coordinate) {
+    if (isBot === false) {
+      player.board.receiveAttack(coordinate);
+      changeTurn();
+    }
+    if (isBot === true) {
+      player.board.receiveAttack(botEval(player));
+    }
+  }
+
+  return {
+    isTurn: decideTurn(),
+    board: Gameboard(),
+    attack,
+    isBot,
+  };
+}
+const Player = (function handler() {
+  const list = [];
   function create(isBot) {
-    const obj = substantiate(isBot);
+    const obj = PlayerObj(isBot);
     list.push(obj);
     return obj;
   }
-
   function clear() {
     list.splice(0);
   }
-
-  return { create, clear };
+  return { list, create, clear };
 }());
 // eslint-disable-next-line import/prefer-default-export
 export { Ship, Gameboard, Player };
