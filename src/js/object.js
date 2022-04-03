@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-plusplus */
 /* eslint-disable no-use-before-define */
@@ -18,11 +19,10 @@ function Ship(length, axis, coordinate) {
   }
 
   function hit(value) {
-    let check = false;
-    position.forEach((pos) => {
-      if (value[0] === pos[0] && value[1] === pos[1] && !damage.includes(value)) {
+    const check = position.some((pos) => {
+      if (value[0] === pos[0] && value[1] === pos[1]) {
         damage.push(value);
-        check = true;
+        return true;
       }
     });
     return check;
@@ -116,14 +116,19 @@ function Gameboard() {
   }
 
   function receiveAttack(cord) {
-    const hit = list.every((ship) => ship.hit(cord));
+    const isExist = attacks.some((attack) => attack[0] === cord[0] && attack[1] === cord[1]);
+    const hit = list.some((ship) => ship.hit(cord));
+    if (isExist) {
+      return false;
+    }
+    Player.changeTurn();
     attacks.push(cord);
     if (hit) {
       hits.push(cord);
-      return true;
+      return 'hit';
     }
     misses.push(cord);
-    return false;
+    return 'miss';
   }
 
   return {
@@ -144,28 +149,18 @@ function PlayerObj(isBot) {
     return true;
   }
 
-  function changeTurn() {
-    Player.list.forEach((obj) => {
-      if (obj.isTurn === true) {
-        obj.isTurn = false;
-        return;
-      }
-      obj.isTurn = true;
-    });
-  }
-
   function botEval(player) {
     const rand = [Math.floor(Math.random() * 9), Math.floor(Math.random() * 9)];
-    let checkExist;
+    let attackExist;
     if (player.board.attacks[0]) {
-      checkExist = player.board.attacks.every((attack) => {
-        if (attack[0] === rand[0] && attack[1] === rand[1]) {
+      attackExist = player.board.attacks.every((attempt) => {
+        if (attempt[0] === rand[0] && attempt[1] === rand[1]) {
           return true;
         }
         return false;
       });
     }
-    if (checkExist === true) {
+    if (attackExist === true) {
       botEval();
     }
     return rand;
@@ -173,11 +168,10 @@ function PlayerObj(isBot) {
 
   function attack(player, coordinate) {
     if (isBot === false) {
-      player.board.receiveAttack(coordinate);
-      changeTurn();
+      return player.board.receiveAttack(coordinate);
     }
     if (isBot === true) {
-      player.board.receiveAttack(botEval(player));
+      return player.board.receiveAttack(botEval(player));
     }
   }
 
@@ -198,7 +192,17 @@ const Player = (function handler() {
   function clear() {
     list.splice(0);
   }
-  return { list, create, clear };
+
+  function changeTurn() {
+    list.forEach((obj) => {
+      if (obj.isTurn === true) {
+        obj.isTurn = false;
+        return;
+      }
+      obj.isTurn = true;
+    });
+  }
+  return { list, changeTurn, create, clear };
 }());
 // eslint-disable-next-line import/prefer-default-export
 export { Ship, Gameboard, Player };
