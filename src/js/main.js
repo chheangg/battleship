@@ -5,7 +5,7 @@ import { mainLoad } from './pageLoad';
 import { mainLoop } from './app'
 
 const playerX = Player.create(false);
-const playerY = Player.create(false);
+const playerY = Player.create(true);
 playerX.board.place('patrol', 'horizontal', [0, 0]);
 playerX.board.place('submarine', 'vertical', [2, 3]);
 playerX.board.place('destroyer', 'horizontal', [5, 5]);
@@ -25,6 +25,15 @@ mainLoad();
       .split(',')
       .map((x) => parseInt(x, 10));
     const side = obj.target.getAttribute('data-side');
-    mainLoop.click(coordinate, side, Player.list);
+    let complement;
+    if (side === 'left') {
+      complement = 'right';
+    }
+    if (side === 'right') {
+      complement = 'left';
+    }
+    mainLoop.attack(coordinate, side, Player.list);
+    console.log(Player.list)  
+    mainLoop.botAttack(complement, Player.list)
   });
 });

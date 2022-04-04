@@ -171,7 +171,16 @@ function PlayerObj(isBot) {
       return player.board.receiveAttack(coordinate);
     }
     if (isBot === true) {
-      return player.board.receiveAttack(botEval(player));
+      const cord = botEval(player);
+      const state = player.board.receiveAttack(cord);
+      if (state === 'false') {
+        attack(player);
+      }
+
+      return {
+        cord,
+        state,
+      };
     }
   }
 
