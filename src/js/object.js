@@ -173,14 +173,13 @@ function PlayerObj(isBot) {
     if (isBot === true) {
       const cord = botEval(player);
       const state = player.board.receiveAttack(cord);
-      if (state === 'false') {
-        attack(player);
+      if (state) {
+        return {
+          cord,
+          state,
+        };
       }
-
-      return {
-        cord,
-        state,
-      };
+      attack(player);
     }
   }
 
@@ -211,7 +210,9 @@ const Player = (function handler() {
       obj.isTurn = true;
     });
   }
-  return { list, changeTurn, create, clear };
+  return {
+    list, changeTurn, create, clear,
+  };
 }());
 // eslint-disable-next-line import/prefer-default-export
 export { Ship, Gameboard, Player };

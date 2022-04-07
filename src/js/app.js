@@ -1,10 +1,10 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/prefer-default-export */
 const mainLoop = (function handler() {
-  function applyAtt(attack, cord, side) {
+  function applyAtt(output, cord, side) {
     const boxes = document.getElementsByClassName(`${side}-content`)[0]
       .getElementsByClassName('box');
-    if (attack === 'hit') {
+    if (output === 'hit') {
       [...boxes].forEach((box) => {
         if (box.dataset.pos === cord.join()) {
           box.textContent = 'X';
@@ -12,7 +12,7 @@ const mainLoop = (function handler() {
         }
       });
     }
-    if (attack === 'miss') {
+    if (output === 'miss') {
       [...boxes].forEach((box) => {
         if (box.dataset.pos === cord.join()) {
           box.textContent = 'X';
@@ -72,7 +72,7 @@ const mainLoop = (function handler() {
       return;
     }
     botRenderAttack(bot, notBot, side, list);
-}
+  }
   return { attack, botAttack };
 }());
 

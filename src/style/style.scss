@@ -12,6 +12,12 @@ button {
   border: none;
 }
 
+.icon {
+  filter: invert(100%) sepia(39%) saturate(527%) hue-rotate(176deg) brightness(101%) contrast(97%);
+  height: 1.75rem;
+  width: auto;
+}
+
 body {
   background-color: $primary-color;
   font-family: $font-stack;
