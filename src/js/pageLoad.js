@@ -3,27 +3,19 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable import/prefer-default-export */
 import { mainLoop } from './app';
-import { Player, Ship } from './object';
+import { Player } from './object';
 
-function loadShip(list) {
-  list.forEach((player) => {
-    player.board.list.forEach((ship) => {
-      ship.position.forEach((cord) => {
-        [...document.getElementsByClassName('box')].forEach((box) => {
-          if (box.dataset.pos === cord.join()) {
-            box.classList.add('ship');
-          }
-        });
+function loadShip(player, side) {
+  player.board.list.forEach((ship) => {
+    ship.position.forEach((cord) => {
+      console.log(document.getElementsByClassName(`${side}-content`)[0]);
+      [...document.getElementsByClassName(`${side}-content`)[0].getElementsByClassName('box')].forEach((box) => {
+        if (box.dataset.pos === cord.join()) {
+          box.classList.add('ship');
+        }
       });
     });
   });
-}
-
-function initializeShip(player, ship, cord) {
-  const dirArr = document.getElementsByClassName('dir-option');
-  const dir = [...dirArr].filter((dirObj) => dirObj.checked);
-  console.log(dir);
-  player.board.place(ship, dir[0].value, cord);
 }
 
 const boardLoad = (function handler() {
@@ -101,5 +93,5 @@ function mainLoad() {
 }
 
 export {
-  mainLoad, loadShip, loadOption, initializeShip, boardLoad,
+  mainLoad, loadShip, loadOption, boardLoad,
 };

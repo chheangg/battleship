@@ -151,7 +151,7 @@ function PlayerObj(isBot) {
   }
 
   function botEval(player) {
-    const rand = [Math.floor(Math.random() * 9), Math.floor(Math.random() * 9)];
+    const rand = [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
     let attackExist;
     if (player.board.attacks[0]) {
       attackExist = player.board.attacks.every((attempt) => {
