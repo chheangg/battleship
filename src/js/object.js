@@ -79,6 +79,7 @@ function Ship(length, axis, coordinate) {
     hit,
     isSunk,
     isValid,
+    expander,
   };
 }
 

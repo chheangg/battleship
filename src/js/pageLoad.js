@@ -1,27 +1,36 @@
+/* eslint-disable prefer-arrow-callback */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-plusplus */
 /* eslint-disable import/prefer-default-export */
-import { Player } from './object';
 import { mainLoop } from './app';
+import { Player, Ship } from './object';
+
+function loadShip(list) {
+  list.forEach((player) => {
+    player.board.list.forEach((ship) => {
+      ship.position.forEach((cord) => {
+        [...document.getElementsByClassName('box')].forEach((box) => {
+          if (box.dataset.pos === cord.join()) {
+            box.classList.add('ship');
+          }
+        });
+      });
+    });
+  });
+}
+
+function initializeShip(player, ship, cord) {
+  const dirArr = document.getElementsByClassName('dir-option');
+  const dir = [...dirArr].filter((dirObj) => dirObj.checked);
+  console.log(dir);
+  player.board.place(ship, dir[0].value, cord);
+}
 
 const boardLoad = (function handler() {
   function generatePage() {
     document.body.textContent = '';
-    document.body.innerHTML = "<div class='turn-container'><p>Turn: PLAYER 1</p></div>"
+    document.body.innerHTML = "<div class='top-container'><p>Turn: PLAYER 1</p></div>"
       + "<div class='main-content'><div class='left-content'><div class='playername'>PLAYER 1 (you)</div><div class='board-container'><div class='ships-container'></div><div class='board'></div></div></div><div class='right-content'><div class='playername'>PLAYER 2 (bot)</div><div class='board-container'><div class='ships-container'></div><div class='board'></div></div></div></div>";
-  }
-  function loadShip(list) {
-    list.forEach((player) => {
-      player.board.list.forEach((ship) => {
-        ship.position.forEach((cord) => {
-          [...document.getElementsByClassName('box')].forEach((box) => {
-            if (box.dataset.pos === cord.join()) {
-              box.classList.add('ship');
-            }
-          });
-        });
-      });
-    });
   }
   function generateBox() {
     [...document.getElementsByClassName('board')].forEach((board) => {
@@ -73,19 +82,24 @@ const boardLoad = (function handler() {
     });
   }
 
-  function load() {
-    generatePage();
-    generateBox();
-    assignParent();
-    assignBox();
-    loadShip(Player.list);
-  }
-
-  return { load };
+  return {
+    generatePage, generateBox, assignParent, assignBox,
+  };
 }());
 
-function mainLoad() {
-  boardLoad.load();
+function loadOption() {
+  const container = document.getElementsByClassName('top-container')[0];
+  const option = document.createElement('div');
+  option.innerHTML = "<div class='dir-option'><label for='horizontal'>Horizontal</label><input type='radio' class='dir-option' value='horizontal' id='horizontal' name='option' checked><label for='vertical'>Vertical</label><input type='radio' class='dir-option' value='vertical' id='vertical' name='option'></div>";
+  container.appendChild(option);
 }
 
-export { mainLoad, boardLoad };
+function mainLoad() {
+  boardLoad.generatePage();
+  boardLoad.generateBox();
+  boardLoad.assignParent();
+}
+
+export {
+  mainLoad, loadShip, loadOption, initializeShip, boardLoad,
+};
