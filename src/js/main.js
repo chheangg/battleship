@@ -13,6 +13,34 @@ let playerY;
 let currentPreview;
 let board;
 
+function addAnimationEvent(add, type, side) {
+  if (!add) {
+   [...document.getElementsByClassName(`${side}-content`)[0].getElementsByClassName('box')].forEach((box) => {
+     box.removeEventListener(type, shipPlaceAnimation);
+     return;
+   });     
+  }
+  if (add === true) {
+    [...document.getElementsByClassName(`${side}-content`)[0].getElementsByClassName('box')].forEach((box) => {
+      box.addEventListener(type, shipPlaceAnimation);
+    });
+  };
+  }
+
+function addInitializer(add) {
+  if (!add) {
+    [...document.getElementsByClassName('box')].forEach((box) => {
+      box.removeEventListener('click', initializeStage);
+      return;
+    });
+  }
+  if (add = true) {
+    [...document.getElementsByClassName('box')].forEach((box) => {
+      box.addEventListener('click', initializeStage);
+    });
+  }
+  }
+
 function shipPreviewExpander(cord) {
   const dirArr = document.getElementsByClassName('dir-option');
   const axis = [...dirArr].filter((dirObj) => dirObj.checked)[0].value;
@@ -70,11 +98,11 @@ function shipPreview(cord, target) {
   });
 }
 
-function shipPlaceAnimation(box) {
-  const shipBody = shipPreviewExpander(box.target.dataset.pos
+function shipPlaceAnimation(start) {
+  const shipBody = shipPreviewExpander(start.target.dataset.pos
     .split(',')
     .map((x) => parseInt(x, 10)));
-  shipPreview(shipBody, box.target);
+  shipPreview(shipBody, start.target);
 }
 
 function initializeShip(player, ship, cord) {
@@ -98,6 +126,7 @@ function initializeShip(player, ship, cord) {
 
 function initializeEvent(playerOne, playerTwo, cord, side) {
   const bot = Player.list.filter((x) => x.isBot)[0];
+  let assign = false;
   if (bot) {
     while (bot.board.list.length < 5) {
       const rand = [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
@@ -109,16 +138,12 @@ function initializeEvent(playerOne, playerTwo, cord, side) {
     initializeShip(playerOne, ships[playerOne.board.list.length], cord);
   }
 
-  if (playerOne.board.list.length === 5) {
+  if (playerOne.board.list.length === 5 && assign === false) {
+    assign = true;
     currentPreview = playerTwo.board.list;
     board = [...document.getElementsByClassName('right-content')[0].getElementsByClassName('box')];
-
-    [...document.getElementsByClassName('left-content')[0].getElementsByClassName('box')].forEach((box) => {
-      box.removeEventListener('mouseover', shipPlaceAnimation);
-    });
-    [...document.getElementsByClassName('right-content')[0].getElementsByClassName('box')].forEach((box) => {
-      box.addEventListener('mouseover', shipPlaceAnimation);
-    });
+    addAnimationEvent(false, 'mouseover', 'left');
+    addAnimationEvent(true, 'mouseover', 'right');
   }
 
   if (playerOne.board.list.length === 5 && playerTwo.board.list.length < 5 && side === 'right') {
@@ -126,12 +151,9 @@ function initializeEvent(playerOne, playerTwo, cord, side) {
   }
 
   if (playerOne.board.list.length === 5 && playerTwo.board.list.length === 5) {
-    [...document.getElementsByClassName('right-content')[0].getElementsByClassName('box')].forEach((box) => {
-      box.removeEventListener('mouseover', shipPlaceAnimation);
-    });
-    [...document.getElementsByClassName('box')].forEach((box) => {
-      box.removeEventListener('click', initializeStage);
-    });
+    console.log('hi');
+    addAnimationEvent(false, 'mouseover', 'right');
+    addInitializer(false);
     loadShip(playerOne, 'left');
     loadShip(playerTwo, 'right');
     boardLoad.assignBox();
@@ -162,12 +184,8 @@ function initializeStage(unit) {
     currentPreview = playerX.board.list;
     board = [...document.getElementsByClassName('left-content')[0].getElementsByClassName('box')];
 
-    [...document.getElementsByClassName('left-content')[0].getElementsByClassName('box')].forEach((box) => {
-      box.addEventListener('mouseover', shipPlaceAnimation);
-    });
-    [...document.getElementsByClassName('box')].forEach((box) => {
-      box.addEventListener('click', initializeStage);
-    });
+    addAnimationEvent(true, 'mouseover', 'left');
+    addInitializer(true);
   });
 });
 
