@@ -83,22 +83,28 @@ body {
       display: flex;
       justify-content: center;
       align-items: center;
-    }
 
+      img {
+        height: 73px;
+        width: 73px;
+      }
+    }
+  
     .ship {
       background-color: red;
-    }  
+    }
 
     .ghost-ship {
       background-color: pink;
     }
     .hit {
+      color: red;
       font-size: 3rem;
     }
 
     .missed {
       font-size: 3rem;
-      color: red;
+      color: white;
     }
   }
 }

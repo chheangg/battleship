@@ -4,14 +4,36 @@
 /* eslint-disable import/prefer-default-export */
 import { mainLoop } from './app';
 import { Player } from './object';
+import { loadIcon } from './imageLoader';
 
 function loadShip(player, side) {
   player.board.list.forEach((ship) => {
     ship.position.forEach((cord) => {
-      console.log(document.getElementsByClassName(`${side}-content`)[0]);
       [...document.getElementsByClassName(`${side}-content`)[0].getElementsByClassName('box')].forEach((box) => {
         if (box.dataset.pos === cord.join()) {
-          box.classList.add('ship');
+          let shipType;
+          switch (player.board.list.indexOf(ship)) {
+            case 0:
+              shipType = 'patrol';
+              break;
+            case 1:
+              shipType = 'submarine';
+              break;
+            case 2:
+              shipType = 'destroyer'
+              break;
+            case 3:
+              shipType = 'battleship';
+              break;
+            case 4:
+              shipType = 'carrier';
+              break;
+            default:
+              console.log('bruh');
+              break;
+          }
+          const shipImg = loadIcon(shipType, ship.position.indexOf(cord) + 1, ship.axis);
+          box.style.backgroundImage = `url('${shipImg}')`;
         }
       });
     });
@@ -59,7 +81,6 @@ const boardLoad = (function handler() {
           complement = 'left';
         }
         mainLoop.attack(coordinate, side, Player.list);
-        console.log(Player.list);
         mainLoop.botAttack(complement, Player.list);
       });
     });

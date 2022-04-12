@@ -6,6 +6,7 @@ import { Player } from './object';
 import {
   loadShip, loadOption, mainLoad, boardLoad,
 } from './pageLoad';
+import { loadIcon } from './imageLoader';
 
 const ships = ['patrol', 'submarine', 'destroyer', 'battleship', 'carrier'];
 let playerX;
@@ -13,53 +14,31 @@ let playerY;
 let currentPreview;
 let board;
 
-function addAnimationEvent(add, type, side) {
-  if (!add) {
-   [...document.getElementsByClassName(`${side}-content`)[0].getElementsByClassName('box')].forEach((box) => {
-     box.removeEventListener(type, shipPlaceAnimation);
-     return;
-   });     
-  }
-  if (add === true) {
-    [...document.getElementsByClassName(`${side}-content`)[0].getElementsByClassName('box')].forEach((box) => {
-      box.addEventListener(type, shipPlaceAnimation);
-    });
-  };
-  }
-
-function addInitializer(add) {
-  if (!add) {
-    [...document.getElementsByClassName('box')].forEach((box) => {
-      box.removeEventListener('click', initializeStage);
-      return;
-    });
-  }
-  if (add = true) {
-    [...document.getElementsByClassName('box')].forEach((box) => {
-      box.addEventListener('click', initializeStage);
-    });
-  }
-  }
-
 function shipPreviewExpander(cord) {
   const dirArr = document.getElementsByClassName('dir-option');
   const axis = [...dirArr].filter((dirObj) => dirObj.checked)[0].value;
   let length;
+  let type;
   switch (currentPreview.length) {
     case 0:
       length = 2;
+      type = 'patrol';
       break;
     case 1:
       length = 3;
+      type = 'submarine';
       break;
     case 2:
       length = 3;
+      type = 'destroyer';
       break;
     case 3:
       length = 4;
+      type = 'battleship';
       break;
     case 4:
       length = 5;
+      type = 'carrier';
       break;
     default:
       break;
@@ -75,23 +54,32 @@ function shipPreviewExpander(cord) {
         return [start[0]++, start[1]];
       }
     });
-  return body;
+  const overlap = body
+    .some((part) => currentPreview
+      .some((ship) => ship.position
+        .some((pos) => pos[0] === part[0] && pos[1] === part[1])));
+  return {
+    body,
+    type,
+    overlap,
+  };
 }
 
-function shipPreview(cord, target) {
+function shipPreview(cord, type, target) {
+  let registered = false;
   board.forEach((box) => {
     cord.forEach((coordinate) => {
       if (box.dataset.pos === coordinate.join()) {
-        const setAnimation = setInterval(() => {
-          box.classList.add('ghost-ship');
-        }, 100);
-        const clearAnimation = setInterval(() => {
-          box.classList.remove('ghost-ship');
-        }, 600);
+        const img = loadIcon(type, cord.indexOf(coordinate) + 1);
+        box.style.backgroundImage = `url('${img}')`;
+
         target.addEventListener('mouseout', () => {
-          clearInterval(setAnimation);
-          clearInterval(clearAnimation);
-          box.classList.remove('ghost-ship');
+          if (registered === false) {
+            box.style.backgroundImage = '';
+          }
+        }, { once: true });
+        box.addEventListener('click', () => {
+          registered = true;
         });
       }
     });
@@ -99,10 +87,26 @@ function shipPreview(cord, target) {
 }
 
 function shipPlaceAnimation(start) {
-  const shipBody = shipPreviewExpander(start.target.dataset.pos
+  const ship = shipPreviewExpander(start.currentTarget.dataset.pos
     .split(',')
     .map((x) => parseInt(x, 10)));
-  shipPreview(shipBody, start.target);
+  if (ship.overlap === true) {
+    return;
+  }
+  shipPreview(ship.body, ship.type, start.target);
+}
+
+function addAnimationEvent(add, type, side) {
+  if (add === false) {
+    [...document.getElementsByClassName(`${side}-content`)[0].getElementsByClassName('box')].forEach((box) => {
+      box.removeEventListener(type, shipPlaceAnimation);
+    });
+  }
+  if (add === true) {
+    [...document.getElementsByClassName(`${side}-content`)[0].getElementsByClassName('box')].forEach((box) => {
+      box.addEventListener(type, shipPlaceAnimation);
+    });
+  }
 }
 
 function initializeShip(player, ship, cord) {
@@ -126,7 +130,6 @@ function initializeShip(player, ship, cord) {
 
 function initializeEvent(playerOne, playerTwo, cord, side) {
   const bot = Player.list.filter((x) => x.isBot)[0];
-  let assign = false;
   if (bot) {
     while (bot.board.list.length < 5) {
       const rand = [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
@@ -138,8 +141,7 @@ function initializeEvent(playerOne, playerTwo, cord, side) {
     initializeShip(playerOne, ships[playerOne.board.list.length], cord);
   }
 
-  if (playerOne.board.list.length === 5 && assign === false) {
-    assign = true;
+  if (playerOne.board.list.length === 5) {
     currentPreview = playerTwo.board.list;
     board = [...document.getElementsByClassName('right-content')[0].getElementsByClassName('box')];
     addAnimationEvent(false, 'mouseover', 'left');
@@ -151,7 +153,6 @@ function initializeEvent(playerOne, playerTwo, cord, side) {
   }
 
   if (playerOne.board.list.length === 5 && playerTwo.board.list.length === 5) {
-    console.log('hi');
     addAnimationEvent(false, 'mouseover', 'right');
     addInitializer(false);
     loadShip(playerOne, 'left');
@@ -166,6 +167,19 @@ function initializeStage(unit) {
   initializeEvent(playerX, playerY, cord, unit.target.dataset.side);
   loadShip(playerX, 'left');
   loadShip(playerY, 'right');
+}
+
+function addInitializer(add) {
+  if (add === false) {
+    [...document.getElementsByClassName('box')].forEach((box) => {
+      box.removeEventListener('click', initializeStage);
+    });
+  }
+  if (add === true) {
+    [...document.getElementsByClassName('box')].forEach((box) => {
+      box.addEventListener('click', initializeStage);
+    });
+  }
 }
 
 [...document.getElementsByClassName('gamemode')].forEach((btn) => {
@@ -188,9 +202,3 @@ function initializeStage(unit) {
     addInitializer(true);
   });
 });
-
-// if (playerX.board.list.length === 5 && playerY.board.list.length === 5) {
-//   btn.removeEventListener('click', initializeEvent);
-//   boardLoad.assignBox();
-//   loadShip(Player.list);
-// }
