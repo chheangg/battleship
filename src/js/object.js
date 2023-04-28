@@ -104,13 +104,19 @@ function Ship(ship, axis, coordinate) {
   };
 }
 
+// The main game object that is needed for every round
+// Coordinate system: Array [Vertical (0 -> 9), Horizontal (0 -> 9)]
 function Gameboard() {
+  // List of ships
   const list = [];
+  // Record of attacks made
   const attacks = [];
+  // Record of hits made
   const hits = [];
+  // Record of misses 
   const misses = [];
 
-  // Place ship, should actually move this logic somewhere else lol!
+  // Place ship, build a ship, check if it is valid.
   function place(ship, axis, coordinate) {
     const initializedShip = Ship(ship, axis, coordinate);
 
@@ -121,18 +127,25 @@ function Gameboard() {
     return initializedShip;
   }
 
+  // Check if attack is out of bound or already exist, then retry
+  // If it is valid, checks if a ship is hit; modify ship if hit
   function receiveAttack(cord) {
-    const isExist = attacks.some((attack) => attack[0] === cord[0] && attack[1] === cord[1]);
+    const isExist = attacks.find((attack) => attack[0] === cord[0] && attack[1] === cord[1]);
     const hit = list.some((ship) => ship.hit(cord));
+
     if (isExist) {
       return false;
     }
+
     Player.changeTurn();
+
     attacks.push(cord);
+
     if (hit) {
       hits.push(cord);
       return 'hit';
     }
+
     misses.push(cord);
     return 'miss';
   }
@@ -147,78 +160,82 @@ function Gameboard() {
   };
 }
 
-function PlayerObj(isBot) {
-  function decideTurn() {
-    if (Player.list[0]) {
-      return false;
-    }
-    return true;
-  }
-
-  function botEval(player) {
-    const rand = [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
-    let attackExist;
-    if (player.board.attacks[0]) {
-      attackExist = player.board.attacks.every((attempt) => {
-        if (attempt[0] === rand[0] && attempt[1] === rand[1]) {
-          return true;
-        }
-        return false;
-      });
-    }
-    if (attackExist === true) {
-      botEval();
-    }
-    return rand;
-  }
-
-  function attack(player, coordinate) {
-    if (isBot === false) {
-      return player.board.receiveAttack(coordinate);
-    }
-    if (isBot === true) {
-      const cord = botEval(player);
-      const state = player.board.receiveAttack(cord);
-      if (state) {
-        return {
-          cord,
-          state,
-        };
-      }
-      attack(player);
-    }
-  }
-
-  return {
-    isTurn: decideTurn(),
-    board: Gameboard(),
-    attack,
-    isBot,
-  };
-}
+// Factory constructor of Player Logic (Not the actual player);
 const Player = (function handler() {
   const list = [];
+
+  // Create player
   function create(isBot) {
     const obj = PlayerObj(isBot);
     list.push(obj);
     return obj;
   }
+
+  // Clear player list
   function clear() {
     list.splice(0);
   }
 
   function changeTurn() {
     list.forEach((obj) => {
-      if (obj.isTurn === true) {
-        obj.isTurn = false;
-        return;
-      }
-      obj.isTurn = true;
+      // eslint-disable-next-line no-unused-expressions
+      obj.isTurn ? obj.isTurn = false : obj.isTurn = true;
     });
   }
+
   return {
     list, changeTurn, create, clear,
   };
 }());
+
+function PlayerObj(isBot) {
+  // Decide the turn for player, first if there's no existing player yet
+  function decideInitialTurn() {
+    return !Player.list[0];
+  }
+
+  // Bot make random attack on the board, keep retrying if it is not valid;
+  function botEval(player) {
+    const rand = [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
+    const attackExist = player
+      .board.attacks
+      .find((attempt) => attempt[0] === rand[0] && attempt[1] === rand[1]);
+
+    if (attackExist) {
+      return botEval(player);
+    }
+
+    return rand;
+  }
+
+  // Player simply receive attack if it is not a bot (implying coordinate exists)
+  // otherwise, a coord is randomly generated for the bot to attack
+  // eslint-disable-next-line consistent-return
+  function attack(player, coordinate) {
+    if (isBot === false) {
+      return player.board.receiveAttack(coordinate);
+    }
+
+    const cord = botEval(player);
+    // State of board attacks
+    const state = player.board.receiveAttack(cord);
+
+    if (!state) {
+      return attack(player);
+    }
+
+    return {
+      cord,
+      state,
+    };
+  }
+
+  return {
+    isTurn: decideInitialTurn(),
+    board: Gameboard(),
+    attack,
+    isBot,
+  };
+}
 // eslint-disable-next-line import/prefer-default-export
 export { Ship, Gameboard, Player };
