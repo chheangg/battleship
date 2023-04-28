@@ -6,6 +6,7 @@ import { mainLoop } from './app';
 import { Player } from './object';
 import { loadIcon } from './imageLoader';
 
+// loead the ships when called
 function loadShip(player, side) {
   player.board.list.forEach((ship) => {
     ship.position.forEach((cord) => {
@@ -20,7 +21,7 @@ function loadShip(player, side) {
               shipType = 'submarine';
               break;
             case 2:
-              shipType = 'destroyer'
+              shipType = 'destroyer';
               break;
             case 3:
               shipType = 'battleship';
@@ -40,12 +41,15 @@ function loadShip(player, side) {
   });
 }
 
+// A factory function that has the logic for initializing and loading up the game board
 const boardLoad = (function handler() {
+  // Generate the page for score keeping and turn information
   function generatePage() {
     document.body.textContent = '';
     document.body.innerHTML = "<div class='top-container'><p>Turn: PLAYER 1</p></div>"
       + "<div class='main-content'><div class='left-content'><div class='playername'>PLAYER 1 (you)</div><div class='board-container'><div class='ships-container'></div><div class='board'></div></div></div><div class='right-content'><div class='playername'>PLAYER 2 (bot)</div><div class='board-container'><div class='ships-container'></div><div class='board'></div></div></div></div>";
   }
+  // Generate the whole board
   function generateBox() {
     [...document.getElementsByClassName('board')].forEach((board) => {
       const start = [0, 0];
@@ -66,6 +70,7 @@ const boardLoad = (function handler() {
         });
     });
   }
+  // Assign each cells an attribue an event listener
   function assignBox() {
     [...document.getElementsByClassName('box')].forEach((box) => {
       box.addEventListener('click', (obj) => {
@@ -73,6 +78,7 @@ const boardLoad = (function handler() {
           .split(',')
           .map((x) => parseInt(x, 10));
         const side = obj.target.getAttribute('data-side');
+        // Check for attacks?
         let complement;
         if (side === 'left') {
           complement = 'right';
@@ -80,11 +86,13 @@ const boardLoad = (function handler() {
         if (side === 'right') {
           complement = 'left';
         }
+        // ?
         mainLoop.attack(coordinate, side, Player.list);
         mainLoop.botAttack(complement, Player.list);
       });
     });
   }
+  // assign appropriate classes to distinct left and right
   function assignParent() {
     ['left', 'right'].forEach((side) => {
       const boxes = document.getElementsByClassName(`${side}-content`)[0]
@@ -100,6 +108,7 @@ const boardLoad = (function handler() {
   };
 }());
 
+// Load option for placing ships in a certain axios
 function loadOption() {
   const container = document.getElementsByClassName('top-container')[0];
   const option = document.createElement('div');

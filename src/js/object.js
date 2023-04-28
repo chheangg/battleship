@@ -2,75 +2,98 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable no-plusplus */
 /* eslint-disable no-use-before-define */
-function Ship(length, axis, coordinate) {
-  function expander() {
-    const start = [...coordinate];
-    const body = Array(length)
-      .fill()
-      .map(() => {
-        if (axis === 'horizontal') {
-          return [start[0], start[1]++];
-        }
-        if (axis === 'vertical') {
-          return [start[0]++, start[1]];
-        }
-      });
-    return body;
-  }
 
-  function hit(value) {
-    const check = position.some((pos) => {
-      if (value[0] === pos[0] && value[1] === pos[1]) {
-        damage.push(value);
-        return true;
+function intersect(a, b) {
+  return a.find((pos) => b
+    .find((currentPos) => currentPos[0] === pos[0] && currentPos[1] === pos[1]));
+}
+
+export const Ships = {
+  patrol: {
+    name: 'Patrol',
+    length: 2,
+  },
+  submarine: {
+    name: 'Submarine',
+    length: 3,
+  },
+  destroyer: {
+    name: 'Destroyer',
+    length: 3,
+  },
+  battleship: {
+    name: 'Battleship',
+    length: 4,
+  },
+  carrier: {
+    name: 'Carrier',
+    length: 5,
+  },
+};
+
+// Return false if ship body is over 9 (which is over the board boundary)
+const hitBoundary = (position, axis) => {
+  switch (axis) {
+    case 'horizontal':
+      return position.find((pos) => (pos[1] > 9));
+    case 'vertical':
+      return position.find((pos) => (pos[0] > 9));
+    default:
+      throw Error('Invalid axis');
+  }
+};
+
+// Check if ship can be placed on a certain square, without collision
+// with the border or other ships.
+// takes all the ship as argument to check for collison
+function isValid(ships, position, axis) {
+  // Check if ship overlaps over any other ships
+  const hasCollision = ships
+    .find((ship) => intersect(ship.position, position));
+  // Check if the ship doesn't overlap with the boundary
+  // Accept the current ship's position and axis
+  const validBoundary = !hitBoundary(position, axis);
+  return !hasCollision && validBoundary;
+}
+
+// Takes coordinate, axis, and length, and build ship on a certain cell position
+function buildShip(length, axis, coordinate) {
+  const start = [...coordinate];
+  const body = Array(length)
+    .fill()
+    .map(() => {
+      if (axis === 'horizontal') {
+        return [start[0], start[1]++];
       }
+      return [start[0]++, start[1]];
     });
-    return check;
-  }
+  return body;
+}
 
-  function isSunk() {
-    if (damage.length === length) {
-      return true;
-    }
-
-    return false;
-  }
-
+// Function Constructor for ship
+function Ship(ship, axis, coordinate) {
+  const { length } = ship;
   const damage = [];
-  const position = expander();
+  // Iniitialize ship with a utility function buildShip
+  const position = buildShip(ship.length, axis, coordinate);
 
-  function isValid(ships) {
-    let boundary;
-
-    const overlap = ships.every((ship) => ship.position.every((posX) => position.every((posY) => {
-      if (posX[0] === posY[0] && posX[1] === posY[1]) {
-        return false;
+  // Take a cord and check if cord hits any body cord
+  function hit(value) {
+    const isHit = position.some((pos) => {
+      const matchHitPos = value[0] === pos[0] && value[1] === pos[1];
+      if (matchHitPos) {
+        damage.push(value);
       }
-      return true;
-    })));
-
-    switch (axis) {
-      case 'horizontal':
-        boundary = position.every((pos) => {
-          if (pos[1] > 9) {
-            return false;
-          }
-          return true;
-        });
-        break;
-      case 'vertical':
-        boundary = position.every((pos) => {
-          if (pos[0] > 9) {
-            return false;
-          }
-          return true;
-        });
-        break;
-      default:
-        break;
-    }
-    return overlap && boundary;
+      return matchHitPos;
+    });
+    return isHit;
   }
+
+  // Damage return true of damage length is equal to body length
+  function isSunk() {
+    return damage.length === length;
+  }
+
   return {
     length,
     damage,
@@ -78,8 +101,6 @@ function Ship(length, axis, coordinate) {
     position,
     hit,
     isSunk,
-    isValid,
-    expander,
   };
 }
 
@@ -88,32 +109,16 @@ function Gameboard() {
   const attacks = [];
   const hits = [];
   const misses = [];
+
+  // Place ship, should actually move this logic somewhere else lol!
   function place(ship, axis, coordinate) {
-    let obj;
-    switch (ship) {
-      case 'patrol':
-        obj = Ship(2, axis, coordinate);
-        break;
-      case 'submarine':
-        obj = Ship(3, axis, coordinate);
-        break;
-      case 'destroyer':
-        obj = Ship(3, axis, coordinate);
-        break;
-      case 'battleship':
-        obj = Ship(4, axis, coordinate);
-        break;
-      case 'carrier':
-        obj = Ship(5, axis, coordinate);
-        break;
-      default:
-        break;
+    const initializedShip = Ship(ship, axis, coordinate);
+
+    if (!isValid(list, initializedShip.position, axis)) {
+      return undefined;
     }
-    if (obj.isValid(list)) {
-      list.push(obj);
-      return true;
-    }
-    return false;
+    list.push(initializedShip);
+    return initializedShip;
   }
 
   function receiveAttack(cord) {

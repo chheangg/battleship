@@ -6,7 +6,6 @@ const mainLoop = (function handler() {
       .getElementsByClassName('box');
     if (output === 'hit') {
       [...boxes].forEach((box) => {
-        console.log(box.dataset.pos, cord, side);
         if (box.dataset.pos === cord.join()) {
           box.textContent = 'X';
           box.classList.add('hit');

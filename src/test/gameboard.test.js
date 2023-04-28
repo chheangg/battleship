@@ -1,9 +1,9 @@
 /* eslint-disable no-undef */
-import { Gameboard } from '../js/object';
+import { Gameboard, Ships } from '../js/object';
 
 it('Path #1.1 Placing a ship', () => {
   const board = Gameboard();
-  board.place('patrol', 'horizontal', [0, 0]);
+  board.place(Ships.patrol, 'horizontal', [0, 0]);
   expect(board.list[0])
     .toMatchObject({
       length: 2,
@@ -18,8 +18,8 @@ it('Path #1.1 Placing a ship', () => {
 
 it('Path #1.2 Placing two ship', () => {
   const board = Gameboard();
-  board.place('patrol', 'horizontal', [0, 0]);
-  board.place('patrol', 'horizontal', [1, 0]);
+  board.place(Ships.patrol, 'horizontal', [0, 0]);
+  board.place(Ships.patrol, 'horizontal', [1, 0]);
   expect(board.list[0])
     .toMatchObject({
       length: 2,
@@ -44,7 +44,7 @@ it('Path #1.2 Placing two ship', () => {
 
 it('Path #1.3 Placing a destroyer', () => {
   const board = Gameboard();
-  board.place('destroyer', 'horizontal', [0, 0]);
+  board.place(Ships.destroyer, 'horizontal', [0, 0]);
   expect(board.list[0])
     .toMatchObject({
       length: 3,
@@ -60,7 +60,7 @@ it('Path #1.3 Placing a destroyer', () => {
 
 it('Path #1.4 Placing a carrier', () => {
   const board = Gameboard();
-  board.place('carrier', 'horizontal', [0, 0]);
+  board.place(Ships.carrier, 'horizontal', [0, 0]);
   expect(board.list[0])
     .toMatchObject({
       length: 5,
@@ -78,8 +78,8 @@ it('Path #1.4 Placing a carrier', () => {
 
 it('Path #2.1 cancel invalid placement (overlap)', () => {
   const board = Gameboard();
-  board.place('carrier', 'horizontal', [0, 0]);
-  board.place('carrier', 'horizontal', [0, 1]);
+  board.place(Ships.carrier, 'horizontal', [0, 0]);
+  board.place(Ships.carrier, 'horizontal', [0, 1]);
   expect(board.list[0])
     .toMatchObject({
       length: 5,
@@ -99,16 +99,16 @@ it('Path #2.1 cancel invalid placement (overlap)', () => {
 
 it('Path #2.2 cancel invalid placement (out of boundary)', () => {
   const board = Gameboard();
-  board.place('carrier', 'horizontal', [0, 9]);
+  board.place(Ships.carrier, 'horizontal', [0, 9]);
   expect(board.list[0])
     .toBeUndefined();
 });
 
 it('Path #2.3 cancel invalid placement (out of boundary + overlap)', () => {
   const board = Gameboard();
-  board.place('carrier', 'horizontal', [0, 9]);
-  board.place('carrier', 'vertical', [0, 1]);
-  board.place('carrier', 'horizontal', [0, 1]);
+  board.place(Ships.carrier, 'horizontal', [0, 9]);
+  board.place(Ships.carrier, 'vertical', [0, 1]);
+  board.place(Ships.carrier, 'horizontal', [0, 1]);
   expect(board.list[0])
     .toMatchObject({
       length: 5,
@@ -126,7 +126,7 @@ it('Path #2.3 cancel invalid placement (out of boundary + overlap)', () => {
 
 it('Path #3.1 Check hits', () => {
   const board = Gameboard();
-  board.place('patrol', 'horizontal', [0, 0]);
+  board.place(Ships.patrol, 'horizontal', [0, 0]);
   board.receiveAttack([0, 0]);
   expect(board.hits[0])
     .toMatchObject([0, 0]);
@@ -134,7 +134,7 @@ it('Path #3.1 Check hits', () => {
 
 it('Path #3.2 Check misses', () => {
   const board = Gameboard();
-  board.place('patrol', 'vertical', [0, 0]);
+  board.place(Ships.patrol, 'vertical', [0, 0]);
   board.receiveAttack([0, 1]);
   expect(board.misses[0])
     .toMatchObject([0, 1]);

@@ -8,6 +8,8 @@ import {
 } from './pageLoad';
 import { loadIcon } from './imageLoader';
 
+
+// Refactor into the game object
 const ships = ['patrol', 'submarine', 'destroyer', 'battleship', 'carrier'];
 let playerX;
 let playerY;
@@ -170,35 +172,38 @@ function initializeStage(unit) {
 }
 
 function addInitializer(add) {
-  if (add === false) {
-    [...document.getElementsByClassName('box')].forEach((box) => {
-      box.removeEventListener('click', initializeStage);
-    });
-  }
-  if (add === true) {
-    [...document.getElementsByClassName('box')].forEach((box) => {
-      box.addEventListener('click', initializeStage);
-    });
-  }
+  [...document.getElementsByClassName('box')].forEach((box) => {
+    // eslint-disable-next-line no-unused-expressions
+    add ? box.addEventListener('click', initializeStage) : box.removeEventListener('click', initializeStage);
+  });
 }
 
-[...document.getElementsByClassName('gamemode')].forEach((btn) => {
-  btn.addEventListener('click', (obj) => {
-    mainLoad();
-    loadOption();
-    if (obj.target.classList.contains('single-player')) {
-      playerX = Player.create(false);
-      playerY = Player.create(true);
-    }
-    if (obj.target.classList.contains('multi-player')) {
-      playerX = Player.create(false);
-      playerY = Player.create(false);
-    }
 
-    currentPreview = playerX.board.list;
-    board = [...document.getElementsByClassName('left-content')[0].getElementsByClassName('box')];
+// Load the main loop and option, and initialize the board with necessary information
+function initializeOnStart() {
+  mainLoad();
+  loadOption();
 
-    addAnimationEvent(true, 'mouseover', 'left');
-    addInitializer(true);
-  });
+  currentPreview = playerX.board.list;
+  board = [...document.getElementsByClassName('left-content')[0].getElementsByClassName('box')];
+
+  addAnimationEvent(true, 'mouseover', 'left');
+  addInitializer(true);
+}
+
+const singlePlayerBtn = document.querySelector('.single-player');
+const multiPlayerbtn = document.querySelector('.multi-player');
+
+// Create a bot and a player
+singlePlayerBtn.addEventListener('click', () => {
+  playerX = Player.create(false);
+  playerY = Player.create(true);
+  initializeOnStart();
+});
+
+// Create two players logic
+multiPlayerbtn.addEventListener('click', () => {
+  playerX = Player.create(false);
+  playerY = Player.create(false);
+  initializeOnStart();
 });
