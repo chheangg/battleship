@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
-import { Player, Ships } from '../js/object';
+import { Ships } from '../js/objects/ship';
+import { Player } from '../js/objects/player';
 
 it('Path #1.1 Player gets their board', () => {
   const playerX = Player.create();

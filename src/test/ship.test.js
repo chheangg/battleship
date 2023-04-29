@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import { Ship, Ships } from '../js/object';
+import { Ship, Ships } from '../js/objects/ship';
 
 it('Path #1.1: Create main object horizontally', () => {
   expect(Ship(Ships.battleship, 'horizontal', [0, 0]))

@@ -8,7 +8,6 @@ import {
 } from './pageLoad';
 import { loadIcon } from './imageLoader';
 
-
 // Refactor into the game object
 const ships = ['patrol', 'submarine', 'destroyer', 'battleship', 'carrier'];
 let playerX;
@@ -177,7 +176,6 @@ function addInitializer(add) {
     add ? box.addEventListener('click', initializeStage) : box.removeEventListener('click', initializeStage);
   });
 }
-
 
 // Load the main loop and option, and initialize the board with necessary information
 function initializeOnStart() {
