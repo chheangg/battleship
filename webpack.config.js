@@ -1,4 +1,5 @@
 const path = require('path');
+const glob = require('glob');
 const htmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
@@ -9,15 +10,19 @@ module.exports = {
   },
   entry: {
     main: './src/js/main.js',
-    object: './src/js/object.js',
     app: './src/js/app.js',
     pageLoad: './src/js/pageLoad.js',
+    ship: './src/js/objects/ship.js',
+    player: './src/js/objects/player.js',
+    gameboard: './src/js/objects/gameboard.js',
+    game: './src/js/objects/game.js',
   },
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, './dist'),
   },
   plugins: [
+    // eslint-disable-next-line new-cap
     new htmlWebpackPlugin({
       template: './src/template.html',
     }),

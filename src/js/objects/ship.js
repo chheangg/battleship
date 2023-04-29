@@ -5,23 +5,23 @@
 
 export const Ships = {
   patrol: {
-    name: 'Patrol',
+    name: 'patrol',
     length: 2,
   },
   submarine: {
-    name: 'Submarine',
+    name: 'submarine',
     length: 3,
   },
   destroyer: {
-    name: 'Destroyer',
+    name: 'destroyer',
     length: 3,
   },
   battleship: {
-    name: 'Battleship',
+    name: 'battleship',
     length: 4,
   },
   carrier: {
-    name: 'Carrier',
+    name: 'carrier',
     length: 5,
   },
 };

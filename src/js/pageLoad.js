@@ -3,7 +3,8 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable import/prefer-default-export */
 import { mainLoop } from './app';
-import { Player } from './object';
+import { Player } from './objects/player';
+import { Ships } from './objects/ship';
 import { loadIcon } from './imageLoader';
 
 // loead the ships when called
@@ -12,28 +13,8 @@ function loadShip(player, side) {
     ship.position.forEach((cord) => {
       [...document.getElementsByClassName(`${side}-content`)[0].getElementsByClassName('box')].forEach((box) => {
         if (box.dataset.pos === cord.join()) {
-          let shipType;
-          switch (player.board.list.indexOf(ship)) {
-            case 0:
-              shipType = 'patrol';
-              break;
-            case 1:
-              shipType = 'submarine';
-              break;
-            case 2:
-              shipType = 'destroyer';
-              break;
-            case 3:
-              shipType = 'battleship';
-              break;
-            case 4:
-              shipType = 'carrier';
-              break;
-            default:
-              console.log('bruh');
-              break;
-          }
-          const shipImg = loadIcon(shipType, ship.position.indexOf(cord) + 1, ship.axis);
+          const { name } = Ships[player.board.list.indexOf(ship)];
+          const shipImg = loadIcon(name, ship.position.indexOf(cord) + 1, ship.axis);
           box.style.backgroundImage = `url('${shipImg}')`;
         }
       });
@@ -44,12 +25,13 @@ function loadShip(player, side) {
 // A factory function that has the logic for initializing and loading up the game board
 const boardLoad = (function handler() {
   // Generate the page for score keeping and turn information
+  // Refactor into template
   function generatePage() {
     document.body.textContent = '';
     document.body.innerHTML = "<div class='top-container'><p>Turn: PLAYER 1</p></div>"
       + "<div class='main-content'><div class='left-content'><div class='playername'>PLAYER 1 (you)</div><div class='board-container'><div class='ships-container'></div><div class='board'></div></div></div><div class='right-content'><div class='playername'>PLAYER 2 (bot)</div><div class='board-container'><div class='ships-container'></div><div class='board'></div></div></div></div>";
   }
-  // Generate the whole board
+  // Generate the whole cells for each board
   function generateBox() {
     [...document.getElementsByClassName('board')].forEach((board) => {
       const start = [0, 0];
@@ -112,16 +94,25 @@ const boardLoad = (function handler() {
 function loadOption() {
   const container = document.getElementsByClassName('top-container')[0];
   const option = document.createElement('div');
+  // Template
   option.innerHTML = "<div class='dir-option'><label for='horizontal'>Horizontal</label><input type='radio' class='dir-option' value='horizontal' id='horizontal' name='option' checked><label for='vertical'>Vertical</label><input type='radio' class='dir-option' value='vertical' id='vertical' name='option'></div>";
   container.appendChild(option);
 }
 
-function mainLoad() {
+// Load board
+function mainPageLoad() {
   boardLoad.generatePage();
   boardLoad.generateBox();
   boardLoad.assignParent();
 }
 
+function loadPage() {
+  // Load page and initialize every cells;
+  mainPageLoad();
+  // Load options
+  loadOption();
+}
+
 export {
-  mainLoad, loadShip, loadOption, boardLoad,
+  mainPageLoad, loadShip, loadOption, boardLoad, loadPage,
 };

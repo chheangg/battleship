@@ -1,6 +1,7 @@
+// Import all ship images
 function importAll(r) {
   const images = {};
-  r.keys().map((item, index) => {
+  r.keys().forEach((item) => {
     images[item.replace(/(.\/|\.png$)/g, '')] = r(item);
   });
   return images;
@@ -9,20 +10,9 @@ function importAll(r) {
 const images = importAll(require.context('../assets/ships', false, /\.png$/));
 
 function loadIcon(type, num, dir) {
-  let dirArr;
-  let dirName;
-  if (!dir) {
-    dirArr = document.getElementsByClassName('dir-option');
-    dir = [...dirArr].filter((dirObj) => dirObj.checked)[0].value;
-  }
-  console.log(dir);
-  if (dir === 'horizontal') {
-    dirName = 'hori';
-  }
-  if (dir === 'vertical') {
-    dirName = 'vert';
-  }
+  const dirName = dir === 'horizontal' ? 'hori' : 'vert';
   return images[`${type}-${dirName}_0${num}`];
 }
 
+// eslint-disable-next-line import/prefer-default-export
 export { loadIcon };
