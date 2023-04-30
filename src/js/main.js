@@ -3,9 +3,8 @@
 import 'normalize.css';
 import '../style/style.scss';
 import { Ships } from './objects/ship';
-import { Player } from './objects/player';
 import {
-  loadShip, boardLoad, loadPage,
+  loadPage,
 } from './pageLoad';
 import { loadIcon } from './imageLoader';
 import Game, { swapTurn } from './objects/game';
@@ -14,22 +13,16 @@ const shipOrders = Object.values(Ships).sort((last, next) => last.order < next.o
 
 // Refactor into the game object
 let gameObject;
-let playerX;
-let playerY;
-let board;
-let currentPreview;
 
 // Show the right ship, position and axis on ship-placing stage.
 // Will check axis, the cord given and ship type to make it possible.
-function shipPreviewExpander(cord) {
+function shipPreviewExpander(cord, player, ship) {
   const dirArr = document.getElementsByClassName('dir-option');
   // I suppose this reads the text value...
   const axis = [...dirArr].filter((dirObj) => dirObj.checked)[0].value;
-  // Figure out the ship type through current preview
-  const { name, length } = Ships[shipOrders[currentPreview.length].name];
   // Take the coord and use it to build the body;
   const start = [...cord];
-  const body = Array(length)
+  const body = Array(ship.length)
     .fill()
     .map(() => {
       if (axis === 'horizontal') {
@@ -39,19 +32,21 @@ function shipPreviewExpander(cord) {
     });
   // Check overlap???
   const overlap = body
-    .some((part) => currentPreview
-      .some((ship) => ship.position
+    .some((part) => player.board.list
+      .some((playerShip) => playerShip.position
         .some((pos) => pos[0] === part[0] && pos[1] === part[1])));
   return {
     body,
-    type: name,
     overlap,
   };
 }
 
-function shipPreview(cord, type, target) {
+function shipPreview(cord, boardSide, type, target) {
   let registered = false;
-  board.forEach((box) => {
+  const boardBoxes = [...document
+    .querySelector(`.${boardSide}-content`)
+    .getElementsByClassName('box')];
+  boardBoxes.forEach((box) => {
     cord.forEach((coordinate) => {
       if (box.dataset.pos === coordinate.join()) {
         const dirOptions = document.getElementsByClassName('dir-option');
@@ -73,28 +68,37 @@ function shipPreview(cord, type, target) {
 }
 
 // Function for animation
-function shipPlaceAnimation(start) {
-  const ship = shipPreviewExpander(start.currentTarget.dataset.pos
-    .split(',')
-    .map((x) => parseInt(x, 10)));
+function shipPlaceAnimation(event, boardSide, player, ship) {
+  const shipPreviewObject = shipPreviewExpander(
+    event.currentTarget.dataset.pos
+      .split(',')
+      .map((x) => parseInt(x, 10)),
+    player,
+    ship,
+  );
   if (ship.overlap === true) {
     return;
   }
-  shipPreview(ship.body, ship.type, start.target);
+  shipPreview(shipPreviewObject.body, boardSide, ship.name, event.target);
 }
 
 // Function for adding animation
-function addAnimationEvent(add, type, side) {
-  if (add === false) {
-    [...document.getElementsByClassName(`${side}-content`)[0].getElementsByClassName('box')].forEach((box) => {
-      box.removeEventListener(type, shipPlaceAnimation);
+function addAnimationEvent(add, boardSide, player, ship) {
+  const eventListener = (event) => {
+    shipPlaceAnimation(event, boardSide, player, ship);
+  };
+  const boardBoxes = [...document
+    .querySelector(`.${boardSide}-content`)
+    .getElementsByClassName('box')];
+
+  if (!add) {
+    boardBoxes.forEach((box) => {
+      box.removeEventListener('mouseover', eventListener);
     });
   }
-  if (add === true) {
-    [...document.getElementsByClassName(`${side}-content`)[0].getElementsByClassName('box')].forEach((box) => {
-      box.addEventListener(type, shipPlaceAnimation);
-    });
-  }
+  boardBoxes.forEach((box) => {
+    box.addEventListener('mouseover', eventListener);
+  });
 }
 
 // Ship placement function
@@ -117,55 +121,47 @@ function initializeShip(player, ship, cord) {
   player.board.place(ship, dir, cord);
 }
 
-// Decide which players get to place ships, and what sort of ships
-function initializeEvent(playerOne, playerTwo, cord, side) {
-  const bot = Player.list.filter((x) => x.isBot)[0];
-  if (bot) {
-    while (bot.board.list.length < 5) {
-      const rand = [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
-      initializeShip(bot, Ships[bot.board.list.length], rand);
-    }
-  }
-
-  if (playerOne.board.list.length < 5 && side === 'left') {
-    initializeShip(playerOne, Ships[playerOne.board.list.length], cord);
-  }
-
-  if (playerOne.board.list.length === 5) {
-    currentPreview = playerTwo.board.list;
-    board = [...document.getElementsByClassName('right-content')[0].getElementsByClassName('box')];
-    addAnimationEvent(false, 'mouseover', 'left');
-    addAnimationEvent(true, 'mouseover', 'right');
-  }
-
-  if (playerOne.board.list.length === 5 && playerTwo.board.list.length < 5 && side === 'right') {
-    initializeShip(playerTwo, Ships[playerTwo.board.list.length], cord);
-  }
-
-  if (playerOne.board.list.length === 5 && playerTwo.board.list.length === 5) {
-    addAnimationEvent(false, 'mouseover', 'right');
-    addInitializer(false);
-    loadShip(playerOne, 'left');
-    loadShip(playerTwo, 'right');
-    boardLoad.assignBox();
-  }
-}
-
 // Function that retrieve the coordinate for placing ships
-function initializeStage(unit) {
-  const cord = unit.target.dataset.pos.split(',')
+function placementEvent(event, player, cb) {
+  const playerShips = player.board.list;
+  const cord = event.target.dataset.pos.split(',')
     .map((x) => parseInt(x, 10));
-  initializeEvent(playerX, playerY, cord, unit.target.dataset.side);
-  loadShip(playerX, 'left');
-  loadShip(playerY, 'right');
+  initializeShip(player, shipOrders[playerShips.length], cord);
+  cb();
 }
 
-// Select all cells and detect if a ship is placed.
-function addInitializer(add) {
+// Select all cell and add placement event to them if add is true, else remove it.
+function populateCellWithPlacementEvent(add, player, cb) {
+  const playerShips = player.board.list;
+  const eventListener = (event) => {
+    placementEvent(event, player, cb);
+  };
   [...document.getElementsByClassName('box')].forEach((box) => {
     // eslint-disable-next-line no-unused-expressions
-    add ? box.addEventListener('click', initializeStage) : box.removeEventListener('click', initializeStage);
+    add ? box.addEventListener('click', eventListener) : box.removeEventListener('click', eventListener);
   });
+  console.log(shipOrders[playerShips.length]);
+  addAnimationEvent(add, player.isTurn ? 'left' : 'right', player, shipOrders[playerShips.length]);
+}
+
+// Enter into placement mode, will do two rounds to ensure everything is set up.
+// Accepts gameObject, and main callback as argument and
+// feed the animation event the side of the board it should populate.
+// Main callback is use for necessary condition checking to see if
+// board is populated and which side needs population
+function placementMode(player, cb) {
+  const maxShips = 5;
+  // pass callback to placement Event
+  populateCellWithPlacementEvent(true, player, cb);
+
+  const placementFinished = (gameObject.playerOne.board.list.length === maxShips)
+    && (gameObject.playerTwo.board.list.length === maxShips);
+
+  if (placementFinished) {
+    gameObject.isStarted = true;
+    populateCellWithPlacementEvent(false);
+    // Add populate cell to start the main loop
+  }
 }
 
 // Load:
@@ -185,23 +181,29 @@ function addInitializer(add) {
 // Load the page, and initialize Game object to be return
 // to be used by other stages in the game
 function initializeObjects(gameMode) {
-  const newGameObject = Game(gameMode);
   loadPage();
-
-  currentPreview = newGameObject.playerOne.board.list;
-  board = newGameObject.currentBoard();
-
-  addAnimationEvent(true, 'mouseover', 'left');
-  addInitializer(true);
-
-  return gameObject;
+  return Game(gameMode);
 }
 
 // Loop that will be called on every cell click or startup
 // This will moves the game forward and does all the necessary calculations
+// First, check if gameObject is initialized. If not, initialize gameObject and page
+// Second, check if game has started, if not, goes into placement mode;
+// Third, if placement is done, populate cells with eventListener for their attack!
 function mainLoop(gameMode, isInitialized) {
   if (isInitialized) {
     gameObject = initializeObjects(gameMode);
+  }
+
+  const numOfShipsPlayerOne = gameObject.playerOne.board.list;
+  const numOfShipsPlayerTwo = gameObject.playerTwo.board.list;
+
+  if (numOfShipsPlayerOne !== 5) {
+    placementMode(gameObject.playerOne, mainLoop);
+  }
+
+  if (numOfShipsPlayerTwo !== 5) {
+    placementMode(gameObject.playerTwo, mainLoop);
   }
 }
 

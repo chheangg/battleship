@@ -7,22 +7,27 @@ export const Ships = {
   patrol: {
     name: 'patrol',
     length: 2,
+    order: 1,
   },
   submarine: {
     name: 'submarine',
     length: 3,
+    order: 2,
   },
   destroyer: {
     name: 'destroyer',
     length: 3,
+    order: 3,
   },
   battleship: {
     name: 'battleship',
     length: 4,
+    order: 4,
   },
   carrier: {
     name: 'carrier',
     length: 5,
+    order: 5,
   },
 };
 
