@@ -41,11 +41,9 @@ function shipPreviewExpander(cord, player, ship) {
   };
 }
 
-function shipPreview(cord, boardSide, type, target) {
+function shipPreview(cord, boardBoxes, type, target) {
   let registered = false;
-  const boardBoxes = [...document
-    .querySelector(`.${boardSide}-content`)
-    .getElementsByClassName('box')];
+
   boardBoxes.forEach((box) => {
     cord.forEach((coordinate) => {
       if (box.dataset.pos === coordinate.join()) {
@@ -68,7 +66,7 @@ function shipPreview(cord, boardSide, type, target) {
 }
 
 // Function for animation
-function shipPlaceAnimation(event, boardSide, player, ship) {
+function shipPlaceAnimation(event, boardBoxes, player, ship) {
   const shipPreviewObject = shipPreviewExpander(
     event.currentTarget.dataset.pos
       .split(',')
@@ -79,17 +77,14 @@ function shipPlaceAnimation(event, boardSide, player, ship) {
   if (ship.overlap === true) {
     return;
   }
-  shipPreview(shipPreviewObject.body, boardSide, ship.name, event.target);
+  shipPreview(shipPreviewObject.body, boardBoxes, ship.name, event.target);
 }
 
 // Function for adding animation
-function addAnimationEvent(add, boardSide, player, ship) {
+function addAnimationEvent(add, boardBoxes, player, ship) {
   const eventListener = (event) => {
-    shipPlaceAnimation(event, boardSide, player, ship);
+    shipPlaceAnimation(event, boardBoxes, player, ship);
   };
-  const boardBoxes = [...document
-    .querySelector(`.${boardSide}-content`)
-    .getElementsByClassName('box')];
 
   if (!add) {
     boardBoxes.forEach((box) => {
@@ -131,17 +126,21 @@ function placementEvent(event, player, cb) {
 }
 
 // Select all cell and add placement event to them if add is true, else remove it.
+// AddAnimationEvents and PlacementEvent to correct board
 function populateCellWithPlacementEvent(add, player, cb) {
   const playerShips = player.board.list;
   const eventListener = (event) => {
     placementEvent(event, player, cb);
   };
-  [...document.getElementsByClassName('box')].forEach((box) => {
+  const boardBoxes = [...document
+    .querySelector(`.${player.isTurn ? 'left' : 'right'}-content`)
+    .getElementsByClassName('box')];
+
+  boardBoxes.forEach((box) => {
     // eslint-disable-next-line no-unused-expressions
     add ? box.addEventListener('click', eventListener) : box.removeEventListener('click', eventListener);
   });
-  console.log(shipOrders[playerShips.length]);
-  addAnimationEvent(add, player.isTurn ? 'left' : 'right', player, shipOrders[playerShips.length]);
+  addAnimationEvent(add, boardBoxes, player, shipOrders[playerShips.length]);
 }
 
 // Enter into placement mode, will do two rounds to ensure everything is set up.
@@ -202,7 +201,7 @@ function mainLoop(gameMode, isInitialized) {
     placementMode(gameObject.playerOne, mainLoop);
   }
 
-  if (numOfShipsPlayerTwo !== 5) {
+  if (numOfShipsPlayerTwo !== 5 && numOfShipsPlayerOne === 5) {
     placementMode(gameObject.playerTwo, mainLoop);
   }
 }
