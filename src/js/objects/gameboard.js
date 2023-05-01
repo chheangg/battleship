@@ -63,7 +63,7 @@ function Gameboard(Player) {
   // If it is valid, checks if a ship is hit; modify ship if hit
   function receiveAttack(cord) {
     const isExist = attacks.find((attack) => attack[0] === cord[0] && attack[1] === cord[1]);
-    const hit = list.some((ship) => ship.hit(cord));
+    const hit = list.find((ship) => ship.hit(cord));
 
     if (isExist) {
       return false;

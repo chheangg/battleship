@@ -16,8 +16,11 @@ function returnPlayerTurn(gameObject) {
 }
 
 // Takes the gameObject and swap playerOne and playerTwo isTurn bool variable
-export function swapTurn() {
-  Player.changeTurn;
+export function swapTurn(gameObject) {
+  const newGameObject = gameObject;
+  newGameObject.playerOne.isTurn = !gameObject.playerOne.isTurn;
+  newGameObject.playerTwo.isTurn = !gameObject.playerTwo.isTurn;
+  return newGameObject;
 }
 
 // The main Game object for exposing information for each stages to uses

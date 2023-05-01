@@ -3,10 +3,12 @@
 import 'normalize.css';
 import '../style/style.scss';
 import _ from 'underscore';
-import { loadIcon, } from './imageLoader';
+import { loadIcon } from './imageLoader';
 import Game, { swapTurn } from './objects/game';
-import { loadBoard, unloadBoard, loadPage, shipOrders } from './pageLoad';
-
+import {
+  loadBoard, unloadBoard, loadPage, shipOrders,
+} from './pageLoad';
+import { gameUtilities } from './app';
 
 // Game Ojbect that contains the state information to be exposed
 let gameObject;
@@ -136,7 +138,7 @@ function addPlacementEvent(add, boardBoxes, player, cb) {
     } else {
       box.addEventListener('click', eventListener);
     }
-  }); 
+  });
 }
 
 // If true, populate cell with placement event and animation event on the correct board.
@@ -171,17 +173,46 @@ function initializeObjects(gameMode) {
   return Game(gameMode);
 }
 
+// Attack mode
+// Accepts game object and check whose turn should be able to attack
+// 1. Load board for current player
+// 2. Populate the correct board to be able to attack with attack event listener
+// eslint-disable-next-line no-shadow
+function attackMode(gameObjectState, cb) {
+  console.log()
+  const currentSide = gameObjectState.playerOne.isTurn ? 'left' : 'right';
+  const oppositeSide = currentSide === 'left' ? 'right' : 'left';
+  const currentPlayer = gameObjectState.playerOne.isTurn
+    ? gameObjectState.playerOne : gameObjectState.playerTwo;
+  const oppositePlayer = gameObjectState.playerOne.isTurn
+    ? gameObjectState.playerTwo : gameObjectState.playerOne;
+
+  unloadBoard(oppositeSide);
+  loadBoard(currentPlayer, currentSide);
+
+  const oppositeBoxes = [...document
+    .querySelector(`.${oppositeSide}-content`)
+    .getElementsByClassName('box')];
+  oppositeBoxes.forEach((box) => {
+    box.addEventListener('click', () => {
+      const cord = box.dataset.pos.split(',').map((x) => parseInt(x, 10));
+      gameUtilities.attack(cord, oppositeSide, currentPlayer, oppositePlayer);
+      oppositeBoxes.forEach((oppositeBox) => removeAllEventListener(oppositeBox));
+      cb();
+    });
+  });
+}
+
 // Loop that will be called on every cell click or startup
 // This will moves the game forward and does all the necessary calculations
 // First, check if gameObject is initialized. If not, initialize gameObject and page
 // Second, check if game has started, if not, goes into placement mode;
-// Third, if placement is done, populate cells with eventListener for their attack!
+// Third, if placement is done, all cells goes into play mode!
 function mainLoop(gameMode, isInitialized) {
   if (isInitialized) {
     gameObject = initializeObjects(gameMode);
   }
 
-  console.log(gameObject);
   const maxShips = 5;
 
   const numOfShipsPlayerOne = gameObject.playerOne.board.list.length;
@@ -204,12 +235,16 @@ function mainLoop(gameMode, isInitialized) {
   const placementFinished = (gameObject.playerOne.board.list.length === maxShips)
   && (gameObject.playerTwo.board.list.length === maxShips);
 
-  if (placementFinished) {
+  if (placementFinished && !gameObject.isStarted) {
     gameObject.isStarted = true;
     // Depopulate right board events
     unloadBoard('right');
     exitPlacementMode(gameObject.playerTwo, mainLoop);
-    loadBoard(gameObject.playerOne, 'left');
+    gameObject.isStarted = true;
+  }
+
+  if (gameObject.isStarted) {
+    attackMode(gameObject, mainLoop);
   }
 }
 

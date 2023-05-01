@@ -57,22 +57,7 @@ function PlayerObj(isBot) {
   // otherwise, a coord is randomly generated for the bot to attack
   // eslint-disable-next-line consistent-return
   function attack(player, coordinate) {
-    if (isBot === false) {
-      return player.board.receiveAttack(coordinate);
-    }
-
-    const cord = botEval(player);
-    // State of board attacks
-    const state = player.board.receiveAttack(cord);
-
-    if (!state) {
-      return attack(player);
-    }
-
-    return {
-      cord,
-      state,
-    };
+    return player.board.receiveAttack(coordinate);
   }
 
   return {

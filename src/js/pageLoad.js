@@ -2,7 +2,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-plusplus */
 /* eslint-disable import/prefer-default-export */
-import { mainLoop } from './app';
+import { gameUtilities } from './app';
 import { Player } from './objects/player';
 import { Ships } from './objects/ship';
 import { loadIcon } from './imageLoader';
@@ -79,8 +79,8 @@ const boardLoad = (function handler() {
           complement = 'left';
         }
         // ?
-        mainLoop.attack(coordinate, side, Player.list);
-        mainLoop.botAttack(complement, Player.list);
+        gameUtilities.attack(coordinate, side, Player.list);
+        gameUtilities.botAttack(complement, Player.list);
       });
     });
   }

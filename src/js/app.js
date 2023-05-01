@@ -1,60 +1,31 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/prefer-default-export */
-const mainLoop = (function handler() {
-  function applyAtt(output, cord, side) {
+const gameUtilities = (function handler() {
+  function applyAtt(isHit, cord, side) {
     const boxes = document.getElementsByClassName(`${side}-content`)[0]
       .getElementsByClassName('box');
-    if (output === 'hit') {
-      [...boxes].forEach((box) => {
-        if (box.dataset.pos === cord.join()) {
-          box.textContent = 'X';
-          box.classList.add('hit');
-        }
-      });
-    }
-    if (output === 'miss') {
-      [...boxes].forEach((box) => {
-        if (box.dataset.pos === cord.join()) {
-          box.textContent = 'X';
-          box.classList.add('missed');
-        }
-      });
+    [...boxes].forEach((box) => {
+      if (box.dataset.pos === cord.join()) {
+        box.textContent = 'X';
+        console.log(isHit);
+        box.classList.add(isHit  === 'hit' ? 'hit' : 'miss');
+      }
+    });
+  }
+  function checkWin(attacker, defender) {
+    const hasWin = defender.board.list.every((ship) => ship.isSunk());
+    if (hasWin) {
+      console.log(attacker);
     }
   }
-  function checkWin(list) {
-    const check = list.some((player) => player.board.list.every((ship) => {
-      if (ship.isSunk()) {
-        return true;
-      }
-      return false;
-    }));
-    const win = list.filter((player) => player.board.list.every((ship) => {
-      if (ship.isSunk()) {
-        return true;
-      }
-      return false;
-    }))[0];
-    if (check) {
-      console.log(win);
-    }
-    if (!check) {
-      console.log('hey');
-    }
-  }
-  function attack(cord, side, list) {
-    let checkValid;
-    if (side === 'left') {
-      if (list[1].isTurn === true) {
-        checkValid = list[1].attack(list[0], cord);
-      }
-    }
-    if (side === 'right') {
-      if (list[0].isTurn === true) {
-        checkValid = list[0].attack(list[1], cord);
-      }
+
+  function attack(cord, side, attacker, defender) {
+    const checkValid = attacker.attack(defender, cord);
+    if (!checkValid) {
+      return;
     }
     applyAtt(checkValid, cord, side);
-    checkWin(list);
+    checkWin(attacker, defender);
   }
   function botRenderAttack(bot, target, side, list) {
     const attInfo = bot.attack(target);
@@ -76,4 +47,4 @@ const mainLoop = (function handler() {
   return { attack, botAttack };
 }());
 
-export { mainLoop };
+export { gameUtilities };
