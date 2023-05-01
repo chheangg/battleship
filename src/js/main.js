@@ -2,18 +2,20 @@
 /* eslint-disable prefer-arrow-callback */
 import 'normalize.css';
 import '../style/style.scss';
-import { Ships } from './objects/ship';
-import {
-  loadPage,
-} from './pageLoad';
-import { loadIcon } from './imageLoader';
+import _ from 'underscore';
+import { loadIcon, } from './imageLoader';
 import Game, { swapTurn } from './objects/game';
+import { loadBoard, unloadBoard, loadPage, shipOrders } from './pageLoad';
 
-const shipOrders = Object.values(Ships).sort((last, next) => last.order < next.order);
 
-// Refactor into the game object
+// Game Ojbect that contains the state information to be exposed
 let gameObject;
 
+function removeAllEventListener(element) {
+  const oldElement = element;
+  const newElement = element.cloneNode(true);
+  oldElement.parentNode.replaceChild(newElement, oldElement);
+}
 // Show the right ship, position and axis on ship-placing stage.
 // Will check axis, the cord given and ship type to make it possible.
 function shipPreviewExpander(cord, player, ship) {
@@ -30,43 +32,50 @@ function shipPreviewExpander(cord, player, ship) {
       }
       return [start[0]++, start[1]];
     });
-  // Check overlap???
-  const overlap = body
-    .some((part) => player.board.list
-      .some((playerShip) => playerShip.position
-        .some((pos) => pos[0] === part[0] && pos[1] === part[1])));
+
+  // Check if there's any overlap
+  const overlap = player
+    .board
+    .list
+    .some((playerShip) => playerShip
+      .position.some((shipPos) => body
+        .some((bodyPos) => _.isEqual(bodyPos, shipPos))));
   return {
     body,
     overlap,
   };
 }
 
-function shipPreview(cord, boardBoxes, type, target) {
-  let registered = false;
+// const dirOptions = document.getElementsByClassName('dir-option');
+// const axisOption = [...dirOptions].filter((dirObj) => dirObj.checked)[0].value;
+// const img = loadIcon(type, cord.indexOf(coordinate) + 1, axisOption);
+// box.style.backgroundImage = `url('${img}')`;
 
-  boardBoxes.forEach((box) => {
-    cord.forEach((coordinate) => {
-      if (box.dataset.pos === coordinate.join()) {
-        const dirOptions = document.getElementsByClassName('dir-option');
-        const axisOption = [...dirOptions].filter((dirObj) => dirObj.checked)[0].value;
-        const img = loadIcon(type, cord.indexOf(coordinate) + 1, axisOption);
-        box.style.backgroundImage = `url('${img}')`;
-
-        target.addEventListener('mouseout', () => {
-          if (registered === false) {
-            box.style.backgroundImage = '';
-          }
-        }, { once: true });
-        box.addEventListener('click', () => {
-          registered = true;
-        });
-      }
+// Responsible for animating preview
+function shipPreview(cord, boardBoxes, player, ship, event) {
+  // Get axis information of ship
+  const dirOptions = document.getElementsByClassName('dir-option');
+  const axisOption = [...dirOptions].filter((dirObj) => dirObj.checked)[0].value;
+  cord.forEach((pos, index) => {
+    const box = [...boardBoxes][pos[0] * 10 + pos[1]];
+    const img = loadIcon(ship.name, index + 1, axisOption);
+    box.style.backgroundImage = `url('${img}')`;
+    const eventListener = () => {
+      box.style.backgroundImage = '';
+    };
+    event.target.addEventListener('mouseout', eventListener);
+    // Remove all event listener once a cell is clicked
+    event.target.addEventListener('click', () => {
+      boardBoxes.forEach((cell) => {
+        removeAllEventListener(cell);
+      });
+      loadBoard(player, player.isTurn ? 'left' : 'right');
     });
   });
 }
 
-// Function for animation
-function shipPlaceAnimation(event, boardBoxes, player, ship) {
+// Function for animating ship preview everything it hovers onto a box or out of it
+function animationEvent(event, boardBoxes, player, ship) {
   const shipPreviewObject = shipPreviewExpander(
     event.currentTarget.dataset.pos
       .split(',')
@@ -74,49 +83,37 @@ function shipPlaceAnimation(event, boardBoxes, player, ship) {
     player,
     ship,
   );
-  if (ship.overlap === true) {
+
+  if (shipPreviewObject.overlap) {
     return;
   }
-  shipPreview(shipPreviewObject.body, boardBoxes, ship.name, event.target);
+
+  shipPreview(shipPreviewObject.body, boardBoxes, player, ship, event);
 }
 
 // Function for adding animation
 function addAnimationEvent(add, boardBoxes, player, ship) {
   const eventListener = (event) => {
-    shipPlaceAnimation(event, boardBoxes, player, ship);
+    animationEvent(event, boardBoxes, player, ship);
   };
-
-  if (!add) {
+  if (add) {
+    boardBoxes.forEach((box) => {
+      box.addEventListener('mouseover', eventListener);
+    });
+  } else {
     boardBoxes.forEach((box) => {
       box.removeEventListener('mouseover', eventListener);
     });
   }
-  boardBoxes.forEach((box) => {
-    box.addEventListener('mouseover', eventListener);
-  });
 }
 
-// Ship placement function
+// Ship logical placement function onto the player's board
 function initializeShip(player, ship, cord) {
-  let dirArr;
-  let dir;
-  if (!player.isBot) {
-    dirArr = document.getElementsByClassName('dir-option');
-    dir = [...dirArr].filter((dirObj) => dirObj.checked)[0].value;
-  }
-  if (player.isBot) {
-    const rand = Math.floor(Math.random() * 2);
-    if (rand === 0) {
-      dir = 'horizontal';
-    }
-    if (rand === 1) {
-      dir = 'vertical';
-    }
-  }
+  const dir = document.querySelector('.dir-option:checked').value;
   player.board.place(ship, dir, cord);
 }
 
-// Function that retrieve the coordinate for placing ships
+// Placement Event
 function placementEvent(event, player, cb) {
   const playerShips = player.board.list;
   const cord = event.target.dataset.pos.split(',')
@@ -125,57 +122,47 @@ function placementEvent(event, player, cb) {
   cb();
 }
 
-// Select all cell and add placement event to them if add is true, else remove it.
-// AddAnimationEvents and PlacementEvent to correct board
-function populateCellWithPlacementEvent(add, player, cb) {
-  const playerShips = player.board.list;
+// Add placement event to all cell
+function addPlacementEvent(add, boardBoxes, player, cb) {
+  // set a time out so that animation event executes first
+  // to remove all animation, within the call stack;
   const eventListener = (event) => {
-    placementEvent(event, player, cb);
+    setTimeout(() => placementEvent(event, player, cb), 0);
   };
+  boardBoxes.forEach((box) => {
+    // eslint-disable-next-line no-unused-expressions
+    if (!add) {
+      box.removeEventListener('click', eventListener);
+    } else {
+      box.addEventListener('click', eventListener);
+    }
+  }); 
+}
+
+// If true, populate cell with placement event and animation event on the correct board.
+function populateCellWithEvents(add, player, cb) {
+  const playerShips = player.board.list;
   const boardBoxes = [...document
     .querySelector(`.${player.isTurn ? 'left' : 'right'}-content`)
     .getElementsByClassName('box')];
-
-  boardBoxes.forEach((box) => {
-    // eslint-disable-next-line no-unused-expressions
-    add ? box.addEventListener('click', eventListener) : box.removeEventListener('click', eventListener);
-  });
+  addPlacementEvent(add, boardBoxes, player, cb);
   addAnimationEvent(add, boardBoxes, player, shipOrders[playerShips.length]);
 }
 
 // Enter into placement mode, will do two rounds to ensure everything is set up.
-// Accepts gameObject, and main callback as argument and
-// feed the animation event the side of the board it should populate.
-// Main callback is use for necessary condition checking to see if
-// board is populated and which side needs population
+// + Accepts player, and main callback as argument and
+//
+// Will:
+// Placement mode will populate the board with events for animation and placing ships
 function placementMode(player, cb) {
-  const maxShips = 5;
   // pass callback to placement Event
-  populateCellWithPlacementEvent(true, player, cb);
-
-  const placementFinished = (gameObject.playerOne.board.list.length === maxShips)
-    && (gameObject.playerTwo.board.list.length === maxShips);
-
-  if (placementFinished) {
-    gameObject.isStarted = true;
-    populateCellWithPlacementEvent(false);
-    // Add populate cell to start the main loop
-  }
+  populateCellWithEvents(true, player, cb);
 }
 
-// Load:
-// 1. The main game page
-// 2. The option for choosing axis
-
-/// Old
-// 3. The first ship to be placed
-// 4. Select the first player board (left)
-// 5. Add animation to the board
-// 6. Add ship initializer
-
-// New
-// 3. Initialize Game Object with necessary information
-// 4. Return Game Object for further uses
+function exitPlacementMode(player, cb) {
+  // pass callback to placement Event
+  populateCellWithEvents(false, player, cb);
+}
 
 // Load the page, and initialize Game object to be return
 // to be used by other stages in the game
@@ -194,15 +181,35 @@ function mainLoop(gameMode, isInitialized) {
     gameObject = initializeObjects(gameMode);
   }
 
-  const numOfShipsPlayerOne = gameObject.playerOne.board.list;
-  const numOfShipsPlayerTwo = gameObject.playerTwo.board.list;
+  console.log(gameObject);
+  const maxShips = 5;
 
-  if (numOfShipsPlayerOne !== 5) {
+  const numOfShipsPlayerOne = gameObject.playerOne.board.list.length;
+  const numOfShipsPlayerTwo = gameObject.playerTwo.board.list.length;
+
+  // If object is initialized, will goes into the placement mode for first player
+  // placement mode ends when max ships is reached
+  if (numOfShipsPlayerOne !== maxShips) {
     placementMode(gameObject.playerOne, mainLoop);
   }
 
-  if (numOfShipsPlayerTwo !== 5 && numOfShipsPlayerOne === 5) {
+  // Second placement mode for second player
+  if (numOfShipsPlayerTwo !== maxShips && numOfShipsPlayerOne === maxShips) {
+    // Depopulate left board events
+    unloadBoard('left');
+    exitPlacementMode(gameObject.playerOne, mainLoop);
     placementMode(gameObject.playerTwo, mainLoop);
+  }
+
+  const placementFinished = (gameObject.playerOne.board.list.length === maxShips)
+  && (gameObject.playerTwo.board.list.length === maxShips);
+
+  if (placementFinished) {
+    gameObject.isStarted = true;
+    // Depopulate right board events
+    unloadBoard('right');
+    exitPlacementMode(gameObject.playerTwo, mainLoop);
+    loadBoard(gameObject.playerOne, 'left');
   }
 }
 

@@ -7,18 +7,28 @@ import { Player } from './objects/player';
 import { Ships } from './objects/ship';
 import { loadIcon } from './imageLoader';
 
-// loead the ships when called
-function loadShip(player, side) {
+// Enumerated arrays of ships to be placed
+const shipOrders = Object.values(Ships).sort((last, next) => last.order < next.order);
+
+// load all the ships on the board when called
+function loadBoard(player, side) {
   player.board.list.forEach((ship) => {
     ship.position.forEach((cord) => {
       [...document.getElementsByClassName(`${side}-content`)[0].getElementsByClassName('box')].forEach((box) => {
         if (box.dataset.pos === cord.join()) {
-          const { name } = Ships[player.board.list.indexOf(ship)];
+          const { name } = shipOrders[player.board.list.indexOf(ship)];
           const shipImg = loadIcon(name, ship.position.indexOf(cord) + 1, ship.axis);
           box.style.backgroundImage = `url('${shipImg}')`;
         }
       });
     });
+  });
+}
+
+// unload all the ships on a board
+function unloadBoard(side) {
+  [...document.getElementsByClassName(`${side}-content`)[0].getElementsByClassName('box')].forEach((box) => {
+    box.style.backgroundImage = '';
   });
 }
 
@@ -114,5 +124,5 @@ function loadPage() {
 }
 
 export {
-  mainPageLoad, loadShip, loadOption, boardLoad, loadPage,
+  mainPageLoad, loadBoard, loadOption, boardLoad, loadPage, shipOrders, unloadBoard,
 };

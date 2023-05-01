@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "glob": "^10.2.2",
-    "normalize.css": "^8.0.1"
+    "normalize.css": "^8.0.1",
+    "underscore": "^1.13.6"
   }
 }
