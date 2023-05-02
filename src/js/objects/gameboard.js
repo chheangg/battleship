@@ -4,7 +4,9 @@
 /* eslint-disable no-use-before-define */
 
 import { Ship } from './ship';
+import Game, { GameState } from './game';
 
+// Check if two set of array contain similar elements
 function intersect(a, b) {
   return a.find((pos) => b
     .find((currentPos) => currentPos[0] === pos[0] && currentPos[1] === pos[1]));
@@ -38,7 +40,7 @@ function isValid(ships, position, axis) {
 // The main game object that is needed for every round
 // Coordinate system: Array [Vertical (0 -> 9), Horizontal (0 -> 9)]
 // Accepts player object
-function Gameboard(Player) {
+function Gameboard() {
   // List of ships
   const list = [];
   // Record of attacks made
@@ -59,9 +61,15 @@ function Gameboard(Player) {
     return initializedShip;
   }
 
+  function swapTurn(gameObject) {
+    const { playerOne, playerTwo } = gameObject;
+    playerOne.isTurn = !playerOne.isTurn;
+    playerTwo.isTurn = !playerTwo.isTurn;
+  }
+
   // Check if attack is out of bound or already exist, then retry
   // If it is valid, checks if a ship is hit; modify ship if hit
-  function receiveAttack(cord) {
+  function receiveAttack(cord, gameObject) {
     const isExist = attacks.find((attack) => attack[0] === cord[0] && attack[1] === cord[1]);
     const hit = list.find((ship) => ship.hit(cord));
 
@@ -69,7 +77,7 @@ function Gameboard(Player) {
       return false;
     }
 
-    Player.changeTurn();
+    swapTurn(gameObject);
 
     attacks.push(cord);
 

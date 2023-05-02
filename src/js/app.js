@@ -19,8 +19,8 @@ const gameUtilities = (function handler() {
     }
   }
 
-  function attack(cord, side, attacker, defender) {
-    const checkValid = attacker.attack(defender, cord);
+  function attack(gameObject, cord, side, attacker, defender) {
+    const checkValid = attacker.attack(defender, cord, gameObject);
     if (!checkValid) {
       return;
     }

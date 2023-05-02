@@ -16,6 +16,7 @@ module.exports = {
     player: './src/js/objects/player.js',
     gameboard: './src/js/objects/gameboard.js',
     game: './src/js/objects/game.js',
+    utilities: './src/js/utilities.js',
   },
   output: {
     filename: '[name].js',

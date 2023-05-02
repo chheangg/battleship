@@ -5,40 +5,8 @@
 
 import { Gameboard } from './gameboard';
 
-// Factory constructor of Player Logic (Not the actual player);
-const Player = (function handler() {
-  const list = [];
-
-  // Create player
-  function create(isBot) {
-    const obj = PlayerObj(isBot);
-    list.push(obj);
-    return obj;
-  }
-
-  // Clear player list
-  function clear() {
-    list.splice(0);
-  }
-
-  function changeTurn() {
-    list.forEach((obj) => {
-      // eslint-disable-next-line no-unused-expressions
-      obj.isTurn ? obj.isTurn = false : obj.isTurn = true;
-    });
-  }
-
-  return {
-    list, changeTurn, create, clear,
-  };
-}());
-
-function PlayerObj(isBot) {
-  // Decide the turn for player, first if there's no existing player yet
-  function decideInitialTurn() {
-    return !Player.list[0];
-  }
-
+// Player Object
+function Player(isBot, initialTurn) {
   // Bot make random attack on the board, keep retrying if it is not valid;
   function botEval(player) {
     const rand = [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
@@ -56,16 +24,46 @@ function PlayerObj(isBot) {
   // Player simply receive attack if it is not a bot (implying coordinate exists)
   // otherwise, a coord is randomly generated for the bot to attack
   // eslint-disable-next-line consistent-return
-  function attack(player, coordinate) {
-    return player.board.receiveAttack(coordinate);
+  function attack(player, coordinate, gameObject) {
+    return player.board.receiveAttack(coordinate, gameObject);
   }
 
   return {
-    isTurn: decideInitialTurn(),
+    isTurn: initialTurn,
     board: Gameboard(Player),
     attack,
     isBot,
+    botEval,
   };
 }
+
+// Only use to decide if playerOne is a bot or a real player
+function randomPlayerDecider(isMultiplayer) {
+  const turnDecider = Math.random() >= 0.5;
+  if (isMultiplayer) {
+    return Player(false, turnDecider);
+  }
+  return (Math.random() >= 0.5) ? Player(true, turnDecider) : Player(false, turnDecider);
+}
+
+// Singleplayer object for initializing a bot and a real player
+function singleplayerInit() {
+  const playerOne = randomPlayerDecider(false);
+  const playerOneIsBot = playerOne.isBot;
+  const playerTwo = Player(!playerOneIsBot, !playerOne.isTurn);
+  return {
+    playerOne,
+    playerTwo,
+  };
+}
+
+// Multiplayer object for initializing both real players
+function multiplayerInit() {
+  return {
+    playerOne: Player(true, true),
+    playerTwo: Player(true, false),
+  };
+}
+
 // eslint-disable-next-line import/prefer-default-export
-export { Player };
+export { Player, singleplayerInit, multiplayerInit };

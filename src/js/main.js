@@ -1,22 +1,27 @@
+/* eslint-disable no-import-assign */
 /* eslint-disable no-plusplus */
 /* eslint-disable prefer-arrow-callback */
 import 'normalize.css';
 import '../style/style.scss';
 import _ from 'underscore';
 import { loadIcon } from './imageLoader';
-import Game, { swapTurn } from './objects/game';
 import {
   loadBoard, unloadBoard, loadPage, shipOrders,
 } from './pageLoad';
 import { gameUtilities } from './app';
+import { singleplayerInit, multiplayerInit } from './objects/player';
 
 // Game Ojbect that contains the state information to be exposed
-let gameObject;
+import Game, { GameState } from './objects/game';
+
+const gameObject = {};
 
 function removeAllEventListener(element) {
   const oldElement = element;
   const newElement = element.cloneNode(true);
-  oldElement.parentNode.replaceChild(newElement, oldElement);
+  if (oldElement.parentNode) {
+    oldElement.parentNode.replaceChild(newElement, oldElement);
+  }
 }
 // Show the right ship, position and axis on ship-placing stage.
 // Will check axis, the cord given and ship type to make it possible.
@@ -121,7 +126,7 @@ function placementEvent(event, player, cb) {
   const cord = event.target.dataset.pos.split(',')
     .map((x) => parseInt(x, 10));
   initializeShip(player, shipOrders[playerShips.length], cord);
-  cb();
+  cb(gameObject.isMultiplayer, true);
 }
 
 // Add placement event to all cell
@@ -152,8 +157,7 @@ function populateCellWithEvents(add, player, cb) {
 }
 
 // Enter into placement mode, will do two rounds to ensure everything is set up.
-// + Accepts player, and main callback as argument and
-//
+// Accepts player for ship initialization, and main cb for game progression
 // Will:
 // Placement mode will populate the board with events for animation and placing ships
 function placementMode(player, cb) {
@@ -168,18 +172,19 @@ function exitPlacementMode(player, cb) {
 
 // Load the page, and initialize Game object to be return
 // to be used by other stages in the game
-function initializeObjects(gameMode) {
+function initializeObjects(isMultiplayer, init) {
   loadPage();
-  return Game(gameMode);
+  const { playerOne, playerTwo } = init();
+  return Game(isMultiplayer, playerOne, playerTwo);
 }
 
 // Attack mode
-// Accepts game object and check whose turn should be able to attack
+// Accepts game object for state info and cb for game progression
+// Attack mode function check whose turn should be able to attack
 // 1. Load board for current player
 // 2. Populate the correct board to be able to attack with attack event listener
 // eslint-disable-next-line no-shadow
 function attackMode(gameObjectState, cb) {
-  console.log()
   const currentSide = gameObjectState.playerOne.isTurn ? 'left' : 'right';
   const oppositeSide = currentSide === 'left' ? 'right' : 'left';
   const currentPlayer = gameObjectState.playerOne.isTurn
@@ -196,27 +201,30 @@ function attackMode(gameObjectState, cb) {
   oppositeBoxes.forEach((box) => {
     box.addEventListener('click', () => {
       const cord = box.dataset.pos.split(',').map((x) => parseInt(x, 10));
-      gameUtilities.attack(cord, oppositeSide, currentPlayer, oppositePlayer);
+      gameUtilities.attack(gameObject, cord, oppositeSide, currentPlayer, oppositePlayer);
       oppositeBoxes.forEach((oppositeBox) => removeAllEventListener(oppositeBox));
-      cb();
+      cb(gameObject.isMultiplayer, true);
     });
   });
 }
 
 // Loop that will be called on every cell click or startup
 // This will moves the game forward and does all the necessary calculations
-// First, check if gameObject is initialized. If not, initialize gameObject and page
+// First, check if gameObject is initialized. If not, initialize gameObject and page.
+// Game object must come from GameState global object.
 // Second, check if game has started, if not, goes into placement mode;
 // Third, if placement is done, all cells goes into play mode!
-function mainLoop(gameMode, isInitialized) {
-  if (isInitialized) {
-    gameObject = initializeObjects(gameMode);
+function mainLoop(isMultiplayer, isInitialized) {
+  if (!isInitialized) {
+    const init = !isMultiplayer ? singleplayerInit : multiplayerInit;
+    Object.assign(gameObject, initializeObjects(isMultiplayer, init));
   }
 
   const maxShips = 5;
 
   const numOfShipsPlayerOne = gameObject.playerOne.board.list.length;
   const numOfShipsPlayerTwo = gameObject.playerTwo.board.list.length;
+
 
   // If object is initialized, will goes into the placement mode for first player
   // placement mode ends when max ships is reached
@@ -254,10 +262,10 @@ const multiPlayerbtn = document.querySelector('.multi-player');
 
 // Create a bot and a player
 singlePlayerBtn.addEventListener('click', () => {
-  mainLoop('singleplayer', true);
+  mainLoop(false, false);
 });
 
 // Create two players logic
 multiPlayerbtn.addEventListener('click', () => {
-  mainLoop('multiplayer', true);
+  mainLoop(true, false);
 });
