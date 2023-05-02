@@ -2,7 +2,7 @@
 /* eslint-disable no-undef */
 import { Ships } from '../js/objects/ship';
 import { Gameboard } from '../js/objects/gameboard';
-import { getTestGameObject } from '../js/utilities';
+import { getTestGameObject } from '../js/utilities/utilities';
 
 it('Path #1.1 Placing a ship', () => {
   const board = Gameboard();

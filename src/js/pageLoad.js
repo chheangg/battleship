@@ -2,8 +2,6 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-plusplus */
 /* eslint-disable import/prefer-default-export */
-import { gameUtilities } from './app';
-import { Player } from './objects/player';
 import { Ships } from './objects/ship';
 import { loadIcon } from './imageLoader';
 
@@ -62,28 +60,6 @@ const boardLoad = (function handler() {
         });
     });
   }
-  // Assign each cells an attribue an event listener
-  function assignBox() {
-    [...document.getElementsByClassName('box')].forEach((box) => {
-      box.addEventListener('click', (obj) => {
-        const coordinate = obj.target.getAttribute('data-pos')
-          .split(',')
-          .map((x) => parseInt(x, 10));
-        const side = obj.target.getAttribute('data-side');
-        // Check for attacks?
-        let complement;
-        if (side === 'left') {
-          complement = 'right';
-        }
-        if (side === 'right') {
-          complement = 'left';
-        }
-        // ?
-        gameUtilities.attack(coordinate, side, Player.list);
-        gameUtilities.botAttack(complement, Player.list);
-      });
-    });
-  }
   // assign appropriate classes to distinct left and right
   function assignParent() {
     ['left', 'right'].forEach((side) => {
@@ -96,7 +72,7 @@ const boardLoad = (function handler() {
   }
 
   return {
-    generatePage, generateBox, assignParent, assignBox,
+    generatePage, generateBox, assignParent,
   };
 }());
 
