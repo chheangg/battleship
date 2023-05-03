@@ -64,7 +64,7 @@ function shipPreview(cord, boardBoxes, player, ship, event) {
 
 // Function for animating ship preview everything it hovers onto a box or out of it
 function animationEvent(event, boardBoxes, player, ship) {
-  const shipPreviewObject = shipPreviewExpander(
+  const { body, overlap } = shipPreviewExpander(
     event.currentTarget.dataset.pos
       .split(',')
       .map((x) => parseInt(x, 10)),
@@ -72,11 +72,14 @@ function animationEvent(event, boardBoxes, player, ship) {
     ship,
   );
 
-  if (shipPreviewObject.overlap) {
+  const isShipOverflowing = body.find((pos) => pos[1] >= 10);
+  // Do nothing
+  // if ship is overflowing the board, or colliding wiht othership
+  if (overlap || isShipOverflowing) {
     return;
   }
 
-  shipPreview(shipPreviewObject.body, boardBoxes, player, ship, event);
+  shipPreview(body, boardBoxes, player, ship, event);
 }
 
 // Function for adding animation
