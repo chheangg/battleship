@@ -9,7 +9,7 @@ import { singleplayerInit, multiplayerInit } from './objects/player';
 
 import addAnimationEvent from './utilities/animation';
 import addPlacementEvent from './utilities/placementEvent';
-import attackMode from './utilities/attack';
+import attackMode, { attackUtilities } from './utilities/attack';
 
 // Game Object that contains the state information to be exposed
 import Game from './objects/game';
@@ -48,6 +48,18 @@ function initializeObjects(isMultiplayer, init) {
   return Game(isMultiplayer, playerOne, playerTwo);
 }
 
+function initializeBot(player) {
+  while (player.board.list.length < 5) {
+    const shipPlaced = player.board.list.length;
+    const ship = shipOrders[shipPlaced];
+    const cord = [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
+    const axis = (Math.random() >= 0.5)
+      ? 'horizontal'
+      : 'vertical';
+    player.board.place(ship, axis, cord);
+  }
+}
+
 // Loop that will be called on every cell click or startup
 // This will moves the game forward and does all the necessary calculations
 // First, check if gameObject is initialized. If not, initialize gameObject and page.
@@ -59,7 +71,6 @@ function mainLoop(isMultiplayer, isInitialized) {
     const init = !isMultiplayer ? singleplayerInit : multiplayerInit;
     Object.assign(gameObject, initializeObjects(isMultiplayer, init));
   }
-
   const maxShips = 5;
 
   const numOfShipsPlayerOne = gameObject.playerOne.board.list.length;
@@ -68,15 +79,27 @@ function mainLoop(isMultiplayer, isInitialized) {
   // If object is initialized, will goes into the placement mode for first player
   // placement mode ends when max ships is reached
   if (numOfShipsPlayerOne !== maxShips) {
-    placementMode(gameObject.playerOne, mainLoop);
+    if (!gameObject.playerOne.isBot) {
+      placementMode(gameObject.playerOne, mainLoop);
+    } else {
+      // Initialize bot
+      initializeBot(gameObject.playerOne);
+      mainLoop(false, true);
+    }
   }
 
   // Second placement mode for second player
   if (numOfShipsPlayerTwo !== maxShips && numOfShipsPlayerOne === maxShips) {
     // Depopulate left board events
-    unloadBoard('left');
-    exitPlacementMode(gameObject.playerOne, mainLoop);
-    placementMode(gameObject.playerTwo, mainLoop);
+    if (!gameObject.playerTwo.isBot) {
+      unloadBoard('left');
+      exitPlacementMode(gameObject.playerOne, mainLoop);
+      placementMode(gameObject.playerTwo, mainLoop);
+    } else {
+      // Initialize bot
+      initializeBot(gameObject.playerTwo);
+      mainLoop(false, true);
+    }
   }
 
   const placementFinished = (gameObject.playerOne.board.list.length === maxShips)
@@ -84,14 +107,20 @@ function mainLoop(isMultiplayer, isInitialized) {
 
   if (placementFinished && !gameObject.isStarted) {
     gameObject.isStarted = true;
-    // Depopulate right board events
-    unloadBoard('right');
+    if (!gameObject.playerOne.isBot) {
+      unloadBoard('right');
+    }
     exitPlacementMode(gameObject.playerTwo, mainLoop);
     gameObject.isStarted = true;
   }
 
   if (gameObject.isStarted) {
-    attackMode(gameObject, mainLoop);
+    if (!gameObject.currentTurn().isBot) {
+      attackMode(gameObject, mainLoop);
+    } else {
+      // add bot attack
+      attackUtilities.botAttack(gameObject, mainLoop);
+    }
   }
 }
 

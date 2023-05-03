@@ -29,25 +29,23 @@ const attackUtilities = (function handler() {
     applyAtt(checkValid, cord, side);
     checkWin(attacker, defender);
   }
-  function botRenderAttack(bot, target, side, list) {
-    const attInfo = bot.attack(target);
-    applyAtt(attInfo.state, attInfo.cord, side);
-    checkWin(list);
-  }
-  function botAttack(side, list) {
-    const botExist = list.some((x) => x.isBot);
-    if (!botExist) {
-      return;
-    }
-    const bot = list.filter((x) => x.isBot)[0];
-    const notBot = list.filter((x) => !x.isBot)[0];
-    if (!bot.isTurn) {
-      return;
-    }
-    botRenderAttack(bot, notBot, side, list);
+
+  function botAttack(gameObject, cb) {
+    const { playerOne, playerTwo } = gameObject;
+    const bot = playerOne.isBot ? playerOne : playerTwo;
+    const defender = playerOne.isBot ? playerTwo : playerOne;
+    const attackedSide = gameObject.playerOne.isBot
+      ? 'right' : 'left';
+    const cord = bot.botEval(defender);
+    const checkValid = bot.attack(defender, cord, gameObject);
+    applyAtt(checkValid, cord, attackedSide);
+    checkWin(bot, defender);
+    cb(false, true);
   }
   return { attack, botAttack };
 }());
+
+export { attackUtilities };
 
 // Attack mode
 // Accepts game object for state info and cb for game progression
