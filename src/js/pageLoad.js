@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 /* eslint-disable prefer-arrow-callback */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-plusplus */
@@ -34,10 +35,30 @@ function unloadBoard(side) {
 const boardLoad = (function handler() {
   // Generate the page for score keeping and turn information
   // Refactor into template
-  function generatePage() {
+  function generatePage(names) {
+    const isMultiplayer = names.length === 2;
     document.body.textContent = '';
-    document.body.innerHTML = "<div class='top-container'><p>Turn: PLAYER 1</p></div>"
-      + "<div class='main-content'><div class='left-content'><div class='playername'>PLAYER 1 (you)</div><div class='board-container'><div class='ships-container'></div><div class='board'></div></div></div><div class='right-content'><div class='playername'>PLAYER 2 (bot)</div><div class='board-container'><div class='ships-container'></div><div class='board'></div></div></div></div>";
+    document.body.innerHTML = `
+      <div class='top-container'>
+        <p>Turn: PLAYER 1</p>
+        </div>
+      <div class='main-content'>
+        <div class='left-content'>
+          <div class='playername'>${names[0]}</div>
+          <div class='board-container'>
+            <div class='ships-container'></div>
+            <div class='board'></div>
+          </div>
+        </div>
+        <div class='right-content'>
+          <div class='playername'>${isMultiplayer ? names[1] : 'BOT'}</div>
+          <div class='board-container'>
+            <div class='ships-container'></div>
+            <div class='board'></div>
+          </div>
+        </div>
+      </div>
+    `;
   }
   // Generate the whole cells for each board
   function generateBox() {
@@ -81,20 +102,25 @@ function loadOption() {
   const container = document.getElementsByClassName('top-container')[0];
   const option = document.createElement('div');
   // Template
-  option.innerHTML = "<div class='dir-option'><label for='horizontal'>Horizontal</label><input type='radio' class='dir-option' value='horizontal' id='horizontal' name='option' checked><label for='vertical'>Vertical</label><input type='radio' class='dir-option' value='vertical' id='vertical' name='option'></div>";
+  option.innerHTML = `
+    <div class='dir-option'>
+      <label for='horizontal'>Horizontal</label>
+      <input type='radio' class='dir-option' value='horizontal' id='horizontal' name='option' checked>
+      <label for='vertical'>Vertical</label><input type='radio' class='dir-option' value='vertical' id='vertical' name='option'></div>
+  `;
   container.appendChild(option);
 }
 
 // Load board
-function mainPageLoad() {
-  boardLoad.generatePage();
+function mainPageLoad(names) {
+  boardLoad.generatePage(names);
   boardLoad.generateBox();
   boardLoad.assignParent();
 }
 
-function loadPage() {
+function loadPage(names) {
   // Load page and initialize every cells;
-  mainPageLoad();
+  mainPageLoad(names);
   // Load options
   loadOption();
 }

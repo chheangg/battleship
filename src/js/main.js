@@ -10,6 +10,7 @@ import { singleplayerInit, multiplayerInit } from './objects/player';
 import addAnimationEvent from './utilities/animation';
 import addPlacementEvent from './utilities/placementEvent';
 import addPassDelay from './utilities/pass';
+import nameCollectStage from './utilities/name';
 import attackMode, { attackUtilities } from './utilities/attack';
 
 // Game Object that contains the state information to be exposed
@@ -43,8 +44,8 @@ function exitPlacementMode(player, cb) {
 
 // Load the page, and initialize Game object to be return
 // to be used by other stages in the game
-function initializeObjects(isMultiplayer, init) {
-  loadPage();
+function initializeObjects(isMultiplayer, init, names) {
+  loadPage(names);
   const { playerOne, playerTwo } = init();
   return Game(isMultiplayer, playerOne, playerTwo);
 }
@@ -67,10 +68,10 @@ function initializeBot(player) {
 // Game object must come from GameState global object.
 // Second, check if game has started, if not, goes into placement mode;
 // Third, if placement is done, all cells goes into play mode!
-function mainLoop(isMultiplayer, isInitialized) {
+function mainLoop(isMultiplayer, isInitialized, names) {
   if (!isInitialized) {
     const init = !isMultiplayer ? singleplayerInit : multiplayerInit;
-    Object.assign(gameObject, initializeObjects(isMultiplayer, init));
+    Object.assign(gameObject, initializeObjects(isMultiplayer, init, names));
   }
   const maxShips = 5;
 
@@ -95,7 +96,7 @@ function mainLoop(isMultiplayer, isInitialized) {
   if (numOfShipsPlayerTwo !== maxShips && numOfShipsPlayerOne === maxShips) {
     // Depopulate left board events
     if (!gameObject.playerTwo.isBot) {
-      if (numOfShipsPlayerTwo === 0) {
+      if (numOfShipsPlayerTwo === 0 && !gameObject.playerOne.isBot) {
         addPassDelay();
       }
       unloadBoard('left');
@@ -140,12 +141,22 @@ function mainLoop(isMultiplayer, isInitialized) {
 const singlePlayerBtn = document.querySelector('.single-player');
 const multiPlayerbtn = document.querySelector('.multi-player');
 
-// Create a bot and a player
+// Create a bot and a player and start the game
 singlePlayerBtn.addEventListener('click', () => {
-  mainLoop(false, false, false);
+  const callback = (names) => {
+    console.log(names);
+    mainLoop(false, false, names);
+  };
+  // Collect name
+  nameCollectStage(false, callback);
 });
 
-// Create two players logic
+// Create two players logic and start the game
 multiPlayerbtn.addEventListener('click', () => {
-  mainLoop(true, false, false);
+  const callback = (names) => {
+    console.log(names);
+    mainLoop(true, false, names);
+  };
+  // Collect names
+  nameCollectStage(true, callback);
 });
