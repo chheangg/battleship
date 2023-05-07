@@ -9,6 +9,7 @@ import { singleplayerInit, multiplayerInit } from './objects/player';
 
 import addAnimationEvent from './utilities/animation';
 import addPlacementEvent from './utilities/placementEvent';
+import addPassDelay from './utilities/pass';
 import attackMode, { attackUtilities } from './utilities/attack';
 
 // Game Object that contains the state information to be exposed
@@ -86,12 +87,17 @@ function mainLoop(isMultiplayer, isInitialized) {
       initializeBot(gameObject.playerOne);
       mainLoop(false, true);
     }
+    return;
   }
 
   // Second placement mode for second player
+  // Signal to the first player to pass to the next player
   if (numOfShipsPlayerTwo !== maxShips && numOfShipsPlayerOne === maxShips) {
     // Depopulate left board events
     if (!gameObject.playerTwo.isBot) {
+      if (numOfShipsPlayerTwo === 0) {
+        addPassDelay();
+      }
       unloadBoard('left');
       exitPlacementMode(gameObject.playerOne, mainLoop);
       placementMode(gameObject.playerTwo, mainLoop);
@@ -100,22 +106,28 @@ function mainLoop(isMultiplayer, isInitialized) {
       initializeBot(gameObject.playerTwo);
       mainLoop(false, true);
     }
+    return;
   }
 
   const placementFinished = (gameObject.playerOne.board.list.length === maxShips)
   && (gameObject.playerTwo.board.list.length === maxShips);
 
+  // Both player finishes placement
   if (placementFinished && !gameObject.isStarted) {
     gameObject.isStarted = true;
+    // Signal to the second player to pass the game to the first player
     if (!gameObject.playerOne.isBot) {
       unloadBoard('right');
+      addPassDelay();
     }
     exitPlacementMode(gameObject.playerTwo, mainLoop);
     gameObject.isStarted = true;
   }
 
   if (gameObject.isStarted) {
+    // Signal to the player to pass the game to the opposite player.
     if (!gameObject.currentTurn().isBot) {
+      addPassDelay();
       attackMode(gameObject, mainLoop);
     } else {
       // add bot attack
@@ -130,10 +142,10 @@ const multiPlayerbtn = document.querySelector('.multi-player');
 
 // Create a bot and a player
 singlePlayerBtn.addEventListener('click', () => {
-  mainLoop(false, false);
+  mainLoop(false, false, false);
 });
 
 // Create two players logic
 multiPlayerbtn.addEventListener('click', () => {
-  mainLoop(true, false);
+  mainLoop(true, false, false);
 });
