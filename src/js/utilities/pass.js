@@ -1,4 +1,4 @@
-// General pass component
+// Generate pass component
 function passComponent() {
   const passOverlay = document.createElement('div');
   const passText = document.createElement('h1');
@@ -24,5 +24,5 @@ export default function addPassDelay() {
   const body = document.querySelector('body');
   const passElement = passComponent();
   body.appendChild(passElement);
-  setTimeout(() => body.removeChild(passElement), 3000);
+  setTimeout(() => body.removeChild(passElement), 100);
 }

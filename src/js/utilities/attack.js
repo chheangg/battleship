@@ -14,10 +14,10 @@ const attackUtilities = (function handler() {
       }
     });
   }
-  function checkWin(attacker, defender) {
+  function checkWin(attacker, defender, gameObject) {
     const hasWin = defender.board.list.every((ship) => ship.isSunk());
     if (hasWin) {
-      console.log(attacker);
+      gameObject.winner = hasWin;
     }
   }
 
@@ -27,7 +27,7 @@ const attackUtilities = (function handler() {
       return;
     }
     applyAtt(checkValid, cord, side);
-    checkWin(attacker, defender);
+    checkWin(attacker, defender, gameObject);
   }
 
   function botAttack(gameObject, cb) {
@@ -39,7 +39,7 @@ const attackUtilities = (function handler() {
     const cord = bot.botEval(defender);
     const checkValid = bot.attack(defender, cord, gameObject);
     applyAtt(checkValid, cord, attackedSide);
-    checkWin(bot, defender);
+    checkWin(bot, defender, gameObject);
     cb(false, true);
   }
   return { attack, botAttack };
@@ -70,7 +70,13 @@ export default function attackMode(gameObjectState, cb) {
   oppositeBoxes.forEach((box) => {
     box.addEventListener('click', () => {
       const cord = box.dataset.pos.split(',').map((x) => parseInt(x, 10));
-      attackUtilities.attack(gameObjectState, cord, oppositeSide, currentPlayer, oppositePlayer);
+      attackUtilities.attack(
+        gameObjectState,
+        cord,
+        oppositeSide,
+        currentPlayer,
+        oppositePlayer,
+      );
       oppositeBoxes.forEach((oppositeBox) => removeAllEventListener(oppositeBox));
       cb(gameObjectState.isMultiplayer, true);
     });

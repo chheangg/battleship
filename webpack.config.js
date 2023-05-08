@@ -1,5 +1,4 @@
 const path = require('path');
-const glob = require('glob');
 const htmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
@@ -9,6 +8,7 @@ module.exports = {
     static: './dist',
   },
   entry: {
+    app: './src/js/app.js',
     main: './src/js/main.js',
     pageLoad: './src/js/pageLoad.js',
     ship: './src/js/objects/ship.js',

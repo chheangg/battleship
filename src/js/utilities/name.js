@@ -77,7 +77,6 @@ export default function nameCollectStage(isMultiplayer, cb) {
   const nameFormComponent = nameComponent(isMultiplayer, () => {
     const names = [];
     if (isMultiplayer) {
-      console.log(document.querySelector('.player-one-name'));
       const playerOneName = document.querySelector('.player-one-name').value;
       const playerTwoName = document.querySelector('.player-two-name').value;
       names.push(playerOneName);
