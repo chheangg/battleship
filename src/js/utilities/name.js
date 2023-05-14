@@ -25,6 +25,7 @@ function nameInputLabel(className, text) {
 // A single input if singleplayer, otherwise make form grid-like and append two input
 // Button accepts a callback that will remove the form and start the game
 function nameForm(isMultiplayer, cb) {
+  const body = document.createElement('body');
   const form = document.createElement('form');
   const btn = document.createElement('button');
 
@@ -47,8 +48,9 @@ function nameForm(isMultiplayer, cb) {
   }
 
   form.appendChild(btn);
+  body.appendChild(form);
 
-  return form;
+  return body;
 }
 
 // Generate name component

@@ -16,6 +16,7 @@ function returnPlayerTurn(gameObject) {
 // 5. current gamemode (isMultiplayer)
 export default function Game(isMultiplayer, playerOne, playerTwo) {
   let isStarted = false;
+  let winner;
 
   // Return player whose turns is theirs
   function currentTurn() {
@@ -29,6 +30,6 @@ export default function Game(isMultiplayer, playerOne, playerTwo) {
   }
 
   return {
-    playerOne, playerTwo, currentTurn, currentBoard, isStarted, isMultiplayer,
+    playerOne, playerTwo, currentTurn, currentBoard, isStarted, isMultiplayer, winner,
   };
 }
