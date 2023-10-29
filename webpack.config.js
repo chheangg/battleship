@@ -28,6 +28,7 @@ module.exports = {
     // eslint-disable-next-line new-cap
     new htmlWebpackPlugin({
       template: './src/template.html',
+      favicon: './src/public/favicon.ico',
     }),
   ],
   module: {
@@ -43,6 +44,15 @@ module.exports = {
       {
         test: /\.(jpg|png|jpeg|gif|svg|woff|woff2|eot|ttf|otf)$/i,
         type: 'asset/resource',
+      },
+      {
+        test: /\.ico$/i,
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]',
+          },
+        },
       },
     ],
   },
