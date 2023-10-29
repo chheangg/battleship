@@ -24,5 +24,5 @@ export default function addPassDelay() {
   const body = document.querySelector('body');
   const passElement = passComponent();
   body.appendChild(passElement);
-  setTimeout(() => body.removeChild(passElement), 100);
+  setTimeout(() => body.removeChild(passElement), 3000);
 }
