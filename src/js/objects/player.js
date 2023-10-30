@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable no-param-reassign */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-plusplus */
@@ -34,6 +35,7 @@ function Player(isBot, initialTurn) {
     attack,
     isBot,
     botEval,
+    name: '',
   };
 }
 
@@ -46,10 +48,16 @@ function randomPlayerDecider() {
 }
 
 // Singleplayer object for initializing a bot and a real player
-function singleplayerInit() {
+function singleplayerInit(names) {
   const playerOne = randomPlayerDecider(false);
   const playerOneIsBot = playerOne.isBot;
   const playerTwo = Player(!playerOneIsBot, !playerOne.isTurn);
+
+  if (playerOneIsBot) {
+    playerTwo.name = names[0];
+  } else {
+    playerOne.name = names[0];
+  }
   return {
     playerOne,
     playerTwo,
@@ -57,9 +65,13 @@ function singleplayerInit() {
 }
 
 // Multiplayer object for initializing both real players
-function multiplayerInit() {
+function multiplayerInit(names) {
   const playerOne = Player(false, true);
   const playerTwo = Player(false, false);
+
+  playerOne.name = names[0];
+  playerTwo.name = names[1];
+
   return {
     playerOne,
     playerTwo,

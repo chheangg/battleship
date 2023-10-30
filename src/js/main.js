@@ -51,7 +51,7 @@ function exitPlacementMode(player, cb) {
 // to be used by other stages in the game
 function initializeObjects(isMultiplayer, init, names) {
   loadPage(names);
-  const { playerOne, playerTwo } = init();
+  const { playerOne, playerTwo } = init(names);
   return Game(isMultiplayer, playerOne, playerTwo);
 }
 
@@ -65,6 +65,12 @@ function initializeBot(player) {
       : 'vertical';
     player.board.place(ship, axis, cord);
   }
+}
+
+// Set name in the name container
+function setTurnName(playerName) {
+  const name = document.querySelector('#name');
+  name.textContent = playerName;
 }
 
 // Loop that will be called on every cell click or startup
@@ -98,6 +104,7 @@ export default function mainLoop(isMultiplayer, isInitialized, names, cb) {
   // placement mode ends when max ships is reached
   if (numOfShipsPlayerOne !== maxShips) {
     if (!gameObject.playerOne.isBot) {
+      setTurnName(gameObject.playerOne.name);
       placementMode(gameObject.playerOne, mainLoop);
     } else {
       // Initialize bot
@@ -112,6 +119,7 @@ export default function mainLoop(isMultiplayer, isInitialized, names, cb) {
   if (numOfShipsPlayerTwo !== maxShips && numOfShipsPlayerOne === maxShips) {
     // Depopulate left board events
     if (!gameObject.playerTwo.isBot) {
+      setTurnName(gameObject.playerTwo.name);
       if (numOfShipsPlayerTwo === 0 && !gameObject.playerOne.isBot) {
         addPassDelay();
       }
@@ -144,6 +152,7 @@ export default function mainLoop(isMultiplayer, isInitialized, names, cb) {
   if (gameObject.isStarted) {
     // Signal to the player to pass the game to the opposite player.
     if (!gameObject.currentTurn().isBot) {
+      setTurnName(gameObject.currentTurn().name);
       addPassDelay();
       attackMode(gameObject, mainLoop);
     } else {

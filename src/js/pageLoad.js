@@ -39,25 +39,27 @@ const boardLoad = (function handler() {
     const isMultiplayer = names.length === 2;
     document.body.textContent = '';
     document.body.innerHTML = `
-      <div class='top-container'>
-        <p>Turn: PLAYER 1</p>
-        </div>
-      <div class='main-content'>
-        <div class='left-content'>
-          <div class='playername'>${names[0]}</div>
-          <div class='board-container'>
-            <div class='ships-container'></div>
-            <div class='board'></div>
+      <main>
+        <div class='top-container'>
+          <p class='turn-container'>Turn: <span id='name'></span></p>
+          </div>
+        <div class='main-content'>
+          <div class='left-content'>
+            <div class='playername'>${names[0]}</div>
+            <div class='board-container'>
+              <div class='ships-container'></div>
+              <div class='board'></div>
+            </div>
+          </div>
+          <div class='right-content'>
+            <div class='playername'>${isMultiplayer ? names[1] : 'BOT'}</div>
+            <div class='board-container'>
+              <div class='ships-container'></div>
+              <div class='board'></div>
+            </div>
           </div>
         </div>
-        <div class='right-content'>
-          <div class='playername'>${isMultiplayer ? names[1] : 'BOT'}</div>
-          <div class='board-container'>
-            <div class='ships-container'></div>
-            <div class='board'></div>
-          </div>
-        </div>
-      </div>
+      </main>
     `;
   }
   // Generate the whole cells for each board

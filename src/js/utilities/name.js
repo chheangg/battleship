@@ -12,8 +12,7 @@ function nameInputLabel(className, text) {
     label.textContent = text;
   }
 
-  div.style.display = 'flex';
-  div.style.flexDirection = 'column';
+  div.classList.add('player-input');
   div.appendChild(label);
   div.appendChild(input);
 
@@ -26,14 +25,17 @@ function nameInputLabel(className, text) {
 // Button accepts a callback that will remove the form and start the game
 function nameForm(isMultiplayer, cb) {
   const form = document.createElement('form');
+  const btnWrapper = document.createElement('div');
   const btn = document.createElement('button');
 
   btn.textContent = 'Start';
   btn.addEventListener('click', cb);
   btn.type = 'button';
 
-  form.style.position = isMultiplayer ? 'grid' : 'flex';
-  form.style.gridTemplateColumns = isMultiplayer ? '1fr 1fr' : '';
+  btnWrapper.classList.add('btn-wrapper');
+  btnWrapper.appendChild(btn);
+
+  form.classList.add(isMultiplayer ? 'multiplayer-input' : 'singleplayer-input');
 
   if (isMultiplayer) {
     const playerOneInput = nameInputLabel('player-one-name', 'Enter Player One name');
@@ -46,7 +48,7 @@ function nameForm(isMultiplayer, cb) {
     form.appendChild(playerInput);
   }
 
-  form.appendChild(btn);
+  form.appendChild(btnWrapper);
 
   return form;
 }
@@ -56,15 +58,7 @@ function nameComponent(isMultiplayer, cb) {
   const nameOverlay = document.createElement('div');
   const nameFormComponent = nameForm(isMultiplayer, cb);
 
-  nameOverlay.style.backgroundColor = '#1d4ed8';
-  nameOverlay.style.position = 'absolute';
-  nameOverlay.style.top = '0';
-  nameOverlay.style.bottom = '0';
-  nameOverlay.style.left = '0';
-  nameOverlay.style.right = '0';
-  nameOverlay.style.display = 'flex';
-  nameOverlay.style.justifyContent = 'center';
-  nameOverlay.style.alignContent = 'center';
+  nameOverlay.classList.add('input-page');
 
   nameOverlay.appendChild(nameFormComponent);
   return nameOverlay;
