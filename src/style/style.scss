@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap');
 $primary-color: #f9fafb;
-$secondary-color: #e2e8f0;
 $font-color: #020617;
 $font-h1-color: #020617;
 $font-stack: 'Courier Prime', monospace;
@@ -30,7 +29,7 @@ main {
 }
 
 .start-bg {
-  // background-image: url('../assets/img/background-main.jpeg');
+  background-image: url('../assets/img/background-main.jpg');
   background-color: $primary-color;
   background-size: cover;
   background-repeat: no-repeat;
