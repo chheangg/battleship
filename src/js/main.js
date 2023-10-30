@@ -121,7 +121,9 @@ export default function mainLoop(isMultiplayer, isInitialized, names, cb) {
     if (!gameObject.playerTwo.isBot) {
       setTurnName(gameObject.playerTwo.name);
       if (numOfShipsPlayerTwo === 0 && !gameObject.playerOne.isBot) {
-        addPassDelay();
+        if (isMultiplayer) {
+          addPassDelay();
+        }
       }
       unloadBoard('left');
       exitPlacementMode(gameObject.playerOne, mainLoop);
@@ -143,7 +145,9 @@ export default function mainLoop(isMultiplayer, isInitialized, names, cb) {
     // Signal to the second player to pass the game to the first player
     if (!gameObject.playerOne.isBot) {
       unloadBoard('right');
-      addPassDelay();
+      if (isMultiplayer) {
+        addPassDelay();
+      }
     }
     exitPlacementMode(gameObject.playerTwo, mainLoop);
     gameObject.isStarted = true;
@@ -153,7 +157,9 @@ export default function mainLoop(isMultiplayer, isInitialized, names, cb) {
     // Signal to the player to pass the game to the opposite player.
     if (!gameObject.currentTurn().isBot) {
       setTurnName(gameObject.currentTurn().name);
-      addPassDelay();
+      if (isMultiplayer) {
+        addPassDelay();
+      }
       attackMode(gameObject, mainLoop);
     } else {
       // add bot attack
