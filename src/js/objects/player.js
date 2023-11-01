@@ -48,7 +48,7 @@ function randomPlayerDecider() {
 }
 
 // Singleplayer object for initializing a bot and a real player
-function singleplayerInit(names) {
+function singleplayerInit(names = ['Player One', 'Player Two']) {
   const playerOne = randomPlayerDecider(false);
   const playerOneIsBot = playerOne.isBot;
   const playerTwo = Player(!playerOneIsBot, !playerOne.isTurn);
@@ -65,7 +65,7 @@ function singleplayerInit(names) {
 }
 
 // Multiplayer object for initializing both real players
-function multiplayerInit(names) {
+function multiplayerInit(names = ['Player One', 'Player Two']) {
   const playerOne = Player(false, true);
   const playerTwo = Player(false, false);
 

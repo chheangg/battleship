@@ -4,7 +4,6 @@
 /* eslint-disable no-use-before-define */
 
 import { Ship } from './ship';
-import Game, { GameState } from './game';
 
 // Check if two set of array contain similar elements
 function intersect(a, b) {

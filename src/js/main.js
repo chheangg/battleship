@@ -16,7 +16,7 @@ import restartGame from './template/startScreen';
 // Game Object that contains the state information to be exposed
 import Game from './objects/game';
 
-const gameObject = {};
+let gameObject = {};
 let startCallback;
 
 function resetGameObject() {
@@ -52,7 +52,7 @@ function exitPlacementMode(player, cb) {
 function initializeObjects(isMultiplayer, init, names) {
   loadPage(names);
   const { playerOne, playerTwo } = init(names);
-  return Game(isMultiplayer, playerOne, playerTwo);
+  return new Game(isMultiplayer, playerOne, playerTwo);
 }
 
 function initializeBot(player) {
@@ -92,7 +92,8 @@ export default function mainLoop(isMultiplayer, isInitialized, names, cb) {
       startCallback = cb;
     }
     const init = !isMultiplayer ? singleplayerInit : multiplayerInit;
-    Object.assign(gameObject, initializeObjects(isMultiplayer, init, names));
+    gameObject = initializeObjects(isMultiplayer, init, names);
+    console.log(gameObject);
   }
 
   const maxShips = 5;

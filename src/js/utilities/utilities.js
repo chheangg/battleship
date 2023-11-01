@@ -5,7 +5,7 @@ import { multiplayerInit } from '../objects/player';
 // utility function for initializing Test's game object
 export function getTestGameObject() {
   const { playerOne, playerTwo } = multiplayerInit();
-  return Game(true, playerOne, playerTwo);
+  return new Game(true, playerOne, playerTwo);
 }
 
 export function removeAllEventListener(element) {

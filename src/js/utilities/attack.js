@@ -16,6 +16,7 @@ const attackUtilities = (function handler() {
   }
   function checkWin(attacker, defender, gameObject) {
     const hasWin = defender.board.list.every((ship) => ship.isSunk());
+    console.log(hasWin);
     if (hasWin) {
       gameObject.winner = hasWin;
     }
