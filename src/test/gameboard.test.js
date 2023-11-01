@@ -1,11 +1,11 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-undef */
 import { Ships } from '../js/objects/ship';
-import { Gameboard } from '../js/objects/gameboard';
+import Gameboard from '../js/objects/gameboard';
 import { getTestGameObject } from '../js/utilities/utilities';
 
 it('Path #1.1 Placing a ship', () => {
-  const board = Gameboard();
+  const board = new Gameboard();
   board.place(Ships.patrol, 'horizontal', [0, 0]);
   expect(board.list[0])
     .toMatchObject({
@@ -20,7 +20,7 @@ it('Path #1.1 Placing a ship', () => {
 });
 
 it('Path #1.2 Placing two ship', () => {
-  const board = Gameboard();
+  const board = new Gameboard();
   board.place(Ships.patrol, 'horizontal', [0, 0]);
   board.place(Ships.patrol, 'horizontal', [1, 0]);
   expect(board.list[0])
@@ -46,7 +46,7 @@ it('Path #1.2 Placing two ship', () => {
 });
 
 it('Path #1.3 Placing a destroyer', () => {
-  const board = Gameboard();
+  const board = new Gameboard();
   board.place(Ships.destroyer, 'horizontal', [0, 0]);
   expect(board.list[0])
     .toMatchObject({
@@ -62,7 +62,7 @@ it('Path #1.3 Placing a destroyer', () => {
 });
 
 it('Path #1.4 Placing a carrier', () => {
-  const board = Gameboard();
+  const board = new Gameboard();
   board.place(Ships.carrier, 'horizontal', [0, 0]);
   expect(board.list[0])
     .toMatchObject({
@@ -80,7 +80,7 @@ it('Path #1.4 Placing a carrier', () => {
 });
 
 it('Path #2.1 cancel invalid placement (overlap)', () => {
-  const board = Gameboard();
+  const board = new Gameboard();
   board.place(Ships.carrier, 'horizontal', [0, 0]);
   board.place(Ships.carrier, 'horizontal', [0, 1]);
   expect(board.list[0])
@@ -101,14 +101,14 @@ it('Path #2.1 cancel invalid placement (overlap)', () => {
 });
 
 it('Path #2.2 cancel invalid placement (out of boundary)', () => {
-  const board = Gameboard();
+  const board = new Gameboard();
   board.place(Ships.carrier, 'horizontal', [0, 9]);
   expect(board.list[0])
     .toBeUndefined();
 });
 
 it('Path #2.3 cancel invalid placement (out of boundary + overlap)', () => {
-  const board = Gameboard();
+  const board = new Gameboard();
   board.place(Ships.carrier, 'horizontal', [0, 9]);
   board.place(Ships.carrier, 'vertical', [0, 1]);
   board.place(Ships.carrier, 'horizontal', [0, 1]);

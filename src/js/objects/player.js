@@ -4,7 +4,7 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable no-use-before-define */
 
-import { Gameboard } from './gameboard';
+import Gameboard from './gameboard';
 
 // Player Object
 function Player(isBot, initialTurn) {
@@ -31,7 +31,7 @@ function Player(isBot, initialTurn) {
 
   return {
     isTurn: initialTurn,
-    board: Gameboard(),
+    board: new Gameboard(),
     attack,
     isBot,
     botEval,
