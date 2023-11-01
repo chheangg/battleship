@@ -93,7 +93,6 @@ export default function mainLoop(isMultiplayer, isInitialized, names, cb) {
     }
     const init = !isMultiplayer ? singleplayerInit : multiplayerInit;
     gameObject = initializeObjects(isMultiplayer, init, names);
-    console.log(gameObject);
   }
 
   const maxShips = 5;

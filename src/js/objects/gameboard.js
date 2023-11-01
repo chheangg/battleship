@@ -54,7 +54,7 @@ function Gameboard() {
     const initializedShip = Ship(ship, axis, coordinate);
 
     if (!isValid(list, initializedShip.position, axis)) {
-      return undefined;
+      return false;
     }
     list.push(initializedShip);
     return initializedShip;
@@ -70,11 +70,12 @@ function Gameboard() {
   // If it is valid, checks if a ship is hit; modify ship if hit
   function receiveAttack(cord, gameObject) {
     const isExist = attacks.find((attack) => attack[0] === cord[0] && attack[1] === cord[1]);
-    const hit = list.find((ship) => ship.hit(cord));
 
     if (isExist) {
       return false;
     }
+
+    const hit = list.find((ship) => ship.hit(cord));
 
     swapTurn(gameObject);
 
