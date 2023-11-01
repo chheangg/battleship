@@ -3,7 +3,7 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable no-use-before-define */
 
-import { Ship } from './ship';
+import Ship from './ship';
 
 export default class GameBoard {
   constructor() {
@@ -46,7 +46,7 @@ export default class GameBoard {
 
   // Place ship, build a ship, check if it is valid.
   place(ship, axis, coordinate) {
-    const initializedShip = Ship(ship, axis, coordinate);
+    const initializedShip = new Ship(ship, axis, coordinate);
 
     if (!this.isValid(initializedShip.position, axis)) {
       return false;

@@ -31,33 +31,39 @@ export const Ships = {
   },
 };
 
-// Takes coordinate, axis, and length, and build ship on a certain cell position
-function buildShip(length, axis, coordinate) {
-  const start = [...coordinate];
-  const body = Array(length)
-    .fill()
-    .map(() => {
-      if (axis === 'horizontal') {
-        return [start[0], start[1]++];
-      }
-      return [start[0]++, start[1]];
-    });
-  return body;
-}
+export default class Ship {
+  constructor(ship, axis, coordinate) {
+    this.length = ship.length;
+    this.axis = axis;
+    this.coordinate = coordinate;
+    this.position = [];
+    this.buildShip();
+    this.damage = [];
+  }
 
-// Function Constructor for ship
-function Ship(ship, axis, coordinate) {
-  const { length } = ship;
-  const damage = [];
-  // Iniitialize ship with a utility function buildShip
-  const position = buildShip(ship.length, axis, coordinate);
+  // Takes coordinate, axis, and length, and build ship on a certain cell position
+  buildShip() {
+    if (this.position.length > 0) {
+      return;
+    }
+    const start = [...this.coordinate];
+    const body = Array(this.length)
+      .fill()
+      .map(() => {
+        if (this.axis === 'horizontal') {
+          return [start[0], start[1]++];
+        }
+        return [start[0]++, start[1]];
+      });
+    this.position = body;
+  }
 
   // Take a cord and check if cord hits any body cord
-  function hit(value) {
-    const isHit = position.some((pos) => {
+  hit(value) {
+    const isHit = this.position.some((pos) => {
       const matchHitPos = value[0] === pos[0] && value[1] === pos[1];
       if (matchHitPos) {
-        damage.push(value);
+        this.damage.push(value);
       }
       return matchHitPos;
     });
@@ -65,18 +71,55 @@ function Ship(ship, axis, coordinate) {
   }
 
   // Damage return true of damage length is equal to body length
-  function isSunk() {
-    return damage.length === length;
+  isSunk() {
+    return this.damage.length === this.length;
   }
-
-  return {
-    length,
-    damage,
-    axis,
-    position,
-    hit,
-    isSunk,
-  };
 }
 
-export { Ship };
+// // Takes coordinate, axis, and length, and build ship on a certain cell position
+// function buildShip(length, axis, coordinate) {
+//   const start = [...coordinate];
+//   const body = Array(length)
+//     .fill()
+//     .map(() => {
+//       if (axis === 'horizontal') {
+//         return [start[0], start[1]++];
+//       }
+//       return [start[0]++, start[1]];
+//     });
+//   return body;
+// }
+
+// // Function Constructor for ship
+// function Ship(ship, axis, coordinate) {
+//   const { length } = ship;
+//   const damage = [];
+//   // Iniitialize ship with a utility function buildShip
+//   const position = buildShip(ship.length, axis, coordinate);
+
+//   // Take a cord and check if cord hits any body cord
+//   function hit(value) {
+//     const isHit = position.some((pos) => {
+//       const matchHitPos = value[0] === pos[0] && value[1] === pos[1];
+//       if (matchHitPos) {
+//         damage.push(value);
+//       }
+//       return matchHitPos;
+//     });
+//     return isHit;
+//   }
+
+//   // Damage return true of damage length is equal to body length
+//   function isSunk() {
+//     return damage.length === length;
+//   }
+
+//   return {
+//     length,
+//     damage,
+//     axis,
+//     position,
+//     hit,
+//     isSunk,
+//   };
+// }
