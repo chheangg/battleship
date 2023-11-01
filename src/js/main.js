@@ -5,7 +5,7 @@ import '../style/style.scss';
 import {
   unloadBoard, loadPage, shipOrders,
 } from './pageLoad';
-import { singleplayerInit, multiplayerInit } from './objects/player';
+import Player from './objects/player';
 
 import addAnimationEvent from './utilities/animation';
 import addPlacementEvent from './utilities/placementEvent';
@@ -91,7 +91,7 @@ export default function mainLoop(isMultiplayer, isInitialized, names, cb) {
     if (!startCallback) {
       startCallback = cb;
     }
-    const init = !isMultiplayer ? singleplayerInit : multiplayerInit;
+    const init = !isMultiplayer ? Player.singleplayerInit : Player.multiplayerInit;
     gameObject = initializeObjects(isMultiplayer, init, names);
   }
 

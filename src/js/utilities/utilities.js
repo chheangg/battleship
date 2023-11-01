@@ -1,10 +1,10 @@
 /* eslint-disable import/prefer-default-export */
 import Game from '../objects/game';
-import { multiplayerInit } from '../objects/player';
+import Player from '../objects/player';
 
 // utility function for initializing Test's game object
 export function getTestGameObject() {
-  const { playerOne, playerTwo } = multiplayerInit();
+  const { playerOne, playerTwo } = Player.multiplayerInit();
   return new Game(true, playerOne, playerTwo);
 }
 

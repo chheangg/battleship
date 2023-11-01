@@ -1,10 +1,10 @@
 /* eslint-disable no-undef */
 import { Ships } from '../js/objects/ship';
-import { Player } from '../js/objects/player';
+import Player from '../js/objects/player';
 import { getTestGameObject } from '../js/utilities/utilities';
 
 it('Path #1.1 Player gets their board', () => {
-  const playerX = Player(false, true);
+  const playerX = new Player(false, true);
   expect(playerX)
     .toMatchObject({
       isTurn: true,
@@ -12,8 +12,8 @@ it('Path #1.1 Player gets their board', () => {
 });
 
 it('Path #1.2 Multiple players', () => {
-  const playerX = Player(false, true);
-  const playerY = Player(false, false);
+  const playerX = new Player(false, true);
+  const playerY = new Player(false, false);
   expect(playerX)
     .toMatchObject({
       isTurn: true,
