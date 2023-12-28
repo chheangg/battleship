@@ -1,11 +1,11 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-import-assign */
 /* eslint-disable prefer-arrow-callback */
 import 'normalize.css';
 import '../style/style.scss';
 import {
-  unloadBoard, loadPage, shipOrders,
+  unloadBoard, shipOrders,
 } from './pageLoad';
-import Player from './objects/player';
 
 import addAnimationEvent from './utilities/animation';
 import addPlacementEvent from './utilities/placementEvent';
@@ -13,24 +13,16 @@ import addPassDelay from './utilities/pass';
 import attackMode, { attackUtilities } from './utilities/attack';
 import restartGame from './template/startScreen';
 
-// Game Object that contains the state information to be exposed
-import Game from './objects/game';
-
-let gameObject = {};
 let startCallback;
 const maxShips = 5;
 
-function resetGameObject() {
-  Object.keys(gameObject).forEach((key) => delete gameObject[key]);
-}
-
 // If true, populate cell with placement event and animation event on the correct board.
-function populateCellWithEvents(add, player, cb) {
+function populateCellWithEvents(gameObject, add, player) {
   const playerShips = player.board.list;
   const boardBoxes = [...document
     .querySelector(`.${player.isTurn ? 'left' : 'right'}-content`)
     .getElementsByClassName('box')];
-  addPlacementEvent(add, gameObject, boardBoxes, player, cb);
+  addPlacementEvent(add, gameObject, boardBoxes, player, gameObject.cb);
   addAnimationEvent(add, boardBoxes, player, shipOrders[playerShips.length]);
 }
 
@@ -38,22 +30,14 @@ function populateCellWithEvents(add, player, cb) {
 // Accepts player for ship initialization, and main cb for game progression
 // Will:
 // Placement mode will populate the board with events for animation and placing ships
-function placementMode(player, cb) {
+function placementMode(gameObject, player) {
   // pass callback to placement Event
-  populateCellWithEvents(true, player, cb);
+  populateCellWithEvents(gameObject, true, player);
 }
 
-function exitPlacementMode(player, cb) {
+function exitPlacementMode(gameObject, player) {
   // pass callback to placement Event
-  populateCellWithEvents(false, player, cb);
-}
-
-// Load the page, and initialize Game object to be return
-// to be used by other stages in the game
-function initializeObjects(isMultiplayer, init, names) {
-  loadPage(names);
-  const { playerOne, playerTwo } = init(names);
-  return new Game(isMultiplayer, playerOne, playerTwo);
+  populateCellWithEvents(gameObject, false, player);
 }
 
 function initializeBot(player) {
@@ -74,74 +58,75 @@ function setTurnName(playerName) {
   name.textContent = playerName;
 }
 
-function firstPlayerInit(mainLoopObj) {
-  if (!gameObject.playerOne.isBot) {
-    setTurnName(gameObject.playerOne.name);
-    placementMode(gameObject.playerOne, mainLoopObj);
+function firstPlayerInit(gameObject) {
+  const { playerOne, cb } = gameObject;
+  if (!playerOne.isBot) {
+    setTurnName(!playerOne.name);
+    placementMode(gameObject, playerOne);
   } else {
     // Initialize bot
-    initializeBot(gameObject.playerOne);
-    mainLoopObj(false, true);
+    initializeBot(playerOne);
+    cb(false, true);
   }
 }
 
-function secondPlayerInit(numOfShipsPlayerTwo, isMultiplayer, mainLoopObj) {
+function secondPlayerInit(gameObject, numOfShipsPlayerTwo) {
+  const { playerOne, playerTwo, cb } = gameObject;
   // Depopulate left board events
-  if (!gameObject.playerTwo.isBot) {
-    setTurnName(gameObject.playerTwo.name);
-    if (numOfShipsPlayerTwo === 0 && !gameObject.playerOne.isBot) {
-      if (isMultiplayer) {
+  if (!playerTwo.isBot) {
+    setTurnName(playerTwo.name);
+    if (numOfShipsPlayerTwo === 0 && !playerOne.isBot) {
+      if (gameObject.isMultiplayer) {
         addPassDelay();
       }
     }
     unloadBoard('left');
-    exitPlacementMode(gameObject.playerOne, mainLoopObj);
-    placementMode(gameObject.playerTwo, mainLoopObj);
+    exitPlacementMode(gameObject, playerOne);
+    placementMode(gameObject, playerTwo);
   } else {
     // Initialize bot
-    initializeBot(gameObject.playerTwo);
-    mainLoopObj(false, true);
+    initializeBot(playerTwo);
+    cb();
   }
 }
 
-function initGame(isMultiplayer, names) {
-  const init = !isMultiplayer ? Player.singleplayerInit : Player.multiplayerInit;
-  gameObject = initializeObjects(isMultiplayer, init, names);
-}
-
 function handleGameWinner() {
-  resetGameObject();
   restartGame();
   startCallback();
 }
 
-function startGame(isMultiplayer, mainLoopObj) {
+function startGame(gameObject) {
   // Both player finishes placement
   gameObject.isStarted = true;
   // Signal to the second player to pass the game to the first player
   if (!gameObject.playerOne.isBot) {
     unloadBoard('right');
-    if (isMultiplayer) {
+    if (gameObject.isMultiplayer) {
       addPassDelay();
     }
   }
-  exitPlacementMode(gameObject.playerTwo, mainLoopObj);
+  exitPlacementMode(gameObject, gameObject.playerTwo);
+  // eslint-disable-next-line no-param-reassign
   gameObject.isStarted = true;
 }
 
-function runGame(isMultiplayer, mainLoopObj) {
+function runGame(gameObject) {
+  const {
+    isStarted,
+    isMultiplayer,
+  } = gameObject;
   // Run game and pass between each turn. Handle both player and both functionalities
-  if (gameObject.isStarted) {
+  if (isStarted) {
     // Signal to the player to pass the game to the opposite player.
     if (!gameObject.currentTurn().isBot) {
       setTurnName(gameObject.currentTurn().name);
       if (isMultiplayer) {
         addPassDelay();
       }
-      attackMode(gameObject, mainLoopObj);
+      attackMode(gameObject);
     } else {
       // add bot attack
-      attackUtilities.botAttack(gameObject, mainLoopObj);
+      attackUtilities.botAttack(gameObject);
     }
   }
 }
@@ -152,46 +137,39 @@ function runGame(isMultiplayer, mainLoopObj) {
 // Game object must come from GameState global object.
 // Second, check if game has started, if not, goes into placement mode;
 // Third, if placement is done, all cells goes into play mode!
-export default function mainLoop(isMultiplayer, isInitialized, names, cb) {
+export default function mainLoop(gameObject) {
+  const { playerOne, playerTwo, isStarted } = gameObject;
   // Check if there's a game winner, if there is end the game
   if (gameObject.winner) {
     handleGameWinner();
     return;
   }
 
-  // Initialize game if it isn't already initialized
-  if (!isInitialized) {
-    if (!startCallback) {
-      startCallback = cb;
-    }
-    initGame(isMultiplayer, names);
-  }
-
-  const numOfShipsPlayerOne = gameObject.playerOne.board.list.length;
-  const numOfShipsPlayerTwo = gameObject.playerTwo.board.list.length;
+  const numOfShipsPlayerOne = playerOne.board.list.length;
+  const numOfShipsPlayerTwo = playerTwo.board.list.length;
 
   // If object is initialized, will goes into the placement mode for first player
   // placement mode ends when max ships is reached
   if (numOfShipsPlayerOne !== maxShips) {
-    firstPlayerInit(mainLoop);
+    firstPlayerInit(gameObject);
     return;
   }
 
   // Second placement mode for second player
   // Signal to the first player to pass to the next player
   if (numOfShipsPlayerTwo !== maxShips && numOfShipsPlayerOne === maxShips) {
-    secondPlayerInit(numOfShipsPlayerTwo, isMultiplayer, mainLoop);
+    secondPlayerInit(gameObject, numOfShipsPlayerTwo);
     return;
   }
 
-  const placementFinished = (gameObject.playerOne.board.list.length === maxShips)
-  && (gameObject.playerTwo.board.list.length === maxShips);
+  const placementFinished = (playerOne.board.list.length === maxShips)
+  && (playerTwo.board.list.length === maxShips);
 
   // Set board view correctly and pass to the first player to start the game
-  if (placementFinished && !gameObject.isStarted) {
-    startGame(isMultiplayer, mainLoop);
+  if (placementFinished && !isStarted) {
+    startGame(gameObject);
   }
 
   // run games once all the pre requisites are done above
-  runGame(isMultiplayer, mainLoop);
+  runGame(gameObject);
 }

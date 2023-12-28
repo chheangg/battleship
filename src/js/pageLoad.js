@@ -35,8 +35,7 @@ function unloadBoard(side) {
 const boardLoad = (function handler() {
   // Generate the page for score keeping and turn information
   // Refactor into template
-  function generatePage(names) {
-    const isMultiplayer = names.length === 2;
+  function generatePage(gameObject) {
     document.body.textContent = '';
     document.body.innerHTML = `
       <main>
@@ -45,14 +44,14 @@ const boardLoad = (function handler() {
           </div>
         <div class='main-content'>
           <div class='left-content'>
-            <div class='playername'>${names[0]}</div>
+            <div class='playername'>${gameObject.playerOne.name}</div>
             <div class='board-container'>
               <div class='ships-container'></div>
               <div class='board'></div>
             </div>
           </div>
           <div class='right-content'>
-            <div class='playername'>${isMultiplayer ? names[1] : 'BOT'}</div>
+            <div class='playername'>${gameObject.playerTwo.name}</div>
             <div class='board-container'>
               <div class='ships-container'></div>
               <div class='board'></div>
@@ -114,15 +113,15 @@ function loadOption() {
 }
 
 // Load board
-function mainPageLoad(names) {
-  boardLoad.generatePage(names);
+function mainPageLoad(gameObject) {
+  boardLoad.generatePage(gameObject);
   boardLoad.generateBox();
   boardLoad.assignParent();
 }
 
-function loadPage(names) {
+function loadPage(gameObject) {
   // Load page and initialize every cells;
-  mainPageLoad(names);
+  mainPageLoad(gameObject);
   // Load options
   loadOption();
 }

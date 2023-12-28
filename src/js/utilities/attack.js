@@ -31,8 +31,8 @@ const attackUtilities = (function handler() {
     checkWin(attacker, defender, gameObject);
   }
 
-  function botAttack(gameObject, cb) {
-    const { playerOne, playerTwo } = gameObject;
+  function botAttack(gameObject) {
+    const { playerOne, playerTwo, cb } = gameObject;
     const bot = playerOne.isBot ? playerOne : playerTwo;
     const defender = playerOne.isBot ? playerTwo : playerOne;
     const attackedSide = gameObject.playerOne.isBot
@@ -41,7 +41,7 @@ const attackUtilities = (function handler() {
     const checkValid = bot.attack(defender, cord, gameObject);
     applyAtt(checkValid, cord, attackedSide);
     checkWin(bot, defender, gameObject);
-    cb(false, true);
+    cb();
   }
   return { attack, botAttack };
 }());
@@ -54,13 +54,14 @@ export { attackUtilities };
 // 1. Load board for current player
 // 2. Populate the correct board to be able to attack with attack event listener
 // eslint-disable-next-line no-shadow
-export default function attackMode(gameObjectState, cb) {
-  const currentSide = gameObjectState.playerOne.isTurn ? 'left' : 'right';
+export default function attackMode(gameObjectState) {
+  const { playerOne, playerTwo, cb } = gameObjectState;
+  const currentSide = playerOne.isTurn ? 'left' : 'right';
   const oppositeSide = currentSide === 'left' ? 'right' : 'left';
-  const currentPlayer = gameObjectState.playerOne.isTurn
-    ? gameObjectState.playerOne : gameObjectState.playerTwo;
-  const oppositePlayer = gameObjectState.playerOne.isTurn
-    ? gameObjectState.playerTwo : gameObjectState.playerOne;
+  const currentPlayer = playerOne.isTurn
+    ? gameObjectState.playerOne : playerTwo;
+  const oppositePlayer = playerOne.isTurn
+    ? gameObjectState.playerTwo : playerOne;
 
   unloadBoard(oppositeSide);
   loadBoard(currentPlayer, currentSide);
@@ -79,7 +80,7 @@ export default function attackMode(gameObjectState, cb) {
         oppositePlayer,
       );
       oppositeBoxes.forEach((oppositeBox) => removeAllEventListener(oppositeBox));
-      cb(gameObjectState.isMultiplayer, true);
+      cb();
     });
   });
 }
