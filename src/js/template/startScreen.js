@@ -1,4 +1,5 @@
-const startScreen = `
+/* eslint-disable import/prefer-default-export */
+export const startScreen = `
 <main class="start-bg">
 <header class='logo-header'>
   <h1>BATTLESHIP</h1>
@@ -23,8 +24,3 @@ const startScreen = `
 </div>
 </main>
 `;
-
-// Generate start screen and add eventListeners!
-export default function restartGame() {
-  document.body.innerHTML = startScreen;
-}

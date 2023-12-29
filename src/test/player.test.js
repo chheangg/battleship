@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import { Ships } from '../js/objects/ship';
 import Player from '../js/objects/player';
-import { getTestGameObject } from '../js/utilities/utilities';
+import { getTestGameObject } from '../js/helpers/utilities';
 
 it('Path #1.1 Player gets their board', () => {
   const playerX = new Player(false, true);

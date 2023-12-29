@@ -1,4 +1,4 @@
-import { unloadBoard, loadBoard } from '../pageLoad';
+import { unloadBoard, loadBoard } from './pageLoad';
 import { removeAllEventListener } from './utilities';
 
 /* eslint-disable no-param-reassign */

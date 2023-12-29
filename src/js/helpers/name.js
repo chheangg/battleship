@@ -1,4 +1,4 @@
-import { loadPage } from '../pageLoad';
+import { loadPage } from './pageLoad';
 
 /* eslint-disable no-param-reassign */
 // Generate name input and label

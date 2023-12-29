@@ -1,4 +1,4 @@
-import { shipOrders } from '../pageLoad';
+import { shipOrders } from './pageLoad';
 
 // Ship logical placement function onto the player's board
 function initializeShip(player, ship, cord) {

@@ -7,7 +7,7 @@ function importAll(r) {
   return images;
 }
 
-const images = importAll(require.context('../assets/ships', false, /\.png$/));
+const images = importAll(require.context('../../assets/ships', false, /\.png$/));
 
 function loadIcon(type, num, dir) {
   const dirName = dir === 'horizontal' ? 'hori' : 'vert';

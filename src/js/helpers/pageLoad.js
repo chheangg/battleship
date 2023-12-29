@@ -3,8 +3,10 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-plusplus */
 /* eslint-disable import/prefer-default-export */
-import { Ships } from './objects/ship';
+import { Ships } from '../objects/ship';
+import { boardScreen, placementContainer } from '../template/boardScreen';
 import { loadIcon } from './imageLoader';
+import { startScreen } from '../template/startScreen';
 
 // Enumerated arrays of ships to be placed
 const shipOrders = Object.values(Ships).sort((last, next) => last.order < next.order);
@@ -37,29 +39,7 @@ const boardLoad = (function handler() {
   // Refactor into template
   function generatePage(gameObject) {
     document.body.textContent = '';
-    document.body.innerHTML = `
-      <main>
-        <div class='top-container'>
-          <p class='turn-container'>Turn: <span id='name'></span></p>
-          </div>
-        <div class='main-content'>
-          <div class='left-content'>
-            <div class='playername'>${gameObject.playerOne.name}</div>
-            <div class='board-container'>
-              <div class='ships-container'></div>
-              <div class='board'></div>
-            </div>
-          </div>
-          <div class='right-content'>
-            <div class='playername'>${gameObject.playerTwo.name}</div>
-            <div class='board-container'>
-              <div class='ships-container'></div>
-              <div class='board'></div>
-            </div>
-          </div>
-        </div>
-      </main>
-    `;
+    document.body.innerHTML = boardScreen(gameObject.playerOne.name, gameObject.playerTwo.name);
   }
   // Generate the whole cells for each board
   function generateBox() {
@@ -100,15 +80,10 @@ const boardLoad = (function handler() {
 
 // Load option for placing ships in a certain axios
 function loadOption() {
-  const container = document.getElementsByClassName('top-container')[0];
+  const container = document.getElementsByClassName('top-header-container')[0];
   const option = document.createElement('div');
   // Template
-  option.innerHTML = `
-    <div class='dir-option'>
-      <label for='horizontal'>Horizontal</label>
-      <input type='radio' class='dir-option' value='horizontal' id='horizontal' name='option' checked>
-      <label for='vertical'>Vertical</label><input type='radio' class='dir-option' value='vertical' id='vertical' name='option'></div>
-  `;
+  option.innerHTML = placementContainer();
   container.appendChild(option);
 }
 
@@ -126,6 +101,10 @@ function loadPage(gameObject) {
   loadOption();
 }
 
+function setMainScreen() {
+  document.body.innerHTML = startScreen;
+}
+
 export {
-  mainPageLoad, loadBoard, loadOption, boardLoad, loadPage, shipOrders, unloadBoard,
+  mainPageLoad, loadBoard, loadOption, boardLoad, loadPage, shipOrders, unloadBoard, setMainScreen,
 };

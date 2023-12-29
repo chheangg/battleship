@@ -1,10 +1,11 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-shadow */
-import nameCollectStage from './utilities/name';
+import nameCollectStage from './helpers/name';
 import mainLoop from './main';
 
 import Game from './objects/game';
 import Player from './objects/player';
+import { setMainScreen } from './helpers/pageLoad';
 
 // Load the page, and initialize Game object to be return
 // to be used by other stages in the game
@@ -19,6 +20,7 @@ function initGame(isMultiplayer) {
 }
 
 function startGame() {
+  setMainScreen();
   // Starting page
   const singlePlayerBtn = document.querySelector('.single-player');
   const multiPlayerbtn = document.querySelector('.multi-player');

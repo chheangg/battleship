@@ -2,18 +2,16 @@
 /* eslint-disable no-import-assign */
 /* eslint-disable prefer-arrow-callback */
 import 'normalize.css';
-import '../style/style.scss';
+
 import {
-  unloadBoard, shipOrders,
-} from './pageLoad';
+  unloadBoard, shipOrders, setMainScreen,
+} from './helpers/pageLoad';
 
-import addAnimationEvent from './utilities/animation';
-import addPlacementEvent from './utilities/placementEvent';
-import addPassDelay from './utilities/pass';
-import attackMode, { attackUtilities } from './utilities/attack';
-import restartGame from './template/startScreen';
+import addAnimationEvent from './helpers/animation';
+import addPlacementEvent from './helpers/placementEvent';
+import addPassDelay from './helpers/pass';
+import attackMode, { attackUtilities } from './helpers/attack';
 
-let startCallback;
 const maxShips = 5;
 
 // If true, populate cell with placement event and animation event on the correct board.
@@ -52,16 +50,9 @@ function initializeBot(player) {
   }
 }
 
-// Set name in the name container
-function setTurnName(playerName) {
-  const name = document.querySelector('#name');
-  name.textContent = playerName;
-}
-
 function firstPlayerInit(gameObject) {
   const { playerOne, cb } = gameObject;
   if (!playerOne.isBot) {
-    setTurnName(!playerOne.name);
     placementMode(gameObject, playerOne);
   } else {
     // Initialize bot
@@ -74,7 +65,6 @@ function secondPlayerInit(gameObject, numOfShipsPlayerTwo) {
   const { playerOne, playerTwo, cb } = gameObject;
   // Depopulate left board events
   if (!playerTwo.isBot) {
-    setTurnName(playerTwo.name);
     if (numOfShipsPlayerTwo === 0 && !playerOne.isBot) {
       if (gameObject.isMultiplayer) {
         addPassDelay();
@@ -91,8 +81,7 @@ function secondPlayerInit(gameObject, numOfShipsPlayerTwo) {
 }
 
 function handleGameWinner() {
-  restartGame();
-  startCallback();
+  setMainScreen();
 }
 
 function startGame(gameObject) {
@@ -119,7 +108,6 @@ function runGame(gameObject) {
   if (isStarted) {
     // Signal to the player to pass the game to the opposite player.
     if (!gameObject.currentTurn().isBot) {
-      setTurnName(gameObject.currentTurn().name);
       if (isMultiplayer) {
         addPassDelay();
       }
@@ -146,7 +134,6 @@ export default function mainLoop(gameObject) {
   }
 
   const numOfShipsPlayerOne = playerOne.board.list.length;
-  const numOfShipsPlayerTwo = playerTwo.board.list.length;
 
   // If object is initialized, will goes into the placement mode for first player
   // placement mode ends when max ships is reached
@@ -154,6 +141,8 @@ export default function mainLoop(gameObject) {
     firstPlayerInit(gameObject);
     return;
   }
+
+  const numOfShipsPlayerTwo = playerTwo.board.list.length;
 
   // Second placement mode for second player
   // Signal to the first player to pass to the next player
