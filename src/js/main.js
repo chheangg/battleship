@@ -2,6 +2,7 @@
 /* eslint-disable no-import-assign */
 /* eslint-disable prefer-arrow-callback */
 import 'normalize.css';
+import '../style/style.scss';
 
 import {
   unloadBoard, shipOrders, setMainScreen,

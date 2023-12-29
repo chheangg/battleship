@@ -4,34 +4,19 @@ import { loadIcon } from './imageLoader';
 import { loadBoard } from './pageLoad';
 import { removeAllEventListener } from './utilities';
 
-// Show the right ship, position and axis on ship-placing stage.
-// Will check axis, the cord given and ship type to make it possible.
-function shipPreviewExpander(cord, player, ship) {
-  // const dirArr = document.getElementsByClassName('dir-option');
-  // I suppose this reads the text value...
+function shipBodyInPreview(cord, player, ship) {
   const axis = 'horizontal';
-  // Take the coord and use it to build the body;
   const start = [...cord];
   const body = Array(ship.length)
     .fill()
-    .map(() => {
+    .map((_pos, index) => {
       if (axis === 'horizontal') {
-        return [start[0], start[1]++];
+        return [start[0], start[1] + index];
       }
-      return [start[0]++, start[1]];
+      return [start[0] + index, start[1]];
     });
 
-  // Check if there's any overlap
-  const isOverlap = player
-    .board
-    .list
-    .some((playerShip) => playerShip
-      .position.some((shipPos) => body
-        .some((bodyPos) => _.isEqual(bodyPos, shipPos))));
-  return {
-    body,
-    isOverlap,
-  };
+  return body;
 }
 
 // const dirOptions = document.getElementsByClassName('dir-option');
@@ -64,7 +49,7 @@ function shipPreview(cord, boardBoxes, player, ship, event) {
 
 // Function for animating ship preview everything it hovers onto a box or out of it
 function animationEvent(event, boardBoxes, player, ship) {
-  const { body, isOverlap } = shipPreviewExpander(
+  const body = shipBodyInPreview(
     event.currentTarget.dataset.pos
       .split(',')
       .map((x) => parseInt(x, 10)),
@@ -73,6 +58,12 @@ function animationEvent(event, boardBoxes, player, ship) {
   );
 
   const isShipOverflowing = body.find((pos) => pos[1] >= 10);
+  const isOverlap = player
+    .board
+    .list
+    .some((playerShip) => playerShip
+      .position.some((shipPos) => body
+        .some((bodyPos) => _.isEqual(bodyPos, shipPos))));
   // Do nothing
   // if ship is overflowing the board, or colliding with othership
   if (isOverlap || isShipOverflowing) {
