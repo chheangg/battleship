@@ -1,26 +1,22 @@
 /* eslint-disable import/prefer-default-export */
+import logo from '../../public/logo.svg';
+import '../../style/main-menu.scss';
+
 export const startScreen = `
-<main class="start-bg">
-<header class='logo-header'>
-  <h1>BATTLESHIP</h1>
-</header>
-<div class='option-body'>
-  <ul class='options'>
-    <li>
-      <div class="btn-wrapper">
-        <button class='single-player gamemode'>
-          Singleplayer
-        </button>
+<div class="main-menu">
+  <div class="main-menu-container">
+    <div class="main-menu-wrapper">
+      <div class="logo-container">
+        <img src="${logo}" alt="Battleship" />
       </div>
-    </li>
-    <li>
-      <div class="btn-wrapper">
-        <button class='multi-player gamemode'>
-          Multiplayer
-        </button>
+      <div class="credit-container">
+        <p>Made by <span>Chheang</span></p>
       </div>
-    </li>
-  </ul>
+      <div class="options-container">
+        <button id="singleplayer">Singleplayer</button>
+        <button id="multiplayer">Multiplayer</button>
+      </div>
+    </div>
+  </div>
 </div>
-</main>
 `;

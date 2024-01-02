@@ -1,5 +1,3 @@
-import { loadPage } from './pageLoad';
-
 /* eslint-disable no-param-reassign */
 // Generate name input and label
 function nameInputLabel(className, text) {
@@ -57,7 +55,7 @@ function nameForm(isMultiplayer, cb) {
 }
 
 // Generate name component
-function nameComponent(isMultiplayer, cb) {
+export default function nameComponent(isMultiplayer, cb) {
   const nameOverlay = document.createElement('div');
   const nameFormComponent = nameForm(isMultiplayer, cb);
 
@@ -65,32 +63,4 @@ function nameComponent(isMultiplayer, cb) {
 
   nameOverlay.appendChild(nameFormComponent);
   return nameOverlay;
-}
-
-// As for player(s) name through constructing a form
-// destroy the form after it is collected
-export default function nameCollectStage(gameObject) {
-  const { isMultiplayer } = gameObject;
-  const body = document.querySelector('body');
-  const nameFormComponent = nameComponent(isMultiplayer, () => {
-    if (isMultiplayer) {
-      const playerOneName = document.querySelector('.player-one-name').value;
-      const playerTwoName = document.querySelector('.player-two-name').value;
-      gameObject.playerOne.name = playerOneName;
-      gameObject.playerTwo.name = playerTwoName;
-    } else {
-      const playerName = document.querySelector('.player-name').value;
-      if (gameObject.playerOne.isBot) {
-        gameObject.playerTwo.name = playerName;
-        gameObject.playerOne.name = 'BOT';
-      } else {
-        gameObject.playerOne.name = playerName;
-        gameObject.playerTwo.name = 'BOT';
-      }
-    }
-    body.removeChild(nameFormComponent);
-    loadPage(gameObject);
-    gameObject.cb();
-  });
-  body.appendChild(nameFormComponent);
 }

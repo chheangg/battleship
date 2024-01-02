@@ -5,7 +5,7 @@ import 'normalize.css';
 import '../style/style.scss';
 
 import {
-  unloadBoard, shipOrders, setMainScreen,
+  unloadBoard, shipOrders,
 } from './helpers/pageLoad';
 
 import addAnimationEvent from './helpers/animation';
@@ -81,10 +81,6 @@ function secondPlayerInit(gameObject, numOfShipsPlayerTwo) {
   }
 }
 
-function handleGameWinner() {
-  setMainScreen();
-}
-
 function startGame(gameObject) {
   // Both player finishes placement
   gameObject.isStarted = true;
@@ -130,7 +126,6 @@ export default function mainLoop(gameObject) {
   const { playerOne, playerTwo, isStarted } = gameObject;
   // Check if there's a game winner, if there is end the game
   if (gameObject.winner) {
-    handleGameWinner();
     return;
   }
 

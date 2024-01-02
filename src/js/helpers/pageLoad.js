@@ -94,17 +94,10 @@ function mainPageLoad(gameObject) {
   boardLoad.assignParent();
 }
 
-function loadPage(gameObject) {
-  // Load page and initialize every cells;
-  mainPageLoad(gameObject);
-  // Load options
-  loadOption();
-}
-
 function setMainScreen() {
   document.body.innerHTML = startScreen;
 }
 
 export {
-  mainPageLoad, loadBoard, loadOption, boardLoad, loadPage, shipOrders, unloadBoard, setMainScreen,
+  mainPageLoad, loadBoard, loadOption, boardLoad, shipOrders, unloadBoard, setMainScreen,
 };
