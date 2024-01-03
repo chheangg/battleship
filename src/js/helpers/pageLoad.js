@@ -5,8 +5,9 @@
 /* eslint-disable import/prefer-default-export */
 import { Ships } from '../objects/ship';
 import { boardScreen, placementContainer } from '../template/boardScreen';
-import { loadIcon } from './imageLoader';
 import { startScreen } from '../template/startScreen';
+import { singlePlayerModal, multiPlayerModal } from '../template/nameFormModal';
+import { loadIcon } from './imageLoader';
 
 // Enumerated arrays of ships to be placed
 const shipOrders = Object.values(Ships).sort((last, next) => last.order < next.order);
@@ -98,6 +99,37 @@ function setMainScreen() {
   document.body.innerHTML = startScreen;
 }
 
+function removeModal(event) {
+  const nameModalWrapper = document.querySelector('.name-modal-wrapper');
+  const closeBtn = document.querySelector('.close-btn img');
+  if (event && (event.target !== nameModalWrapper && event.target !== closeBtn)) {
+    return;
+  }
+  if (nameModalWrapper) {
+    document.body.removeChild(nameModalWrapper);
+  }
+}
+
+function loadModal(gameObject, cb) {
+  const { body } = document;
+  const { isMultiplayer } = gameObject;
+
+  const hasNameModalWrapperInDOM = document.querySelector('.name-modal-wrapper');
+
+  if (hasNameModalWrapperInDOM) {
+    removeModal();
+  }
+
+  const btnCallback = cb(isMultiplayer);
+
+  body.insertAdjacentHTML('beforeend', isMultiplayer ? multiPlayerModal : singlePlayerModal);
+
+  const btn = document.querySelector('.name-form-btn');
+  document.querySelector('.name-modal-wrapper').addEventListener('click', removeModal);
+  document.querySelector('.close-btn').addEventListener('click', removeModal);
+  btn.addEventListener('click', btnCallback);
+}
+
 export {
-  mainPageLoad, loadBoard, loadOption, boardLoad, shipOrders, unloadBoard, setMainScreen,
+  mainPageLoad, loadBoard, loadOption, boardLoad, shipOrders, unloadBoard, setMainScreen, loadModal,
 };

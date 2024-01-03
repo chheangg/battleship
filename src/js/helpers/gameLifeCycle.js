@@ -2,8 +2,9 @@
 import Game from '../objects/game';
 import Player from '../objects/player';
 import mainLoop from '../main';
-import { mainPageLoad, loadOption, setMainScreen } from './pageLoad';
-import nameComponent from './name';
+import {
+  mainPageLoad, loadOption, setMainScreen, loadModal,
+} from './pageLoad';
 
 // Load the page, and initialize Game object to be return
 // to be used by other stages in the game
@@ -24,19 +25,17 @@ export function loadGame(gameObject) {
   loadOption();
 }
 
-// As for player(s) name through constructing a form
-// destroy the form after it is collected
-export default function collectName(gameObject) {
-  const { isMultiplayer } = gameObject;
-  const body = document.querySelector('body');
-  const nameFormComponent = nameComponent(isMultiplayer, () => {
+function collectNameFromFormHOF(gameObject) {
+  return () => {
+    const { isMultiplayer } = gameObject;
+
     if (isMultiplayer) {
-      const playerOneName = document.querySelector('.player-one-name').value;
-      const playerTwoName = document.querySelector('.player-two-name').value;
+      const playerOneName = document.querySelector('#first-player').value;
+      const playerTwoName = document.querySelector('#first-player').value;
       gameObject.playerOne.name = playerOneName;
       gameObject.playerTwo.name = playerTwoName;
     } else {
-      const playerName = document.querySelector('.player-name').value;
+      const playerName = document.querySelector('#player').value;
       if (gameObject.playerOne.isBot) {
         gameObject.playerTwo.name = playerName;
         gameObject.playerOne.name = 'BOT';
@@ -45,11 +44,17 @@ export default function collectName(gameObject) {
         gameObject.playerTwo.name = 'BOT';
       }
     }
+    const { body } = document;
     body.innerText = '';
     loadGame(gameObject);
     gameObject.cb();
-  });
-  body.replaceChildren(nameFormComponent);
+  };
+}
+
+// As for player(s) name through constructing a form
+// destroy the form after it is collected
+export default function collectName(gameObject) {
+  loadModal(gameObject, collectNameFromFormHOF);
 }
 
 function initGame() {
@@ -72,7 +77,7 @@ function initGame() {
 
   // Create two players logic and start the game
   multiPlayerbtn.addEventListener('click', () => {
-    const multiPlayerGameObject = initGame(true);
+    const multiPlayerGameObject = initializeGameMode(true);
     multiPlayerGameObject.cb = () => mainLoop(multiPlayerGameObject);
     // Collect names
     collectName(multiPlayerGameObject);
