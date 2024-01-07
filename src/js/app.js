@@ -1,3 +1,3 @@
-import { startGame } from './helpers/gameLifeCycle';
+import { openGameMenu } from './helpers/gameLifeCycle';
 
-startGame();
+openGameMenu();

@@ -1,0 +1,98 @@
+@use 'style';
+
+.game-board {
+  height: 100%;
+  box-sizing: border-box;
+  padding: 2rem;
+  span, div, p {
+    font-weight: 300;
+    font-size: 2rem;
+  }
+  p {
+    margin: 0;
+  }
+}
+
+.info-header {
+  display: grid;
+  padding: 1rem 0;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 1fr;
+  height: auto;
+  overflow: hidden;
+}
+
+.info-container {
+  box-sizing: border-box;
+  height: 100%;
+  padding: 0.5rem 0;
+  margin: 0 2rem;
+  border-radius: 0.5rem;
+  background-color: #fef3c7;
+  border: 3px solid style.$text-color;
+  grid-column: 2 / 3;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.ship-placement-container {
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: center;
+  justify-items: center;
+}
+
+.ship-orient-container {
+  height: 100%;
+  display: flex;
+
+  img {
+    height: 1.5rem;
+    width: auto;
+  }
+
+  span {
+    margin-top: 0.3rem;
+  }
+
+  button {
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+    border-bottom: 3px solid rgba(0, 0, 0, 0);
+    transition-property: border;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+
+  button:hover {
+    border-color: style.$primary-color;
+  }
+}
+
+.game-board-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 100px;
+
+  margin-top: 1.5rem;
+}
+
+.player-info-container {
+  position:relative;
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  padding-bottom: 0.25rem;
+  box-shadow: 0 10px 5px -5px rgb(0 0 0 / 0.1), 0 5px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.player-info-container:after {
+  content:'';
+  position:absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  background:red;
+  height: 4px;
+  border-radius: 20px;
+}

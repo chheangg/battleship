@@ -3,7 +3,7 @@ import Game from '../objects/game';
 import Player from '../objects/player';
 import mainLoop from '../main';
 import {
-  mainPageLoad, loadOption, setMainScreen, loadModal,
+  setMainScreen, loadModal, loadGameboard, loadPlacementOption,
 } from './pageLoad';
 
 // Load the page, and initialize Game object to be return
@@ -18,11 +18,9 @@ function initializeGameMode(isMultiplayer) {
   return initializeObjects(isMultiplayer, init);
 }
 
-export function loadGame(gameObject) {
-  // Load page and initialize every cells;
-  mainPageLoad(gameObject);
-  // Load options
-  loadOption();
+export function startGame(gameObject) {
+  const placementOptionContainer = loadPlacementOption(gameObject);
+  loadGameboard(placementOptionContainer);
 }
 
 function collectNameFromFormHOF(gameObject) {
@@ -44,10 +42,8 @@ function collectNameFromFormHOF(gameObject) {
         gameObject.playerTwo.name = 'BOT';
       }
     }
-    const { body } = document;
-    body.innerText = '';
-    loadGame(gameObject);
-    gameObject.cb();
+    startGame(gameObject);
+    // gameObject.cb();
   };
 }
 
@@ -84,7 +80,7 @@ function initGame() {
   });
 }
 
-export function startGame() {
+export function openGameMenu() {
   setMainScreen();
   initGame();
 }
