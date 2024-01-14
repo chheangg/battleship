@@ -15,9 +15,6 @@ import {
   shipPlacementComponent,
 } from '../template/template';
 
-// Enumerated arrays of ships to be placed
-const shipOrders = Object.values(Ships).sort((last, next) => last.order < next.order);
-
 // load all the ships on the board when called
 function loadBoard(_player, _side) {
   // player.board.list.forEach((ship) => {
@@ -130,8 +127,8 @@ function loadModal(gameObject, cb) {
   btn.addEventListener('click', btnCallback);
 }
 
-function loadGameboard(infoHeader) {
-  document.body.innerHTML = gameBoardTemplate(infoHeader);
+function loadGameboard(gameObject, infoHeader) {
+  document.body.innerHTML = gameBoardTemplate(gameObject, infoHeader);
 }
 
 function loadPlacementOption(gameObject) {
@@ -143,7 +140,6 @@ export {
   loadBoard,
   loadPlacementOption,
   boardLoad,
-  shipOrders,
   unloadBoard,
   setMainScreen,
   loadModal,

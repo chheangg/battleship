@@ -1,4 +1,8 @@
-import { shipOrders } from './pageLoad';
+import { Ships } from '../objects/ship';
+import { withEventListener } from './utilities';
+
+let firstPlayerBoard = [];
+let secondPlayerBoard = [];
 
 // Ship logical placement function onto the player's board
 function initializeShip(player, ship, cord) {
@@ -7,29 +11,44 @@ function initializeShip(player, ship, cord) {
 }
 
 // Placement Event
-function placementEvent(event, gameObject, player, cb) {
+function placementEvent(event, gameObject, player) {
   const playerShips = player.board.list;
   const cord = event.target.dataset.pos.split(',')
     .map((x) => parseInt(x, 10));
-  initializeShip(player, shipOrders[playerShips.length], cord);
-  cb(gameObject.isMultiplayer, true);
+  const ship = Ships[playerShips.length];
+
+  initializeShip(player, ship, cord);
+  gameObject.cb(gameObject.isMultiplayer, true);
 }
 
 // Add placement event to all cell
-function addPlacementEvent(add, gameObject, boardBoxes, player, cb) {
+function addPlacementEvent(gameObject, boardBoxes, player) {
   // set a time out so that animation event executes first
   // to remove all animation, within the call stack;
-  const eventListener = (event) => {
-    setTimeout(() => placementEvent(event, gameObject, player, cb), 0);
+  const eventRef = (event) => {
+    setTimeout(() => placementEvent(event, gameObject, player), 0);
   };
   boardBoxes.forEach((box) => {
-    // eslint-disable-next-line no-unused-expressions
-    if (!add) {
-      box.removeEventListener('click', eventListener);
+    if (player.isTurn) {
+      firstPlayerBoard.push(withEventListener(box, 'click', eventRef));
     } else {
-      box.addEventListener('click', eventListener);
+      secondPlayerBoard.push(withEventListener(box, 'click', eventRef));
     }
+    // eslint-disable-next-line no-unused-expressions
   });
 }
 
-export default addPlacementEvent;
+function removePlacementEvent(player) {
+  if (player.isTurn) {
+    firstPlayerBoard.forEach((fn) => fn());
+    firstPlayerBoard = [];
+  } else {
+    secondPlayerBoard.forEach((fn) => fn());
+    secondPlayerBoard = [];
+  }
+}
+
+export {
+  addPlacementEvent,
+  removePlacementEvent,
+};

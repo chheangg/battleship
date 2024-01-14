@@ -15,3 +15,8 @@ export function removeAllEventListener(element) {
     oldElement.parentNode.replaceChild(newElement, oldElement);
   }
 }
+
+export function withEventListener(element, eventName, handler) {
+  element.addEventListener(eventName, handler);
+  return () => element.removeEventListener(eventName, handler);
+}

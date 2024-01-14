@@ -1,10 +1,12 @@
 /* eslint-disable no-plusplus */
 import _ from 'underscore';
 import { loadIcon } from './imageLoader';
-import { loadBoard } from './pageLoad';
-import { removeAllEventListener } from './utilities';
+import { withEventListener } from './utilities';
 
-function shipBodyInPreview(cord, player, ship) {
+let firstPlayerBoard = [];
+let secondPlayerBoard = [];
+
+function shipBodyInPreview(cord, ship) {
   const axis = 'horizontal';
   const start = [...cord];
   const body = Array(ship.length)
@@ -25,25 +27,17 @@ function shipBodyInPreview(cord, player, ship) {
 // box.style.backgroundImage = `url('${img}')`;
 
 // Responsible for animating preview
-function shipPreview(cord, boardBoxes, player, ship, event) {
+function shipPreview(cord, boardBoxes, ship, event) {
   // Get axis information of ship
   // const dirOptions = document.getElementsByClassName('dir-option');
-  const axisOption = 'horizontal';
   cord.forEach((pos, index) => {
-    const box = [...boardBoxes][pos[0] * 10 + pos[1]];
-    const img = loadIcon(ship.name, index + 1, axisOption);
+    const box = boardBoxes[pos[0] * 10 + pos[1]];
+    const img = loadIcon(ship.name, index + 1, 'horizontal');
     box.style.backgroundImage = `url('${img}')`;
     const eventListener = () => {
       box.style.backgroundImage = '';
     };
     event.target.addEventListener('mouseout', eventListener);
-    // Remove all event listener once a cell is clicked
-    event.target.addEventListener('click', () => {
-      boardBoxes.forEach((cell) => {
-        removeAllEventListener(cell);
-      });
-      loadBoard(player, player.isTurn ? 'left' : 'right');
-    });
   });
 }
 
@@ -53,11 +47,10 @@ function animationEvent(event, boardBoxes, player, ship) {
     event.currentTarget.dataset.pos
       .split(',')
       .map((x) => parseInt(x, 10)),
-    player,
     ship,
   );
 
-  const isShipOverflowing = body.find((pos) => pos[1] >= 10);
+  const isShipOverflowing = body.find((pos) => pos[1] > 9);
   const isOverlap = player
     .board
     .list
@@ -70,23 +63,36 @@ function animationEvent(event, boardBoxes, player, ship) {
     return;
   }
 
-  shipPreview(body, boardBoxes, player, ship, event);
+  shipPreview(body, boardBoxes, ship, event);
 }
 
 // Function for adding animation
-function addAnimationEvent(add, boardBoxes, player, ship) {
-  const eventListener = (event) => {
-    animationEvent(event, boardBoxes, player, ship);
-  };
-  if (add) {
-    boardBoxes.forEach((box) => {
-      box.addEventListener('mouseover', eventListener);
-    });
-    return;
-  }
+function addAnimationEvent(boardBoxes, player, ship) {
   boardBoxes.forEach((box) => {
-    box.removeEventListener('mouseover', eventListener);
+    const eventRef = withEventListener(
+      box,
+      'mouseover',
+      (e) => animationEvent(e, boardBoxes, player, ship),
+    );
+    if (player.isTurn) {
+      firstPlayerBoard.push(eventRef);
+    } else {
+      secondPlayerBoard.push(eventRef);
+    }
   });
 }
 
-export default addAnimationEvent;
+function removeAnimationEvent(player) {
+  if (player.isTurn) {
+    firstPlayerBoard.forEach((fn) => fn());
+    firstPlayerBoard = [];
+  } else {
+    secondPlayerBoard.forEach((fn) => fn());
+    secondPlayerBoard = [];
+  }
+}
+
+export {
+  addAnimationEvent,
+  removeAnimationEvent,
+};

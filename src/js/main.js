@@ -5,24 +5,36 @@ import 'normalize.css';
 import '../style/style.scss';
 
 import {
-  unloadBoard, shipOrders,
+  unloadBoard,
 } from './helpers/pageLoad';
 
-import addAnimationEvent from './helpers/animation';
-import addPlacementEvent from './helpers/placementEvent';
+import { Ships } from './objects/ship';
+
+import { addAnimationEvent, removeAnimationEvent } from './helpers/animation';
+import { addPlacementEvent, removePlacementEvent } from './helpers/placementEvent';
 import addPassDelay from './helpers/pass';
 import attackMode, { attackUtilities } from './helpers/attack';
 
 const maxShips = 5;
 
+function getBoardBoxes(player) {
+  return document.querySelectorAll(`.${player.isTurn ? 'first' : 'second'}-player td`);
+}
+
 // If true, populate cell with placement event and animation event on the correct board.
-function populateCellWithEvents(gameObject, add, player) {
+function populateCellWithEvents(gameObject, player) {
+  const boardBoxes = getBoardBoxes(player);
   const playerShips = player.board.list;
-  const boardBoxes = [...document
-    .querySelector(`.${player.isTurn ? 'left' : 'right'}-content`)
-    .getElementsByClassName('box')];
-  addPlacementEvent(add, gameObject, boardBoxes, player, gameObject.cb);
-  addAnimationEvent(add, boardBoxes, player, shipOrders[playerShips.length]);
+  const shipIndex = playerShips.length;
+  const ship = Ships[shipIndex];
+
+  addPlacementEvent(gameObject, boardBoxes, player);
+  addAnimationEvent(boardBoxes, player, ship);
+}
+
+function removeCellsEvents(player) {
+  removeAnimationEvent(player);
+  removePlacementEvent(player);
 }
 
 // Enter into placement mode, will do two rounds to ensure everything is set up.
@@ -31,18 +43,18 @@ function populateCellWithEvents(gameObject, add, player) {
 // Placement mode will populate the board with events for animation and placing ships
 function placementMode(gameObject, player) {
   // pass callback to placement Event
-  populateCellWithEvents(gameObject, true, player);
+  populateCellWithEvents(gameObject, player);
 }
 
-function exitPlacementMode(gameObject, player) {
+function exitPlacementMode(player) {
   // pass callback to placement Event
-  populateCellWithEvents(gameObject, false, player);
+  removeCellsEvents(player);
 }
 
 function initializeBot(player) {
   while (player.board.list.length < 5) {
-    const shipPlaced = player.board.list.length;
-    const ship = shipOrders[shipPlaced];
+    const shipIndex = player.board.list.length;
+    const ship = Ships[shipIndex];
     const cord = [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
     const axis = (Math.random() >= 0.5)
       ? 'horizontal'
@@ -72,7 +84,7 @@ function secondPlayerInit(gameObject, numOfShipsPlayerTwo) {
       }
     }
     unloadBoard('left');
-    exitPlacementMode(gameObject, playerOne);
+    exitPlacementMode(playerOne);
     placementMode(gameObject, playerTwo);
   } else {
     // Initialize bot
@@ -91,7 +103,7 @@ function startGame(gameObject) {
       addPassDelay();
     }
   }
-  exitPlacementMode(gameObject, gameObject.playerTwo);
+  exitPlacementMode(gameObject.playerTwo);
   // eslint-disable-next-line no-param-reassign
   gameObject.isStarted = true;
 }

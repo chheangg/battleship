@@ -19,10 +19,10 @@ export const shipPlacementComponent = (shipImg) => `
   </div>
 `;
 
-export const playerInfoComponent = (_name, _ships, _health) => `
+export const playerInfoComponent = ({ name }) => `
   <div class="player-info">
     <div class="player-info-container">
-      <p>Chheang</p>
+      <p>${name}</p>
       <div class="ship-info-container">
       </div>
     </div>
@@ -31,20 +31,20 @@ export const playerInfoComponent = (_name, _ships, _health) => `
 
 const cells = Array(10).fill().map((_c, i) => `
 <tr>
-  <td class="left-corner ${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
-  <td class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
-  <td class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
-  <td class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
-  <td class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
-  <td class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
-  <td class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
-  <td class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
-  <td class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
-  <td class="right-corner ${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
+  <td data-pos='${i},0' class="left-corner ${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
+  <td data-pos='${i},1' class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
+  <td data-pos='${i},2' class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
+  <td data-pos='${i},3' class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
+  <td data-pos='${i},4' class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
+  <td data-pos='${i},5' class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
+  <td data-pos='${i},6' class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
+  <td data-pos='${i},7' class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
+  <td data-pos='${i},8' class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
+  <td data-pos='${i},9' class="right-corner ${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
 </tr>
 `);
 
-export const gameBoardTemplate = (infoHeader) => `
+export const gameBoardTemplate = (gameObject, infoHeader) => `
   <div class="game-board">
     <div class="info-header">
       <div class="info-container">
@@ -53,7 +53,7 @@ export const gameBoardTemplate = (infoHeader) => `
     </div>
     <div class="game-board-container">
       <div class="first-player">
-        ${playerInfoComponent()}
+        ${playerInfoComponent(gameObject.playerOne)}
         <table>
           <tbody>
             ${cells.join('')}
@@ -61,7 +61,7 @@ export const gameBoardTemplate = (infoHeader) => `
         </table>
       </div>
       <div class="second-player">
-        ${playerInfoComponent()}
+        ${playerInfoComponent(gameObject.playerTwo)}
         <table>
           <tbody>
             ${cells.join('')}

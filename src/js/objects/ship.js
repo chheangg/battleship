@@ -3,34 +3,33 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable no-use-before-define */
 
-export const Ships = {
-  patrol: {
+export const Ships = [
+  {
     name: 'patrol',
     length: 2,
     order: 1,
   },
-  submarine: {
+  {
     name: 'submarine',
     length: 3,
     order: 2,
   },
-  destroyer: {
+  {
     name: 'destroyer',
     length: 3,
     order: 3,
   },
-  battleship: {
+  {
     name: 'battleship',
     length: 4,
     order: 4,
   },
-  carrier: {
+  {
     name: 'carrier',
     length: 5,
     order: 5,
   },
-};
-
+];
 export default class Ship {
   constructor(ship, axis, coordinate) {
     this.length = ship.length;

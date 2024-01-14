@@ -20,7 +20,7 @@ function initializeGameMode(isMultiplayer) {
 
 export function startGame(gameObject) {
   const placementOptionContainer = loadPlacementOption(gameObject);
-  loadGameboard(placementOptionContainer);
+  loadGameboard(gameObject, placementOptionContainer);
 }
 
 function collectNameFromFormHOF(gameObject) {
@@ -43,7 +43,7 @@ function collectNameFromFormHOF(gameObject) {
       }
     }
     startGame(gameObject);
-    // gameObject.cb();
+    gameObject.cb();
   };
 }
 
