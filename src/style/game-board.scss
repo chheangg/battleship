@@ -73,8 +73,6 @@
 .game-board-container {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 100px;
-
   margin-top: 1.5rem;
 }
 
@@ -95,4 +93,58 @@
   background:red;
   height: 4px;
   border-radius: 20px;
+}
+
+.game-board {
+  box-sizing: border-box;
+}
+
+.first-player, .second-player {
+  margin: 0 7.5vw;
+}
+
+.game-board-container {
+  box-sizing: border-box;
+  
+  table {
+    margin-top: 2rem;
+    box-sizing: border-box;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    height: auto;
+    border-collapse: collapse
+  }
+
+  tbody {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+  }
+
+  td {
+    box-sizing: border-box;
+    height: 10%;
+    width: 10%;
+
+    border: 1px solid style.$text-color;
+
+    aspect-ratio: 1 / 1;
+  }
+
+  .top-corner {
+    border-top: none;
+  }
+
+  .bottom-corner {
+    border-bottom: none;
+  }
+
+  .left-corner {
+    border-left: none;
+  }
+
+  .right-corner {
+    border-right: none;
+  }
 }
