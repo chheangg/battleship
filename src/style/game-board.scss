@@ -79,6 +79,7 @@
 .player-info-container {
   position:relative;
   display: grid;
+  min-height: 2.5rem;
   grid-template-columns: 2fr 3fr;
   padding-bottom: 0.25rem;
   box-shadow: 0 10px 5px -5px rgb(0 0 0 / 0.1), 0 5px 6px -4px rgb(0 0 0 / 0.1);
@@ -128,6 +129,9 @@
     width: 10%;
 
     border: 1px solid style.$text-color;
+
+    background-size: contain;
+    background-repeat: no-repeat;
 
     aspect-ratio: 1 / 1;
   }

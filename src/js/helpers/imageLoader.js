@@ -9,9 +9,8 @@ function importAll(r) {
 
 const images = importAll(require.context('../../assets/ships', false, /\.png$/));
 
-function loadIcon(type, num, dir) {
-  const dirName = dir === 'horizontal' ? 'hori' : 'vert';
-  return images[`${type}-${dirName}_0${num}`];
+function loadIcon(type, num) {
+  return images[`${type}_0${num}`];
 }
 
 // eslint-disable-next-line import/prefer-default-export

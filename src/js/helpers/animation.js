@@ -32,7 +32,7 @@ function shipPreview(cord, boardBoxes, ship, event) {
   // const dirOptions = document.getElementsByClassName('dir-option');
   cord.forEach((pos, index) => {
     const box = boardBoxes[pos[0] * 10 + pos[1]];
-    const img = loadIcon(ship.name, index + 1, 'horizontal');
+    const img = loadIcon(ship.filename, index + 1);
     box.style.backgroundImage = `url('${img}')`;
     const eventListener = () => {
       box.style.backgroundImage = '';
