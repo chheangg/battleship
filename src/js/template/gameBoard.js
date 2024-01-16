@@ -9,7 +9,7 @@ export const shipPlacementComponent = (shipImg) => `
       ${shipImg || ''}
     </div>
     <div class="ship-orient-container">
-      <button>
+      <button id="rotate-btn">
         <img src="${rotateIcon}"/>
         <span>
           Rotate

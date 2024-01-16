@@ -1,25 +1,10 @@
 /* eslint-disable no-plusplus */
 import _ from 'underscore';
-import { loadIcon } from './imageLoader';
+import { buildShipBody, loadIcon, placeImage } from './imageLoader';
 import { withEventListener } from './utilities';
 
 let firstPlayerBoard = [];
 let secondPlayerBoard = [];
-
-function shipBodyInPreview(cord, ship) {
-  const axis = 'horizontal';
-  const start = [...cord];
-  const body = Array(ship.length)
-    .fill()
-    .map((_pos, index) => {
-      if (axis === 'horizontal') {
-        return [start[0], start[1] + index];
-      }
-      return [start[0] + index, start[1]];
-    });
-
-  return body;
-}
 
 // const dirOptions = document.getElementsByClassName('dir-option');
 // const axisOption = [...dirOptions].filter((dirObj) => dirObj.checked)[0].value;
@@ -33,7 +18,7 @@ function shipPreview(cord, boardBoxes, ship, event) {
   cord.forEach((pos, index) => {
     const box = boardBoxes[pos[0] * 10 + pos[1]];
     const img = loadIcon(ship.filename, index + 1);
-    box.style.backgroundImage = `url('${img}')`;
+    placeImage(box, img);
     const eventListener = () => {
       box.style.backgroundImage = '';
     };
@@ -43,14 +28,14 @@ function shipPreview(cord, boardBoxes, ship, event) {
 
 // Function for animating ship preview everything it hovers onto a box or out of it
 function animationEvent(event, boardBoxes, player, ship) {
-  const body = shipBodyInPreview(
+  const body = buildShipBody(
     event.currentTarget.dataset.pos
       .split(',')
       .map((x) => parseInt(x, 10)),
     ship,
   );
 
-  const isShipOverflowing = body.find((pos) => pos[1] > 9);
+  const isShipOverflowing = body.find((pos) => (pos[1] < 0) || (pos[1] > 9));
   const isOverlap = player
     .board
     .list

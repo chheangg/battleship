@@ -6,7 +6,7 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable import/prefer-default-export */
 import { Ships } from '../objects/ship';
-import { loadIcon } from './imageLoader';
+import { loadIcon, rotateShip } from './imageLoader';
 import {
   startScreen,
   singlePlayerModal,
@@ -129,6 +129,8 @@ function loadModal(gameObject, cb) {
 
 function loadGameboard(gameObject, infoHeader) {
   document.body.innerHTML = gameBoardTemplate(gameObject, infoHeader);
+  const rotateBtn = document.querySelector('#rotate-btn');
+  rotateBtn.addEventListener('click', rotateShip);
 }
 
 function loadPlacementOption(gameObject) {

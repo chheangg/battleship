@@ -151,4 +151,16 @@
   .right-corner {
     border-right: none;
   }
+  
+  .x-neg {
+    transform: rotate(180deg);
+  }
+
+  .y-pos {
+    transform: rotate(270deg);
+  }
+
+  .y-neg {
+    transform: rotate(90deg);
+  }
 }
