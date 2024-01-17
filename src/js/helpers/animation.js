@@ -34,8 +34,8 @@ function animationEvent(event, boardBoxes, player, ship) {
       .map((x) => parseInt(x, 10)),
     ship,
   );
-
-  const isShipOverflowing = body.find((pos) => (pos[1] < 0) || (pos[1] > 9));
+  const isShipOverflowing = body
+    .find((pos) => (pos[1] < 0) || (pos[1] > 9) || (pos[0] < 0) || (pos[0] > 10));
   const isOverlap = player
     .board
     .list
