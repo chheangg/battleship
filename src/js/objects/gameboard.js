@@ -20,35 +20,33 @@ export default class GameBoard {
   }
 
   // Return false if ship body is over 9 (which is over the board boundary)
-  static hitBoundary(position, axis) {
-    switch (axis) {
-      case 'horizontal':
-        return position.find((pos) => (pos[1] > 9));
-      case 'vertical':
-        return position.find((pos) => (pos[0] > 9));
-      default:
-        throw Error('Invalid axis');
-    }
+  static hitBoundary(position) {
+    return position.find((pos) => (pos[1] < 0) || (pos[1] > 9) || (pos[0] < 0) || (pos[0] > 10));
   }
 
   // Check if ship can be placed on a certain square, without collision
   // with the border or other ships.
   // takes all the ship as argument to check for collison
-  isValid(position, axis) {
+  isValid(position) {
     // Check if ship overlaps over any other ships
     const hasCollision = this.list
       .find((ship) => GameBoard.intersect(ship.position, position));
     // Check if the ship doesn't overlap with the boundary
     // Accept the current ship's position and axis
-    const validBoundary = !GameBoard.hitBoundary(position, axis);
+    const validBoundary = !GameBoard.hitBoundary(position);
     return !hasCollision && validBoundary;
   }
 
   // Place ship, build a ship, check if it is valid.
-  place(ship, axis, coordinate) {
-    const initializedShip = new Ship(ship, axis, coordinate);
+  place(ship, dir, coordinate) {
+    const initializedShip = new Ship(ship, dir, coordinate);
 
-    if (!this.isValid(initializedShip.position, axis)) {
+    // Assign ships filename and other attributes in used for ship identification
+    // and loading ship images
+    initializedShip.attributes = ship;
+    initializedShip.filename = ship.filename;
+
+    if (!this.isValid(initializedShip.position)) {
       return false;
     }
     this.list.push(initializedShip);

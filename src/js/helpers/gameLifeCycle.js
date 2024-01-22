@@ -4,7 +4,7 @@ import Player from '../objects/player';
 import mainLoop from '../main';
 import {
   setMainScreen, loadModal, loadGameboard, loadPlacementOption,
-} from './pageLoad';
+} from './boardLoad';
 
 // Load the page, and initialize Game object to be return
 // to be used by other stages in the game

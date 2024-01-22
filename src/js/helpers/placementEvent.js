@@ -1,13 +1,27 @@
 import { Ships } from '../objects/ship';
+import { dirs, getDirIndex } from './imageLoader';
 import { withEventListener } from './utilities';
+import { removeAnimationEvent } from './animation';
 
-let firstPlayerBoard = [];
-let secondPlayerBoard = [];
+const firstPlayerBoard = [];
+const secondPlayerBoard = [];
+export const animationEvents = [];
 
 // Ship logical placement function onto the player's board
-function initializeShip(player, ship, cord) {
-  const dir = document.querySelector('.dir-option:checked').value;
-  player.board.place(ship, dir, cord);
+function initializeShip(player, ship, body) {
+  const dir = dirs[getDirIndex()];
+  const initializedShip = player.board.place(ship, dir, body);
+  return initializedShip;
+}
+
+function removePlacementEvent(player) {
+  if (player.isTurn) {
+    firstPlayerBoard.forEach((fn) => fn());
+    firstPlayerBoard.splice(0, firstPlayerBoard.length);
+  } else {
+    secondPlayerBoard.forEach((fn) => fn());
+    secondPlayerBoard.splice(0, secondPlayerBoard.length);
+  }
 }
 
 // Placement Event
@@ -18,6 +32,8 @@ function placementEvent(event, gameObject, player) {
   const ship = Ships[playerShips.length];
 
   initializeShip(player, ship, cord);
+  removeAnimationEvent(player);
+  removePlacementEvent(player);
   gameObject.cb(gameObject.isMultiplayer, true);
 }
 
@@ -36,16 +52,6 @@ function addPlacementEvent(gameObject, boardBoxes, player) {
     }
     // eslint-disable-next-line no-unused-expressions
   });
-}
-
-function removePlacementEvent(player) {
-  if (player.isTurn) {
-    firstPlayerBoard.forEach((fn) => fn());
-    firstPlayerBoard = [];
-  } else {
-    secondPlayerBoard.forEach((fn) => fn());
-    secondPlayerBoard = [];
-  }
 }
 
 export {

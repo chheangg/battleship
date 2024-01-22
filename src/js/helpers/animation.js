@@ -1,10 +1,11 @@
 /* eslint-disable no-plusplus */
 import _ from 'underscore';
-import { buildShipBody, loadIcon, placeImage } from './imageLoader';
+import { buildShipBody, placeShip, animationRemoverEventList } from './imageLoader';
 import { withEventListener } from './utilities';
 
 let firstPlayerBoard = [];
 let secondPlayerBoard = [];
+export const animationEvents = [];
 
 // const dirOptions = document.getElementsByClassName('dir-option');
 // const axisOption = [...dirOptions].filter((dirObj) => dirObj.checked)[0].value;
@@ -12,18 +13,10 @@ let secondPlayerBoard = [];
 // box.style.backgroundImage = `url('${img}')`;
 
 // Responsible for animating preview
-function shipPreview(cord, boardBoxes, ship, event) {
+function shipPreview(body, boardBoxes, ship, event) {
   // Get axis information of ship
   // const dirOptions = document.getElementsByClassName('dir-option');
-  cord.forEach((pos, index) => {
-    const box = boardBoxes[pos[0] * 10 + pos[1]];
-    const img = loadIcon(ship.filename, index + 1);
-    placeImage(box, img);
-    const eventListener = () => {
-      box.style.backgroundImage = '';
-    };
-    event.target.addEventListener('mouseout', eventListener);
-  });
+  placeShip(body, boardBoxes, ship, event, true);
 }
 
 // Function for animating ship preview everything it hovers onto a box or out of it
@@ -75,6 +68,10 @@ function removeAnimationEvent(player) {
     secondPlayerBoard.forEach((fn) => fn());
     secondPlayerBoard = [];
   }
+  console.log('hi')
+  animationRemoverEventList.forEach((fn) => fn());
+  console.log(animationRemoverEventList);
+  animationRemoverEventList.splice(0, animationRemoverEventList.length);
 }
 
 export {

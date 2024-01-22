@@ -6,9 +6,11 @@ import '../style/style.scss';
 
 import {
   unloadBoard,
-} from './helpers/pageLoad';
+  loadBoard,
+  getBoardBoxes,
+} from './helpers/boardLoad';
 
-import { Ships } from './objects/ship';
+import { Ships, dirs } from './objects/ship';
 
 import { addAnimationEvent, removeAnimationEvent } from './helpers/animation';
 import { addPlacementEvent, removePlacementEvent } from './helpers/placementEvent';
@@ -16,10 +18,6 @@ import addPassDelay from './helpers/pass';
 import attackMode, { attackUtilities } from './helpers/attack';
 
 const maxShips = 5;
-
-function getBoardBoxes(player) {
-  return document.querySelectorAll(`.${player.isTurn ? 'first' : 'second'}-player td`);
-}
 
 // If true, populate cell with placement event and animation event on the correct board.
 function populateCellWithEvents(gameObject, player) {
@@ -56,16 +54,16 @@ function initializeBot(player) {
     const shipIndex = player.board.list.length;
     const ship = Ships[shipIndex];
     const cord = [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
-    const axis = (Math.random() >= 0.5)
-      ? 'horizontal'
-      : 'vertical';
-    player.board.place(ship, axis, cord);
+    const dirIndex = Math.floor(Math.random() * 4);
+    const dir = dirs[dirIndex];
+    player.board.place(ship, dir, cord);
   }
 }
 
 function firstPlayerInit(gameObject) {
   const { playerOne, cb } = gameObject;
   if (!playerOne.isBot) {
+    loadBoard(playerOne);
     placementMode(gameObject, playerOne);
   } else {
     // Initialize bot
@@ -85,6 +83,7 @@ function secondPlayerInit(gameObject, numOfShipsPlayerTwo) {
     }
     unloadBoard('left');
     exitPlacementMode(playerOne);
+    loadBoard(playerTwo);
     placementMode(gameObject, playerTwo);
   } else {
     // Initialize bot

@@ -20,3 +20,7 @@ export function withEventListener(element, eventName, handler) {
   element.addEventListener(eventName, handler);
   return () => element.removeEventListener(eventName, handler);
 }
+
+export function addEventToBeRemove(event, playerFnStack) {
+  playerFnStack.push(event);
+}

@@ -6,7 +6,7 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable import/prefer-default-export */
 import { Ships } from '../objects/ship';
-import { loadIcon, rotateShip } from './imageLoader';
+import { loadIcon, placeShip, rotateShip } from './imageLoader';
 import {
   startScreen,
   singlePlayerModal,
@@ -15,19 +15,17 @@ import {
   shipPlacementComponent,
 } from '../template/template';
 
+function getBoardBoxes(player) {
+  return document.querySelectorAll(`.${player.isTurn ? 'first' : 'second'}-player td`);
+}
+
 // load all the ships on the board when called
-function loadBoard(_player, _side) {
-  // player.board.list.forEach((ship) => {
-  //   ship.position.forEach((cord) => {
-  //     [...document.getElementsByClassName(`${side}-content`)[0].getElementsByClassName('box')].forEach((box) => {
-  //       if (box.dataset.pos === cord.join()) {
-  //         const { name } = shipOrders[player.board.list.indexOf(ship)];
-  //         const shipImg = loadIcon(name, ship.position.indexOf(cord) + 1, ship.axis);
-  //         box.style.backgroundImage = `url('${shipImg}')`;
-  //       }
-  //     });
-  //   });
-  // });
+function loadBoard(player) {
+  const boardBoxes = getBoardBoxes(player);
+  player.board.list.forEach((ship) => {
+    const cords = ship.position;
+    placeShip(cords, boardBoxes, ship);
+  });
 }
 
 // unload all the ships on a board
@@ -146,4 +144,5 @@ export {
   setMainScreen,
   loadModal,
   loadGameboard,
+  getBoardBoxes,
 };

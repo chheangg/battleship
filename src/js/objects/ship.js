@@ -2,6 +2,7 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable no-plusplus */
 /* eslint-disable no-use-before-define */
+export const dirs = ['x-pos', 'y-neg', 'x-neg', 'y-pos'];
 
 export const Ships = [
   {
@@ -36,13 +37,32 @@ export const Ships = [
   },
 ];
 export default class Ship {
-  constructor(ship, axis, coordinate) {
+  constructor(ship, dir, coordinate) {
     this.length = ship.length;
-    this.axis = axis;
+    this.dir = dir;
     this.coordinate = coordinate;
     this.position = [];
     this.buildShip();
     this.damage = [];
+  }
+
+  static buildShipCord(length, start, dir) {
+    return Array(length)
+      .fill()
+      .map((_pos, index) => {
+        switch (dir) {
+          case 'x-pos':
+            return [start[0], start[1] + index];
+          case 'x-neg':
+            return [start[0], start[1] - index];
+          case 'y-pos':
+            return [start[0] - index, start[1]];
+          case 'y-neg':
+            return [start[0] + index, start[1]];
+          default:
+            throw new Error('Error: Invalid Coord Index');
+        }
+      });
   }
 
   // Takes coordinate, axis, and length, and build ship on a certain cell position
@@ -51,14 +71,7 @@ export default class Ship {
       return;
     }
     const start = [...this.coordinate];
-    const body = Array(this.length)
-      .fill()
-      .map(() => {
-        if (this.axis === 'horizontal') {
-          return [start[0], start[1]++];
-        }
-        return [start[0]++, start[1]];
-      });
+    const body = Ship.buildShipCord(this.length, start, this.dir);
     this.position = body;
   }
 
