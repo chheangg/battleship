@@ -61,14 +61,16 @@ export default class GameBoard {
 
   // Check if attack is out of bound or already exist, then retry
   // If it is valid, checks if a ship is hit; modify ship if hit
+  isValidAttack(cord) {
+    const attackExist = this
+      .attacks.find((attack) => attack[0] === cord[0] && attack[1] === cord[1]);
+    return !attackExist;
+  }
+
   receiveAttack(cord, gameObject) {
-    const isExist = this.attacks.find((attack) => attack[0] === cord[0] && attack[1] === cord[1]);
-
-    if (isExist) {
-      return false;
-    }
-
     const hit = this.list.find((ship) => ship.hit(cord));
+
+    if (!this.isValidAttack(cord)) return false;
 
     GameBoard.swapTurn(gameObject);
 

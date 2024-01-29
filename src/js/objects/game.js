@@ -21,13 +21,6 @@ export default class Game {
     return this.playerOne.isTurn
       ? this.playerOne : this.playerTwo;
   }
-
-  currentBoard() {
-    const boardContainer = document
-      .getElementsByClassName(`${this.playerOne.isTurn ? 'left' : 'right'}-content`)[0];
-    const board = [...boardContainer.getElementsByClassName('box')];
-    return board;
-  }
 }
 
 // function returnPlayerTurn(gameObject) {

@@ -16,7 +16,8 @@ import {
 } from '../template/template';
 
 function getBoardBoxes(player) {
-  return document.querySelectorAll(`.${player.isTurn ? 'first' : 'second'}-player td`);
+  console.log(`.${player.board.className} td`);
+  return document.querySelectorAll(`.${player.board.className} td`);
 }
 
 // load all the ships on the board when called

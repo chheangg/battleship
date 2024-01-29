@@ -1,13 +1,15 @@
-import { unloadBoard, loadBoard } from './boardLoad';
-import { removeAllEventListener } from './utilities';
+import { unloadBoard, loadBoard, getBoardBoxes } from './boardLoad';
+import { withEventListener } from './utilities';
+
+const eventListeners = [];
 
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/prefer-default-export */
 const attackUtilities = (function handler() {
-  function applyAtt(isHit, cord, side) {
-    const boxes = document.getElementsByClassName(`${side}-content`)[0]
-      .getElementsByClassName('box');
-    [...boxes].forEach((box) => {
+  function applyAtt(isHit, cord, player) {
+    const boxes = getBoardBoxes(player);
+    console.log(player);
+    boxes.forEach((box) => {
       if (box.dataset.pos === cord.join()) {
         box.textContent = 'X';
         box.classList.add(isHit === 'hit' ? 'hit' : 'miss');
@@ -16,18 +18,17 @@ const attackUtilities = (function handler() {
   }
   function checkWin(attacker, defender, gameObject) {
     const hasWin = defender.board.list.every((ship) => ship.isSunk());
-    console.log(hasWin);
     if (hasWin) {
       gameObject.winner = hasWin;
     }
   }
 
-  function attack(gameObject, cord, side, attacker, defender) {
-    const checkValid = attacker.attack(defender, cord, gameObject);
-    if (!checkValid) {
+  function attack(gameObject, cord, attacker, defender) {
+    if (!defender.board.isValidAttack(cord)) {
       return;
     }
-    applyAtt(checkValid, cord, side);
+    const attackState = attacker.attack(defender, cord, gameObject);
+    applyAtt(attackState, cord, defender);
     checkWin(attacker, defender, gameObject);
   }
 
@@ -35,18 +36,35 @@ const attackUtilities = (function handler() {
     const { playerOne, playerTwo, cb } = gameObject;
     const bot = playerOne.isBot ? playerOne : playerTwo;
     const defender = playerOne.isBot ? playerTwo : playerOne;
-    const attackedSide = gameObject.playerOne.isBot
-      ? 'right' : 'left';
     const cord = bot.botEval(defender);
-    const checkValid = bot.attack(defender, cord, gameObject);
-    applyAtt(checkValid, cord, attackedSide);
-    checkWin(bot, defender, gameObject);
+    attack(gameObject, cord, bot, defender);
     cb();
   }
   return { attack, botAttack };
 }());
 
 export { attackUtilities };
+
+function addAttackEventListener(cb, gameObjectState, currentPlayer, oppositePlayer) {
+  const oppositeBoxes = getBoardBoxes(oppositePlayer);
+  oppositeBoxes.forEach((box) => {
+    const eventListener = () => {
+      const cord = box.dataset.pos.split(',').map((x) => parseInt(x, 10));
+      attackUtilities.attack(
+        gameObjectState,
+        cord,
+        currentPlayer,
+        oppositePlayer,
+      );
+      eventListeners.forEach((e) => e());
+      eventListeners.splice(0, eventListeners.length);
+      cb();
+    };
+
+    const removableEvent = withEventListener(box, 'click', eventListener);
+    eventListeners.push(removableEvent);
+  });
+}
 
 // Attack mode
 // Accepts game object for state info and cb for game progression
@@ -56,31 +74,11 @@ export { attackUtilities };
 // eslint-disable-next-line no-shadow
 export default function attackMode(gameObjectState) {
   const { playerOne, playerTwo, cb } = gameObjectState;
-  const currentSide = playerOne.isTurn ? 'left' : 'right';
-  const oppositeSide = currentSide === 'left' ? 'right' : 'left';
   const currentPlayer = playerOne.isTurn
-    ? gameObjectState.playerOne : playerTwo;
+    ? playerOne : playerTwo;
   const oppositePlayer = playerOne.isTurn
-    ? gameObjectState.playerTwo : playerOne;
-
-  unloadBoard(oppositeSide);
-  loadBoard(currentPlayer, currentSide);
-
-  const oppositeBoxes = [...document
-    .querySelector(`.${oppositeSide}-content`)
-    .getElementsByClassName('box')];
-  oppositeBoxes.forEach((box) => {
-    box.addEventListener('click', () => {
-      const cord = box.dataset.pos.split(',').map((x) => parseInt(x, 10));
-      attackUtilities.attack(
-        gameObjectState,
-        cord,
-        oppositeSide,
-        currentPlayer,
-        oppositePlayer,
-      );
-      oppositeBoxes.forEach((oppositeBox) => removeAllEventListener(oppositeBox));
-      cb();
-    });
-  });
+    ? playerTwo : playerOne;
+  unloadBoard(currentPlayer);
+  loadBoard(oppositePlayer);
+  addAttackEventListener(cb, gameObjectState, currentPlayer, oppositePlayer);
 }

@@ -8,14 +8,6 @@ export function getTestGameObject() {
   return new Game(true, playerOne, playerTwo);
 }
 
-export function removeAllEventListener(element) {
-  const oldElement = element;
-  const newElement = element.cloneNode(true);
-  if (oldElement.parentNode) {
-    oldElement.parentNode.replaceChild(newElement, oldElement);
-  }
-}
-
 export function withEventListener(element, eventName, handler) {
   element.addEventListener(eventName, handler);
   return () => element.removeEventListener(eventName, handler);

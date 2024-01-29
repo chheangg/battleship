@@ -68,9 +68,7 @@ function removeAnimationEvent(player) {
     secondPlayerBoard.forEach((fn) => fn());
     secondPlayerBoard = [];
   }
-  console.log('hi')
   animationRemoverEventList.forEach((fn) => fn());
-  console.log(animationRemoverEventList);
   animationRemoverEventList.splice(0, animationRemoverEventList.length);
 }
 

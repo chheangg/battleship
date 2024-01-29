@@ -37,23 +37,25 @@ export default class Player {
 
   // Only use to decide if playerOne is a bot or a real player
   static randomPlayerDecider() {
-    const turnDecider = Math.random() >= 0.5;
-    return (Math.random() >= 0.5)
-      ? new Player(turnDecider, true)
-      : new Player(turnDecider, true);
+    const botDecider = Math.random() >= 0.5;
+    return new Player(botDecider, true);
   }
 
   // Singleplayer object for initializing a bot and a real player
   static singleplayerInit(names = ['Player One', 'Player Two']) {
-    const playerOne = Player.randomPlayerDecider(false);
+    const playerOne = Player.randomPlayerDecider();
     const playerOneIsBot = playerOne.isBot;
-    const playerTwo = new Player(!playerOneIsBot, !playerOne.isTurn);
+    const playerTwo = new Player(!playerOneIsBot, false);
 
     if (playerOneIsBot) {
       playerTwo.name = names[0];
     } else {
       playerOne.name = names[0];
     }
+
+    playerOne.board.className = 'first-player';
+    playerTwo.board.className = 'second-player';
+
     return {
       playerOne,
       playerTwo,
@@ -67,6 +69,9 @@ export default class Player {
 
     playerOne.name = names[0];
     playerTwo.name = names[1];
+
+    playerOne.board.className = 'first-player';
+    playerTwo.board.className = 'second-player';
 
     return {
       playerOne,
