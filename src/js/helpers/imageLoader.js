@@ -6,9 +6,6 @@
 
 /* eslint-disable no-param-reassign */
 import Ship, { dirs } from '../objects/ship';
-import { withEventListener } from './utilities';
-
-export const animationRemoverEventList = [];
 
 let dirIndex = 0;
 
@@ -44,20 +41,17 @@ function placeImage(element, img, givenDir = null) {
   element.classList.add(dir);
 }
 
-function placeShip(cord, boardBoxes, ship, event = null, isAnimationOn = false) {
-  cord.forEach((pos, index) => {
-    const box = boardBoxes[pos[0] * 10 + pos[1]];
+function convertCordToIndex(cord) {
+  return cord[0] * 10 + cord[1];
+}
+
+function placeShip(cords, boardBoxes, ship) {
+  cords.forEach((cord, index) => {
+    const boxIndex = convertCordToIndex(cord);
+    const box = boardBoxes[boxIndex];
     const img = loadIcon(ship.filename, index + 1);
     const { dir } = ship;
     placeImage(box, img, dir);
-    if (isAnimationOn) {
-      const eventListener = () => {
-        box.style.backgroundImage = '';
-      };
-      const el = event.target;
-      const animationRemovalEvent = withEventListener(el, 'mouseout', eventListener);
-      animationRemoverEventList.push(animationRemovalEvent);
-    }
   });
 }
 
@@ -70,5 +64,5 @@ function buildShipBody(cord, ship) {
 
 // eslint-disable-next-line import/prefer-default-export
 export {
-  loadIcon, placeShip, buildShipBody, rotateShip, getDirIndex, dirs,
+  loadIcon, placeShip, buildShipBody, rotateShip, getDirIndex, dirs, convertCordToIndex,
 };

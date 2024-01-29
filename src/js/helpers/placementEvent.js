@@ -1,7 +1,7 @@
 import { Ships } from '../objects/ship';
 import { dirs, getDirIndex } from './imageLoader';
 import { withEventListener } from './utilities';
-import { removeAnimationEvent } from './animation';
+import { animationCleanup } from './animation';
 
 const firstPlayerBoard = [];
 const secondPlayerBoard = [];
@@ -32,7 +32,7 @@ function placementEvent(event, gameObject, player) {
   const ship = Ships[playerShips.length];
 
   initializeShip(player, ship, cord);
-  removeAnimationEvent(player);
+  animationCleanup(player);
   removePlacementEvent(player);
   gameObject.cb(gameObject.isMultiplayer, true);
 }

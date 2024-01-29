@@ -1,3 +1,4 @@
+import { addAttackAnimation, animationCleanup } from './animation';
 import { unloadBoard, loadBoard, getBoardBoxes } from './boardLoad';
 import { withEventListener } from './utilities';
 
@@ -8,7 +9,6 @@ const eventListeners = [];
 const attackUtilities = (function handler() {
   function applyAtt(isHit, cord, player) {
     const boxes = getBoardBoxes(player);
-    console.log(player);
     boxes.forEach((box) => {
       if (box.dataset.pos === cord.join()) {
         box.textContent = 'X';
@@ -78,7 +78,10 @@ export default function attackMode(gameObjectState) {
     ? playerOne : playerTwo;
   const oppositePlayer = playerOne.isTurn
     ? playerTwo : playerOne;
-  unloadBoard(currentPlayer);
-  loadBoard(oppositePlayer);
+  const boxes = getBoardBoxes(oppositePlayer);
+  unloadBoard(boxes, currentPlayer);
+  animationCleanup(currentPlayer);
+  loadBoard(boxes, oppositePlayer);
+  addAttackAnimation(boxes, oppositePlayer);
   addAttackEventListener(cb, gameObjectState, currentPlayer, oppositePlayer);
 }

@@ -16,13 +16,11 @@ import {
 } from '../template/template';
 
 function getBoardBoxes(player) {
-  console.log(`.${player.board.className} td`);
   return document.querySelectorAll(`.${player.board.className} td`);
 }
 
 // load all the ships on the board when called
-function loadBoard(player) {
-  const boardBoxes = getBoardBoxes(player);
+function loadBoard(boardBoxes, player) {
   player.board.list.forEach((ship) => {
     const cords = ship.position;
     placeShip(cords, boardBoxes, ship);

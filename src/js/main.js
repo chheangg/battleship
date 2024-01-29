@@ -12,7 +12,7 @@ import {
 
 import { Ships, dirs } from './objects/ship';
 
-import { addAnimationEvent, removeAnimationEvent } from './helpers/animation';
+import { addShipHoverEvent, animationCleanup } from './helpers/animation';
 import { addPlacementEvent, removePlacementEvent } from './helpers/placementEvent';
 import addPassDelay from './helpers/pass';
 import attackMode, { attackUtilities } from './helpers/attack';
@@ -27,11 +27,11 @@ function populateCellWithEvents(gameObject, player) {
   const ship = Ships[shipIndex];
 
   addPlacementEvent(gameObject, boardBoxes, player);
-  addAnimationEvent(boardBoxes, player, ship);
+  addShipHoverEvent(boardBoxes, player, ship);
 }
 
 function removeCellsEvents(player) {
-  removeAnimationEvent(player);
+  animationCleanup(player);
   removePlacementEvent(player);
 }
 
@@ -63,7 +63,8 @@ function initializeBot(player) {
 function firstPlayerInit(gameObject) {
   const { playerOne, cb } = gameObject;
   if (!playerOne.isBot) {
-    loadBoard(playerOne);
+    const boxes = getBoardBoxes(playerOne);
+    loadBoard(boxes, playerOne);
     placementMode(gameObject, playerOne);
   } else {
     // Initialize bot
@@ -81,9 +82,10 @@ function secondPlayerInit(gameObject, numOfShipsPlayerTwo) {
         addPassDelay();
       }
     }
+    const boxes = getBoardBoxes(playerTwo);
     unloadBoard('left');
     exitPlacementMode(playerOne);
-    loadBoard(playerTwo);
+    loadBoard(boxes, playerTwo);
     placementMode(gameObject, playerTwo);
   } else {
     // Initialize bot
@@ -107,7 +109,7 @@ function startGame(gameObject) {
   gameObject.isStarted = true;
 }
 
-function runGame(gameObject) {
+function runRound(gameObject) {
   const {
     isStarted,
     isMultiplayer,
@@ -167,5 +169,5 @@ export default function mainLoop(gameObject) {
   }
 
   // run games once all the pre requisites are done above
-  runGame(gameObject);
+  runRound(gameObject);
 }
