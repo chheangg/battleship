@@ -11,6 +11,7 @@ export const animationEvents = [];
 function initializeShip(player, ship, body) {
   const dir = dirs[getDirIndex()];
   const initializedShip = player.board.place(ship, dir, body);
+  if (!initializeShip) return false;
   return initializedShip;
 }
 
@@ -30,8 +31,8 @@ function placementEvent(event, gameObject, player) {
   const cord = event.target.dataset.pos.split(',')
     .map((x) => parseInt(x, 10));
   const ship = Ships[playerShips.length];
-
-  initializeShip(player, ship, cord);
+  const isShipValid = initializeShip(player, ship, cord);
+  if (!isShipValid) return;
   animationCleanup(player);
   removePlacementEvent(player);
   gameObject.cb(gameObject.isMultiplayer, true);

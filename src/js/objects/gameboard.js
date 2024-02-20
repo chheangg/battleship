@@ -21,7 +21,7 @@ export default class GameBoard {
 
   // Return false if ship body is over 9 (which is over the board boundary)
   static hitBoundary(position) {
-    return position.find((pos) => (pos[1] < 0) || (pos[1] > 9) || (pos[0] < 0) || (pos[0] > 10));
+    return position.find((pos) => (pos[1] < 0) || (pos[1] > 9) || (pos[0] < 0) || (pos[0] > 9));
   }
 
   // Check if ship can be placed on a certain square, without collision

@@ -49,7 +49,7 @@ function calcShipBody(player, cord, ship) {
     ship,
   );
   const isShipOverflowing = shipBody
-    .find((pos) => (pos[1] < 0) || (pos[1] > 9) || (pos[0] < 0) || (pos[0] > 10));
+    .find((pos) => (pos[1] < 0) || (pos[1] > 9) || (pos[0] < 0) || (pos[0] > 9));
   const isOverlap = player
     .board
     .list
