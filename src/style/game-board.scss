@@ -111,6 +111,7 @@
     margin-top: 2rem;
     box-sizing: border-box;
     width: 100%;
+    height: 100%;
     aspect-ratio: 1 / 1;
     height: auto;
     border-collapse: collapse
@@ -119,8 +120,13 @@
   tbody {
     box-sizing: border-box;
     width: 100%;
-    height: 100%;
+    height: auto;
     aspect-ratio: 1 / 1;
+  }
+
+  tr {
+    height: 10%;
+    width: 10%;
   }
 
   td {
@@ -163,4 +169,8 @@
   .y-neg {
     transform: rotate(90deg);
   }
+}
+
+.target-icon {
+  display: flex;
 }

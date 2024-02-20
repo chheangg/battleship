@@ -3,6 +3,7 @@
 import _ from 'underscore';
 import { buildShipBody, placeShip, convertCordToIndex } from './imageLoader';
 import { withEventListener } from './utilities';
+import { getAttackAsset } from './boardAssetLoader';
 
 let firstPlayerBoard = [];
 let secondPlayerBoard = [];
@@ -32,13 +33,13 @@ function animationCleanup(player) {
 
 const animationEventBuilder = (el, event) => withEventListener(
   el,
-  'mouseover',
+  'mouseenter',
   event,
 );
 
 const withdrawEventBuilder = (el, event) => withEventListener(
   el,
-  'mouseout',
+  'mouseleave',
   event,
 );
 
@@ -87,10 +88,10 @@ function addShipHoverEvent(boardBoxes, player, ship) {
       .split(',')
       .map((x) => parseInt(x, 10));
 
-    const shipHoverHandler = (e) => shipHoverEvent(cord, boardBoxes, player, ship);
+    const shipHoverHandler = () => shipHoverEvent(cord, boardBoxes, player, ship);
     const shipHoverRef = animationEventBuilder(box, shipHoverHandler);
 
-    const shipWithdrawHandler = (e) => shipWithdrawEvent(cord, boardBoxes, player, ship);
+    const shipWithdrawHandler = () => shipWithdrawEvent(cord, boardBoxes, player, ship);
     const shipWithdrawRef = withdrawEventBuilder(box, shipWithdrawHandler);
 
     if (player.board.className === 'first-player') {
@@ -104,10 +105,11 @@ function addShipHoverEvent(boardBoxes, player, ship) {
 }
 
 function attackAnimationEvent(_event, box) {
-  box.textContent = 'X';
+  const target = getAttackAsset(0);
+  box.appendChild(target);
 }
 
-function withdrawAttackEvent(_event, box) {
+function withdrawAttackEvent(event, box) {
   box.textContent = '';
 }
 
