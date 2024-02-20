@@ -38,7 +38,7 @@ npm run start
 - [x] Base Game Functionalities
 - [ ] Attack Mode Styling
   - [ ] Fog of War
-  - [ ] Hovering
+  - [x] Hovering
   - [ ] Hit
   - [ ] Miss
 - [ ] Detailed Placement informations
