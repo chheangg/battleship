@@ -20,7 +20,8 @@ function getBoardBoxes(player) {
 }
 
 // load all the ships on the board when called
-function loadBoard(boardBoxes, player) {
+function loadBoard(player) {
+  const boardBoxes = getBoardBoxes(player);
   player.board.list.forEach((ship) => {
     const cords = ship.position;
     placeShip(cords, boardBoxes, ship);
@@ -28,11 +29,11 @@ function loadBoard(boardBoxes, player) {
 }
 
 // unload all the ships on a board
-function unloadBoard(_side) {
-  // eslint-disable-next-line max-len
-  // [...document.getElementsByClassName(`${side}-content`)[0].getElementsByClassName('box')].forEach((box) => {
-  //   box.style.backgroundImage = '';
-  // });
+function unloadBoard(player) {
+  const boxes = getBoardBoxes(player);
+  boxes.forEach((box) => {
+    box.style.backgroundImage = '';
+  });
 }
 
 // A factory function that has the logic for initializing and loading up the game board

@@ -73,15 +73,24 @@ function addAttackEventListener(cb, gameObjectState, currentPlayer, oppositePlay
 // 2. Populate the correct board to be able to attack with attack event listener
 // eslint-disable-next-line no-shadow
 export default function attackMode(gameObjectState) {
-  const { playerOne, playerTwo, cb } = gameObjectState;
-  const currentPlayer = playerOne.isTurn
-    ? playerOne : playerTwo;
+  const {
+    playerOne, playerTwo, cb,
+  } = gameObjectState;
+
+  const currentPlayer = gameObjectState.currentTurn();
+
   const oppositePlayer = playerOne.isTurn
     ? playerTwo : playerOne;
-  const boxes = getBoardBoxes(oppositePlayer);
-  unloadBoard(boxes, currentPlayer);
+
+  const oppositeBoxes = getBoardBoxes(oppositePlayer);
+
+  unloadBoard(oppositePlayer);
   animationCleanup(currentPlayer);
-  loadBoard(boxes, oppositePlayer);
-  addAttackAnimation(boxes, oppositePlayer);
-  addAttackEventListener(cb, gameObjectState, currentPlayer, oppositePlayer);
+
+  loadBoard(currentPlayer);
+
+  if (!currentPlayer.isBot) {
+    addAttackAnimation(oppositeBoxes, oppositePlayer);
+    addAttackEventListener(cb, gameObjectState, currentPlayer, oppositePlayer);
+  }
 }

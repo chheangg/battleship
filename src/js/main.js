@@ -63,8 +63,7 @@ function initializeBot(player) {
 function firstPlayerInit(gameObject) {
   const { playerOne, cb } = gameObject;
   if (!playerOne.isBot) {
-    const boxes = getBoardBoxes(playerOne);
-    loadBoard(boxes, playerOne);
+    loadBoard(playerOne);
     placementMode(gameObject, playerOne);
   } else {
     // Initialize bot
@@ -82,10 +81,9 @@ function secondPlayerInit(gameObject, numOfShipsPlayerTwo) {
         addPassDelay();
       }
     }
-    const boxes = getBoardBoxes(playerTwo);
-    unloadBoard('left');
+    unloadBoard(playerOne);
     exitPlacementMode(playerOne);
-    loadBoard(boxes, playerTwo);
+    loadBoard(playerTwo);
     placementMode(gameObject, playerTwo);
   } else {
     // Initialize bot
@@ -94,16 +92,16 @@ function secondPlayerInit(gameObject, numOfShipsPlayerTwo) {
   }
 }
 
-function startGame(gameObject) {
+function prepareBoard(gameObject) {
   // Both player finishes placement
   gameObject.isStarted = true;
+
   // Signal to the second player to pass the game to the first player
-  if (!gameObject.playerOne.isBot) {
-    unloadBoard('right');
-    if (gameObject.isMultiplayer) {
-      addPassDelay();
-    }
+  if (gameObject.isMultiplayer) {
+    unloadBoard(gameObject.playerTwo);
+    addPassDelay();
   }
+
   exitPlacementMode(gameObject.playerTwo);
   // eslint-disable-next-line no-param-reassign
   gameObject.isStarted = true;
@@ -117,14 +115,15 @@ function runRound(gameObject) {
   // Run game and pass between each turn. Handle both player and both functionalities
   if (isStarted) {
     // Signal to the player to pass the game to the opposite player.
-    if (!gameObject.currentTurn().isBot) {
-      if (isMultiplayer) {
-        addPassDelay();
-      }
+    if (isMultiplayer) {
       attackMode(gameObject);
+      addPassDelay();
     } else {
-      // add bot attack
-      attackUtilities.botAttack(gameObject);
+      const currentPlayer = gameObject.currentTurn();
+      attackMode(gameObject);
+      if (currentPlayer.isBot) {
+        attackUtilities.botAttack(gameObject);
+      }
     }
   }
 }
@@ -165,7 +164,7 @@ export default function mainLoop(gameObject) {
 
   // Set board view correctly and pass to the first player to start the game
   if (placementFinished && !isStarted) {
-    startGame(gameObject);
+    prepareBoard(gameObject);
   }
 
   // run games once all the pre requisites are done above

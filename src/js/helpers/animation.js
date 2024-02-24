@@ -110,7 +110,12 @@ function attackAnimationEvent(_event, box) {
 }
 
 function withdrawAttackEvent(event, box) {
-  box.textContent = '';
+  const target = getAttackAsset(0);
+  const className = `.${target.className}`;
+  const targetToRemove = box.querySelector(className);
+  if (targetToRemove) {
+    targetToRemove.remove();
+  }
 }
 
 function addAttackAnimation(boardBoxes, player) {
