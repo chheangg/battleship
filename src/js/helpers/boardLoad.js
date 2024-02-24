@@ -5,8 +5,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-plusplus */
 /* eslint-disable import/prefer-default-export */
-import { Ships } from '../objects/ship';
-import { loadIcon, placeShip, rotateShip } from './imageLoader';
+import { dirs, placeShip, rotateShip } from './imageLoader';
 import {
   startScreen,
   singlePlayerModal,
@@ -14,13 +13,40 @@ import {
   gameBoardTemplate,
   shipPlacementComponent,
 } from '../template/template';
+import { getAttackAsset } from './boardAssetLoader';
 
 function getBoardBoxes(player) {
   return document.querySelectorAll(`.${player.board.className} td`);
 }
 
+// load Fog of War
+function loadFOW(player) {
+  const boardBoxes = getBoardBoxes(player);
+  const fowSample = getAttackAsset(1);
+  const className = `.${fowSample.className}`;
+  if (boardBoxes[0].querySelector(className)) {
+    return;
+  }
+  boardBoxes.forEach((box) => {
+    const fow = getAttackAsset(1);
+    box.appendChild(fow);
+  });
+}
+
+// unload Fog of War
+function unloadFOW(player) {
+  const boardBoxes = getBoardBoxes(player);
+  const FOW = getAttackAsset(1);
+  const className = `.${FOW.className}`;
+  boardBoxes.forEach((box) => {
+    const fogElement = box.querySelector(className);
+    if (fogElement) fogElement.remove();
+  });
+}
+
 // load all the ships on the board when called
 function loadBoard(player) {
+  unloadFOW(player);
   const boardBoxes = getBoardBoxes(player);
   player.board.list.forEach((ship) => {
     const cords = ship.position;
@@ -33,7 +59,10 @@ function unloadBoard(player) {
   const boxes = getBoardBoxes(player);
   boxes.forEach((box) => {
     box.style.backgroundImage = '';
+    // remove directions classes applied to loaded board
+    box.classList.remove(...dirs);
   });
+  loadFOW(player);
 }
 
 // A factory function that has the logic for initializing and loading up the game board
@@ -80,14 +109,6 @@ const boardLoad = (function handler() {
   //   generatePage, generateBox, assignParent,
   // };
 }());
-
-// Load board
-// OLD FUNC
-function mainPageLoad(gameObject) {
-  // boardLoad.generatePage(gameObject);
-  // boardLoad.generateBox();
-  // boardLoad.assignParent();
-}
 
 function setMainScreen() {
   document.body.innerHTML = startScreen;
@@ -136,7 +157,6 @@ function loadPlacementOption(gameObject) {
 }
 
 export {
-  mainPageLoad,
   loadBoard,
   loadPlacementOption,
   boardLoad,

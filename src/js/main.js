@@ -61,9 +61,10 @@ function initializeBot(player) {
 }
 
 function firstPlayerInit(gameObject) {
-  const { playerOne, cb } = gameObject;
+  const { playerOne, playerTwo, cb } = gameObject;
   if (!playerOne.isBot) {
     loadBoard(playerOne);
+    unloadBoard(playerTwo);
     placementMode(gameObject, playerOne);
   } else {
     // Initialize bot

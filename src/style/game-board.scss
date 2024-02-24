@@ -133,8 +133,9 @@
     box-sizing: border-box;
     height: 10%;
     width: 10%;
+    position: relative;
 
-    border: 1px solid style.$text-color;
+    border: 2px solid #e2e8f0;
 
     background-size: cover;
     background-repeat: no-repeat;
@@ -171,6 +172,22 @@
   }
 }
 
+.target-icon, .fog-icon {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  right: 2px;
+}
+
+.fog-icon {
+  z-index: 1;
+}
+
 .target-icon {
-  display: flex;
+  z-index: 2;
+}
+
+// png icon only
+.fog-icon {
+  max-width: 100%;
 }

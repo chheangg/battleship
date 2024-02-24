@@ -37,7 +37,7 @@ npm run start
 ## Roadmap
 - [x] Base Game Functionalities
 - [ ] Attack Mode Styling
-  - [ ] Fog of War
+  - [x] Fog of War
   - [x] Hovering
   - [ ] Hit
   - [ ] Miss

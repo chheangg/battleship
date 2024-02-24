@@ -84,10 +84,9 @@ export default function attackMode(gameObjectState) {
 
   const oppositeBoxes = getBoardBoxes(oppositePlayer);
 
+  loadBoard(currentPlayer);
   unloadBoard(oppositePlayer);
   animationCleanup(currentPlayer);
-
-  loadBoard(currentPlayer);
 
   if (!currentPlayer.isBot) {
     addAttackAnimation(oppositeBoxes, oppositePlayer);
