@@ -1,6 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import targetIcon from '../../assets/target.svg';
 import waveIcon from '../../assets/board/fog.svg';
+import missedOppIcon from '../../assets/board/missed.svg';
 
 const attackAssets = [
   {
@@ -10,6 +11,10 @@ const attackAssets = [
   {
     src: waveIcon,
     className: 'fog-icon',
+  },
+  {
+    src: missedOppIcon,
+    className: 'missed-opp-icon',
   },
 ];
 

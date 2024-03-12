@@ -15,7 +15,7 @@ import { Ships, dirs } from './objects/ship';
 import { addShipHoverEvent, animationCleanup } from './helpers/animation';
 import { addPlacementEvent, removePlacementEvent } from './helpers/placementEvent';
 import addPassDelay from './helpers/pass';
-import attackMode, { attackUtilities } from './helpers/attack';
+import { attackMode, botAttackMode } from './helpers/attack';
 
 const maxShips = 5;
 
@@ -116,15 +116,9 @@ function runRound(gameObject) {
   // Run game and pass between each turn. Handle both player and both functionalities
   if (isStarted) {
     // Signal to the player to pass the game to the opposite player.
+    attackMode(gameObject);
     if (isMultiplayer) {
-      attackMode(gameObject);
       addPassDelay();
-    } else {
-      const currentPlayer = gameObject.currentTurn();
-      attackMode(gameObject);
-      if (currentPlayer.isBot) {
-        attackUtilities.botAttack(gameObject);
-      }
     }
   }
 }

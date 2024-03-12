@@ -41,6 +41,7 @@ npm run start
   - [x] Hovering
   - [ ] Hit
   - [ ] Miss
+  - [ ] Pass-n-play delay
 - [ ] Detailed Placement informations
   - [ ] Ship Icon Info
   - [ ] Direction Info

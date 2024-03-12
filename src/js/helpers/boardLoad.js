@@ -5,7 +5,9 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-plusplus */
 /* eslint-disable import/prefer-default-export */
-import { dirs, placeShip, rotateShip } from './imageLoader';
+import {
+  convertCordToIndex, dirs, placeShip, rotateShip,
+} from './imageLoader';
 import {
   startScreen,
   singlePlayerModal,
@@ -23,35 +25,57 @@ function getBoardBoxes(player) {
 function loadFOW(player) {
   const boardBoxes = getBoardBoxes(player);
   const fowSample = getAttackAsset(1);
-  const className = `.${fowSample.className}`;
-  if (boardBoxes[0].querySelector(className)) {
+  const missedSample = getAttackAsset(2);
+  const fowClassName = `.${fowSample.className}`;
+  const missedClassName = `.${missedSample.className}`;
+
+  const containsAsset = boardBoxes[0].querySelector(fowClassName)
+  || boardBoxes[0].querySelector(missedClassName);
+
+  if (containsAsset) {
     return;
   }
+
+  player.board.misses.forEach((cord) => {
+    const missedIndex = convertCordToIndex(cord);
+
+    if (boardBoxes[missedIndex].querySelector(missedClassName)) return;
+
+    const missedIcon = getAttackAsset(2);
+    boardBoxes[missedIndex].appendChild(missedIcon);
+  });
+
   boardBoxes.forEach((box) => {
-    const fow = getAttackAsset(1);
-    box.appendChild(fow);
+    if (box.querySelector(missedClassName)) return;
+    const fowIcon = getAttackAsset(1);
+    box.appendChild(fowIcon);
   });
 }
 
 // unload Fog of War
-function unloadFOW(player) {
+function unloadIcon(player) {
   const boardBoxes = getBoardBoxes(player);
-  const FOW = getAttackAsset(1);
-  const className = `.${FOW.className}`;
   boardBoxes.forEach((box) => {
-    const fogElement = box.querySelector(className);
-    if (fogElement) fogElement.remove();
+    box.replaceChildren();
   });
 }
 
 // load all the ships on the board when called
 function loadBoard(player) {
-  unloadFOW(player);
+  // Unload Fog of War
+  unloadIcon(player);
+
   const boardBoxes = getBoardBoxes(player);
+
+  // Load ship
   player.board.list.forEach((ship) => {
     const cords = ship.position;
     placeShip(cords, boardBoxes, ship);
   });
+
+  // Load Misses
+
+  // Load Hits (Current Player POV)
 }
 
 // unload all the ships on a board

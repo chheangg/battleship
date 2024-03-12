@@ -11,7 +11,6 @@ const attackUtilities = (function handler() {
     const boxes = getBoardBoxes(player);
     boxes.forEach((box) => {
       if (box.dataset.pos === cord.join()) {
-        box.textContent = 'X';
         box.classList.add(isHit === 'hit' ? 'hit' : 'miss');
       }
     });
@@ -66,13 +65,7 @@ function addAttackEventListener(cb, gameObjectState, currentPlayer, oppositePlay
   });
 }
 
-// Attack mode
-// Accepts game object for state info and cb for game progression
-// Attack mode function check whose turn should be able to attack
-// 1. Load board for current player
-// 2. Populate the correct board to be able to attack with attack event listener
-// eslint-disable-next-line no-shadow
-export default function attackMode(gameObjectState) {
+export function attackMode(gameObjectState) {
   const {
     playerOne, playerTwo, cb,
   } = gameObjectState;
@@ -91,5 +84,7 @@ export default function attackMode(gameObjectState) {
   if (!currentPlayer.isBot) {
     addAttackAnimation(oppositeBoxes, oppositePlayer);
     addAttackEventListener(cb, gameObjectState, currentPlayer, oppositePlayer);
+  } else {
+    attackUtilities.botAttack(gameObjectState);
   }
 }
