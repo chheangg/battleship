@@ -1,6 +1,6 @@
-import { addAttackAnimation, animationCleanup } from './animation';
-import { unloadBoard, loadBoard, getBoardBoxes } from './boardLoad';
-import { withEventListener } from './utilities';
+import { addAttackAnimation, cleanupAnimation } from './animation';
+import { getBoardBoxes, withEventListener } from '../utilities';
+import { renderFOW, renderShips, unrenderShips } from './render/board';
 
 const eventListeners = [];
 
@@ -77,9 +77,10 @@ export function attackMode(gameObjectState) {
 
   const oppositeBoxes = getBoardBoxes(oppositePlayer);
 
-  loadBoard(currentPlayer);
-  unloadBoard(oppositePlayer);
-  animationCleanup(currentPlayer);
+  renderShips(currentPlayer);
+  unrenderShips(oppositePlayer);
+  cleanupAnimation(currentPlayer);
+  renderFOW(oppositePlayer);
 
   if (!currentPlayer.isBot) {
     addAttackAnimation(oppositeBoxes, oppositePlayer);

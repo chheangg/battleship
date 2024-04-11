@@ -6,11 +6,12 @@
 import Ship from './ship';
 
 export default class GameBoard {
-  constructor() {
+  constructor(player) {
     this.list = [];
     this.attacks = [];
     this.hits = [];
     this.misses = [];
+    this.player = player;
   }
 
   // Check if two set of array contain similar elements
@@ -39,12 +40,9 @@ export default class GameBoard {
 
   // Place ship, build a ship, check if it is valid.
   place(ship, dir, coordinate) {
-    const initializedShip = new Ship(ship, dir, coordinate);
-
-    // Assign ships filename and other attributes in used for ship identification
-    // and loading ship images
-    initializedShip.attributes = ship;
-    initializedShip.filename = ship.filename;
+    console.log(coordinate);
+    const initializedShip = new Ship(ship, this.player, dir, coordinate);
+    initializedShip.build();
 
     if (!this.isValid(initializedShip.position)) {
       return false;

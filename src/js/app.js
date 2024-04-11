@@ -1,3 +1,5 @@
-import { openGameMenu } from './helpers/gameLifeCycle';
+import 'normalize.css';
+import '../style/style.scss';
+import mainLoop from './main';
 
-openGameMenu();
+mainLoop();

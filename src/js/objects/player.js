@@ -11,7 +11,7 @@ export default class Player {
     this.isBot = isBot;
     this.isTurn = initialTurn;
     this.name = '';
-    this.board = new Gameboard();
+    this.board = new Gameboard(this);
   }
 
   // Bot create random attack cord on the board, keep retrying if it is not valid;

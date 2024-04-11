@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
-import Game from '../objects/game';
-import Player from '../objects/player';
+import Game from './objects/game';
+import Player from './objects/player';
 
 // utility function for initializing Test's game object
 export function getTestGameObject() {
@@ -15,4 +15,12 @@ export function withEventListener(element, eventName, handler) {
 
 export function addEventToBeRemove(event, playerFnStack) {
   playerFnStack.push(event);
+}
+
+export function getBoardBoxes(player) {
+  return document.querySelectorAll(`.${player.board.className} td`);
+}
+
+export function convertCordToIndex(cord) {
+  return cord[0] * 10 + cord[1];
 }

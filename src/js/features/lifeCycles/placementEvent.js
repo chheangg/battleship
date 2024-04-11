@@ -1,21 +1,22 @@
-import { Ships } from '../objects/ship';
-import { dirs, getDirIndex } from './imageLoader';
-import { withEventListener } from './utilities';
-import { animationCleanup } from './animation';
+import { Ships } from '../../objects/ship';
+import { dirs, getDirIndex } from '../direction';
+import { withEventListener, getBoardBoxes } from '../../utilities';
+import { cleanupAnimation, addShipHoverAnimation } from '../animation';
 
 const firstPlayerBoard = [];
 const secondPlayerBoard = [];
 export const animationEvents = [];
 
 // Ship logical placement function onto the player's board
-function initializeShip(player, ship, body) {
-  const dir = dirs[getDirIndex()];
+function placeShip(player, ship, body) {
+  const dirIndex = getDirIndex();
+  const dir = dirs[dirIndex];
   const initializedShip = player.board.place(ship, dir, body);
-  if (!initializeShip) return false;
+  if (!initializedShip) return false;
   return initializedShip;
 }
 
-function removePlacementEvent(player) {
+export function depopulatePlacementEvent(player) {
   if (player.isTurn) {
     firstPlayerBoard.forEach((fn) => fn());
     firstPlayerBoard.splice(0, firstPlayerBoard.length);
@@ -25,21 +26,30 @@ function removePlacementEvent(player) {
   }
 }
 
+export function exitPlacementEvent(player) {
+  cleanupAnimation(player);
+  depopulatePlacementEvent(player);
+}
+
 // Placement Event
 function placementEvent(event, gameObject, player) {
   const playerShips = player.board.list;
   const cord = event.target.dataset.pos.split(',')
     .map((x) => parseInt(x, 10));
+
   const ship = Ships[playerShips.length];
-  const isShipValid = initializeShip(player, ship, cord);
+
+  const isShipValid = placeShip(player, ship, cord);
   if (!isShipValid) return;
-  animationCleanup(player);
-  removePlacementEvent(player);
+
+  exitPlacementEvent(player);
+
+  // Call main loop
   gameObject.cb(gameObject.isMultiplayer, true);
 }
 
 // Add placement event to all cell
-function addPlacementEvent(gameObject, boardBoxes, player) {
+export function populatePlacementEvent(gameObject, boardBoxes, player) {
   // set a time out so that animation event executes first
   // to remove all animation, within the call stack;
   const eventRef = (event) => {
@@ -55,7 +65,10 @@ function addPlacementEvent(gameObject, boardBoxes, player) {
   });
 }
 
-export {
-  addPlacementEvent,
-  removePlacementEvent,
-};
+export function enterPlacementEvent(gameObject, player) {
+  if (player.isBot) return;
+  const boardBoxes = getBoardBoxes(player);
+
+  populatePlacementEvent(gameObject, boardBoxes, player);
+  addShipHoverAnimation(boardBoxes, player);
+}
