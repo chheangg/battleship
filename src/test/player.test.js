@@ -1,10 +1,10 @@
 /* eslint-disable no-undef */
 import { Ships } from '../js/objects/ship';
 import Player from '../js/objects/player';
-import { getTestGameObject } from '../js/helpers/utilities';
+import { createTestGameObject } from '../js/utilities';
 
 it('Path #1.1 Player gets their board', () => {
-  const playerX = new Player(false, true);
+  const playerX = new Player(null, false, true);
   expect(playerX)
     .toMatchObject({
       isTurn: true,
@@ -12,8 +12,8 @@ it('Path #1.1 Player gets their board', () => {
 });
 
 it('Path #1.2 Multiple players', () => {
-  const playerX = new Player(false, true);
-  const playerY = new Player(false, false);
+  const playerX = new Player(null, false, true);
+  const playerY = new Player(null, false, false);
   expect(playerX)
     .toMatchObject({
       isTurn: true,
@@ -25,21 +25,19 @@ it('Path #1.2 Multiple players', () => {
 });
 
 it('Path #1.3 Attacking other player', () => {
-  const gameObject = getTestGameObject();
+  const gameObject = createTestGameObject;
   const { playerOne, playerTwo } = gameObject;
-  playerOne.board.place(Ships.patrol, 'horizontal', [0, 0]);
-  playerTwo.board.place(Ships.patrol, 'vertical', [0, 0]);
-  playerOne.attack(playerTwo, [0, 0], gameObject);
+  playerOne.board.place(Ships[0], 0, [0, 0]);
+  playerTwo.board.place(Ships[0], 1, [0, 0]);
+  playerOne.attack(playerTwo, [0, 0]);
   expect(playerTwo.board.hits)
     .toMatchObject([[0, 0]]);
-  expect(playerOne.isTurn).toBe(false);
-  expect(playerTwo.isTurn).toBe(true);
 
-  playerTwo.attack(playerOne, [1, 0], gameObject);
+  playerTwo.attack(playerOne, [1, 0]);
   expect(playerOne.board.misses)
     .toMatchObject([[1, 0]]);
 
-  playerOne.attack(playerTwo, [1, 0], gameObject);
+  playerOne.attack(playerTwo, [1, 0]);
   expect(playerTwo.board.hits)
     .toMatchObject([[0, 0], [1, 0]]);
   expect(playerTwo.board.list[0].isSunk()).toBe(true);

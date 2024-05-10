@@ -6,8 +6,8 @@ import _ from 'underscore';
 
 /**
  * 0: x-pos
- * 1: x-neg
- * 2: y-neg
+ * 1: y-neg
+ * 2: x-neg
  * 3: y-pos
  */
 
@@ -53,6 +53,7 @@ export default class Ship {
     this.player = player;
     this.filename = ship.filename;
     this.attributes = ship;
+    this.build();
   }
 
   static constructBody(start, length, dirIndex) {
@@ -91,7 +92,7 @@ export default class Ship {
   // Takes coordinate, axis, and length, and build ship on a certain cell position
   build() {
     if (this.position.length > 0) {
-      return 0;
+      return this.position;
     }
 
     const start = [...this.coordinate];
@@ -105,15 +106,16 @@ export default class Ship {
   }
 
   // Take a cord and check if cord hits any body cord
-  hit(value) {
+  hit(cord) {
     const isHit = this.position.some((pos) => {
-      const matchHitPos = value[0] === pos[0] && value[1] === pos[1];
+      const matchHitPos = cord[0] === pos[0] && cord[1] === pos[1];
       if (matchHitPos) {
-        this.damage.push(value);
+        this.damage.push(cord);
       }
       return matchHitPos;
     });
-    return isHit;
+
+    return isHit || false;
   }
 
   // Damage return true of damage length is equal to body length

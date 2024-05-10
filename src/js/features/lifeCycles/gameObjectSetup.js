@@ -1,20 +1,9 @@
 /* eslint-disable no-param-reassign */
 import Game from '../../objects/game';
-import Player from '../../objects/player';
 import { loadModal } from '../render/modal';
 
 // Load the page, and initialize Game object to be return
 // to be used by other stages in the game
-function instantiateGameObject(isMultiplayer, init) {
-  const { playerOne, playerTwo } = init();
-  return new Game(isMultiplayer, playerOne, playerTwo);
-}
-
-function initializeGameObject(isMultiplayer) {
-  const init = !isMultiplayer ? Player.singleplayerInit : Player.multiplayerInit;
-  return instantiateGameObject(isMultiplayer, init);
-}
-
 function collectNameFromFormHOF(gameObject) {
   return () => {
     const { isMultiplayer } = gameObject;
@@ -42,14 +31,14 @@ function collectName(gameObject, collectNameCb) {
   loadModal(gameObject, collectNameCb);
 }
 
-function populateNameModalEvent(collectNameCb) {
+function addNameModalEvent(collectNameCb) {
   const btn = document.querySelector('.name-form-btn');
   btn.addEventListener('click', collectNameCb);
 }
 
-function gameModeEvent(isMultiplayer, cb) {
+function initGameModeEvent(isMultiplayer, cb) {
   // Initialize gameObject
-  const gameObject = initializeGameObject(isMultiplayer);
+  const gameObject = new Game(isMultiplayer);
 
   // Collect name
   collectName(gameObject);
@@ -58,7 +47,7 @@ function gameModeEvent(isMultiplayer, cb) {
   gameObject.cb = mainLoopCallback;
 
   const collectNameCb = collectNameFromFormHOF(gameObject);
-  populateNameModalEvent(collectNameCb);
+  addNameModalEvent(collectNameCb);
 }
 
 export default function populateMenuEvent(cb) {
@@ -68,8 +57,8 @@ export default function populateMenuEvent(cb) {
   // Create a bot and a player and start the game
 
   // Single player logic
-  singlePlayerBtn.addEventListener('click', () => gameModeEvent(false, cb));
+  singlePlayerBtn.addEventListener('click', () => initGameModeEvent(false, cb));
 
   // Create two players logic and start the game
-  multiPlayerbtn.addEventListener('click', () => gameModeEvent(true, cb));
+  multiPlayerbtn.addEventListener('click', () => initGameModeEvent(true, cb));
 }

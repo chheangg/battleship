@@ -7,11 +7,11 @@
 import Gameboard from './gameboard';
 
 export default class Player {
-  constructor(isBot, initialTurn) {
+  constructor(gameObject, isBot, initialTurn) {
     this.isBot = isBot;
     this.isTurn = initialTurn;
     this.name = '';
-    this.board = new Gameboard(this);
+    this.board = new Gameboard(gameObject, this);
   }
 
   // Bot create random attack cord on the board, keep retrying if it is not valid;
@@ -31,51 +31,13 @@ export default class Player {
   // Player simply receive attack if it is not a bot (implying coordinate exists)
   // otherwise, a coord is randomly generated for the bot to attack
   // eslint-disable-next-line consistent-return, class-methods-use-this
-  attack(player, coordinate, gameObject) {
-    return player.board.receiveAttack(coordinate, gameObject);
+  attack(player, coordinate) {
+    return player.board.receiveAttack(coordinate);
   }
 
   // Only use to decide if playerOne is a bot or a real player
   static randomPlayerDecider() {
     const botDecider = Math.random() >= 0.5;
     return new Player(botDecider, true);
-  }
-
-  // Singleplayer object for initializing a bot and a real player
-  static singleplayerInit(names = ['Player One', 'Player Two']) {
-    const playerOne = Player.randomPlayerDecider();
-    const playerOneIsBot = playerOne.isBot;
-    const playerTwo = new Player(!playerOneIsBot, false);
-
-    if (playerOneIsBot) {
-      playerTwo.name = names[0];
-    } else {
-      playerOne.name = names[0];
-    }
-
-    playerOne.board.className = 'first-player';
-    playerTwo.board.className = 'second-player';
-
-    return {
-      playerOne,
-      playerTwo,
-    };
-  }
-
-  // Multiplayer object for initializing both real players
-  static multiplayerInit(names = ['Player One', 'Player Two']) {
-    const playerOne = new Player(false, true);
-    const playerTwo = new Player(false, false);
-
-    playerOne.name = names[0];
-    playerTwo.name = names[1];
-
-    playerOne.board.className = 'first-player';
-    playerTwo.board.className = 'second-player';
-
-    return {
-      playerOne,
-      playerTwo,
-    };
   }
 }

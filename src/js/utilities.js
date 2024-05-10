@@ -3,9 +3,16 @@ import Game from './objects/game';
 import Player from './objects/player';
 
 // utility function for initializing Test's game object
-export function getTestGameObject() {
-  const { playerOne, playerTwo } = Player.multiplayerInit();
-  return new Game(true, playerOne, playerTwo);
+export function createTestGameObject() {
+  return new Game(true);
+}
+
+export function createTestPlayer() {
+  return new Player(null, true, true);
+}
+
+export function createTestGameBoard() {
+  return createTestGameObject().playerOne.board;
 }
 
 export function withEventListener(element, eventName, handler) {

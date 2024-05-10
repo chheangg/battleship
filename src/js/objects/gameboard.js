@@ -5,13 +5,22 @@
 
 import Ship from './ship';
 
+/**
+ * Direction Enums
+ * 0: x-pos
+ * 1: x-neg
+ * 2: y-neg
+ * 3: y-pos
+ */
+
 export default class GameBoard {
-  constructor(player) {
+  constructor(gameObject, player) {
     this.list = [];
     this.attacks = [];
     this.hits = [];
     this.misses = [];
     this.player = player;
+    this.gameObject = gameObject;
   }
 
   // Check if two set of array contain similar elements
@@ -29,6 +38,7 @@ export default class GameBoard {
   // with the border or other ships.
   // takes all the ship as argument to check for collison
   isValid(position) {
+    if (!position.length) return false;
     // Check if ship overlaps over any other ships
     const hasCollision = this.list
       .find((ship) => GameBoard.intersect(ship.position, position));
@@ -38,11 +48,15 @@ export default class GameBoard {
     return !hasCollision && validBoundary;
   }
 
-  // Place ship, build a ship, check if it is valid.
+  /**
+ *
+ * @param {*} ship - Uses the Ship enums in objects/Ship.js
+ * @param {*} dir - Uses the Direction enums // MUST BE REFACTORED!
+ * @param {*} coordinate - Uses the Coordinate [0, 1] // MUST BE REFACTORED!
+ * @returns
+ */
   place(ship, dir, coordinate) {
-    console.log(coordinate);
     const initializedShip = new Ship(ship, this.player, dir, coordinate);
-    initializedShip.build();
 
     if (!this.isValid(initializedShip.position)) {
       return false;
@@ -51,8 +65,8 @@ export default class GameBoard {
     return initializedShip;
   }
 
-  static swapTurn(gameObject) {
-    const { playerOne, playerTwo } = gameObject;
+  swapTurn() {
+    const { playerOne, playerTwo } = this.gameObject;
     playerOne.isTurn = !playerOne.isTurn;
     playerTwo.isTurn = !playerTwo.isTurn;
   }
@@ -65,21 +79,21 @@ export default class GameBoard {
     return !attackExist;
   }
 
-  receiveAttack(cord, gameObject) {
-    const hit = this.list.find((ship) => ship.hit(cord));
+  receiveAttack(cord) {
+    const receiveHit = this.list.find((ship) => ship.hit(cord));
 
     if (!this.isValidAttack(cord)) return false;
 
-    GameBoard.swapTurn(gameObject);
+    this.swapTurn();
 
     this.attacks.push(cord);
 
-    if (hit) {
+    if (receiveHit) {
       this.hits.push(cord);
-      return 'hit';
+      return true;
     }
 
     this.misses.push(cord);
-    return 'miss';
+    return false;
   }
 }

@@ -4,7 +4,7 @@
 import { unrenderShips } from './features/render/board';
 
 import addPassDelay from './features/pass';
-import { attackMode } from './features/attack';
+import attackMode from './features/lifeCycles/attack';
 import setupPlacementMode from './features/lifeCycles/placementSetup';
 import { enterPlacementEvent } from './features/lifeCycles/placementEvent';
 import renderMenu from './features/lifeCycles/menu';

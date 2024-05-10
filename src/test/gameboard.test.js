@@ -1,17 +1,16 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-undef */
 import { Ships } from '../js/objects/ship';
-import Gameboard from '../js/objects/gameboard';
-import { getTestGameObject } from '../js/helpers/utilities';
+import { createTestGameBoard } from '../js/utilities';
 
 it('Path #1.1 Placing a ship', () => {
-  const board = new Gameboard();
-  board.place(Ships.patrol, 'horizontal', [0, 0]);
+  const board = createTestGameBoard();
+  board.place(Ships[0], 0, [0, 0]);
   expect(board.list[0])
     .toMatchObject({
       length: 2,
       damage: [],
-      axis: 'horizontal',
+      dir: 0,
       position: [
         [0, 0],
         [0, 1],
@@ -20,14 +19,14 @@ it('Path #1.1 Placing a ship', () => {
 });
 
 it('Path #1.2 Placing two ship', () => {
-  const board = new Gameboard();
-  board.place(Ships.patrol, 'horizontal', [0, 0]);
-  board.place(Ships.patrol, 'horizontal', [1, 0]);
+  const board = createTestGameBoard();
+  board.place(Ships[0], 0, [0, 0]);
+  board.place(Ships[0], 0, [1, 0]);
   expect(board.list[0])
     .toMatchObject({
       length: 2,
       damage: [],
-      axis: 'horizontal',
+      dir: 0,
       position: [
         [0, 0],
         [0, 1],
@@ -37,7 +36,7 @@ it('Path #1.2 Placing two ship', () => {
     .toMatchObject({
       length: 2,
       damage: [],
-      axis: 'horizontal',
+      dir: 0,
       position: [
         [1, 0],
         [1, 1],
@@ -46,13 +45,13 @@ it('Path #1.2 Placing two ship', () => {
 });
 
 it('Path #1.3 Placing a destroyer', () => {
-  const board = new Gameboard();
-  board.place(Ships.destroyer, 'horizontal', [0, 0]);
+  const board = createTestGameBoard();
+  board.place(Ships[2], 0, [0, 0]);
   expect(board.list[0])
     .toMatchObject({
       length: 3,
       damage: [],
-      axis: 'horizontal',
+      dir: 0,
       position: [
         [0, 0],
         [0, 1],
@@ -62,13 +61,13 @@ it('Path #1.3 Placing a destroyer', () => {
 });
 
 it('Path #1.4 Placing a carrier', () => {
-  const board = new Gameboard();
-  board.place(Ships.carrier, 'horizontal', [0, 0]);
+  const board = createTestGameBoard();
+  board.place(Ships[4], 0, [0, 0]);
   expect(board.list[0])
     .toMatchObject({
       length: 5,
       damage: [],
-      axis: 'horizontal',
+      dir: 0,
       position: [
         [0, 0],
         [0, 1],
@@ -80,14 +79,14 @@ it('Path #1.4 Placing a carrier', () => {
 });
 
 it('Path #2.1 cancel invalid placement (overlap)', () => {
-  const board = new Gameboard();
-  board.place(Ships.carrier, 'horizontal', [0, 0]);
-  board.place(Ships.carrier, 'horizontal', [0, 1]);
+  const board = createTestGameBoard();
+  board.place(Ships[4], 0, [0, 0]);
+  board.place(Ships[4], 3, [0, 1]);
   expect(board.list[0])
     .toMatchObject({
       length: 5,
       damage: [],
-      axis: 'horizontal',
+      dir: 0,
       position: [
         [0, 0],
         [0, 1],
@@ -101,22 +100,22 @@ it('Path #2.1 cancel invalid placement (overlap)', () => {
 });
 
 it('Path #2.2 cancel invalid placement (out of boundary)', () => {
-  const board = new Gameboard();
-  board.place(Ships.carrier, 'horizontal', [0, 9]);
+  const board = createTestGameBoard();
+  board.place(Ships[4], 0, [0, 9]);
   expect(board.list[0])
     .toBeUndefined();
 });
 
 it('Path #2.3 cancel invalid placement (out of boundary + overlap)', () => {
-  const board = new Gameboard();
-  board.place(Ships.carrier, 'horizontal', [0, 9]);
-  board.place(Ships.carrier, 'vertical', [0, 1]);
-  board.place(Ships.carrier, 'horizontal', [0, 1]);
+  const board = createTestGameBoard();
+  board.place(Ships[4], 0, [0, 9]);
+  board.place(Ships[4], 1, [0, 1]);
+  board.place(Ships[4], 0, [0, 1]);
   expect(board.list[0])
     .toMatchObject({
       length: 5,
       damage: [],
-      axis: 'vertical',
+      dir: 1,
       position: [
         [0, 1],
         [1, 1],
@@ -128,21 +127,17 @@ it('Path #2.3 cancel invalid placement (out of boundary + overlap)', () => {
 });
 
 it('Path #3.1 Check hits', () => {
-  const gameObject = getTestGameObject();
-  const { playerOne } = gameObject;
-  const { board } = playerOne;
-  board.place(Ships.patrol, 'horizontal', [0, 0]);
-  board.receiveAttack([0, 0], gameObject);
+  const board = createTestGameBoard();
+  board.place(Ships[0], 0, [0, 0]);
+  board.receiveAttack([0, 0]);
   expect(board.hits[0])
     .toMatchObject([0, 0]);
 });
 
 it('Path #3.2 Check misses', () => {
-  const gameObject = getTestGameObject();
-  const { playerOne } = gameObject;
-  const { board } = playerOne;
-  board.place(Ships.patrol, 'vertical', [0, 0]);
-  board.receiveAttack([0, 1], gameObject);
+  const board = createTestGameBoard();
+  board.place(Ships[0], 1, [0, 0]);
+  board.receiveAttack([0, 1]);
   expect(board.misses[0])
     .toMatchObject([0, 1]);
 });
