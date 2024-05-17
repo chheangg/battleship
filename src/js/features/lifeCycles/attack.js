@@ -10,6 +10,7 @@ function addAttackEventListener(cb, gameObjectState, currentPlayer, oppositePlay
   oppositeBoxes.forEach((box) => {
     const eventListener = () => {
       const cord = box.dataset.pos.split(',').map((x) => parseInt(x, 10));
+      console.log(currentPlayer, oppositePlayer);
       attackPlayer(
         currentPlayer,
         oppositePlayer,

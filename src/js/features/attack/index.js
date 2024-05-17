@@ -17,5 +17,5 @@ export function attackPlayer(attacker, defender, cord) {
 
 export function botAttack(bot, player) {
   const cord = bot.botEval(player);
-  attackPlayer(cord, bot, player);
+  attackPlayer(bot, player, cord);
 }

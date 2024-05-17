@@ -21,7 +21,9 @@ export default class Game {
     this.playerOne = new Player(this, decideIfPlayerIsBot(isMultiplayer), true);
     this.playerOne.board.className = 'first-player';
 
-    this.playerTwo = new Player(this, !this.playerOne.isBot, false);
+    const isSecondPlayerBot = !isMultiplayer && !this.playerOne.isBot;
+
+    this.playerTwo = new Player(this, isSecondPlayerBot, false);
     this.playerTwo.board.className = 'second-player';
     this.isStarted = false;
   }
