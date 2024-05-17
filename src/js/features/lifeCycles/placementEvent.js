@@ -43,7 +43,7 @@ function placementEvent(event, gameObject, player) {
   if (!isShipValid) return;
 
   exitPlacementEvent(player);
-
+  console.log('placement-event-called');
   // Call main loop
   gameObject.cb(gameObject.isMultiplayer, true);
 }

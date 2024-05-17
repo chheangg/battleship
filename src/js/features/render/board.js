@@ -1,9 +1,9 @@
 /* eslint-disable no-param-reassign */
 import { gameBoardTemplate } from '../../template/gameBoard';
 import { getBoardBoxes, convertCordToIndex } from '../../utilities';
-import { rotateShip, dirs } from '../direction';
 import { getAttackAsset } from '../boardAssetLoader';
-import { loadIcon, renderShipImg } from '../imageLoader';
+import { loadIcon, renderShipImg, getDirClassNameFromShip } from '../imageLoader';
+import { dirs, rotateShip } from '../direction';
 
 export default function renderGameboard(gameObject, infoHeader) {
   document.body.innerHTML = gameBoardTemplate(gameObject, infoHeader);
@@ -51,14 +51,13 @@ export function renderFOW(player) {
 }
 
 export function renderShip(cords, boardBoxes, ship) {
+  const dirClassName = getDirClassNameFromShip(ship);
   cords.forEach((cord, index) => {
     const boxIndex = convertCordToIndex(cord);
     const element = boardBoxes[boxIndex];
     const img = loadIcon(ship.filename, index + 1);
-    const { dir } = ship;
-    renderShipImg(element, img, dir);
+    renderShipImg(element, img, dirClassName);
   });
-
 }
 
 // load all the ships on the board when called

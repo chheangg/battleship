@@ -2,6 +2,7 @@ import { convertCordToIndex } from '../../utilities';
 import { renderShip } from '../render/board';
 import { dirs, getDirIndex } from '../direction';
 import Ship, { Ships } from '../../objects/ship';
+import { getDirClassNameFromShip } from '../imageLoader';
 
 function createShipPreview(player, cord) {
   const playerShips = player.board.list;
@@ -17,12 +18,15 @@ function createShipPreview(player, cord) {
 
 export function shipWithdrawEvent(boardBoxes, player, cord) {
   const ship = createShipPreview(player, cord);
+  const dirClassName = getDirClassNameFromShip(ship);
   const shipBody = ship.build();
   if (shipBody) {
     shipBody.forEach((shipCord) => {
       const boardIndex = convertCordToIndex(shipCord);
       const box = boardBoxes[boardIndex];
       box.style.backgroundImage = '';
+      console.log(dirClassName);
+      box.classList.remove(dirClassName);
     });
   }
 }
@@ -31,5 +35,7 @@ export function shipWithdrawEvent(boardBoxes, player, cord) {
 export function shipHoverEvent(boardBoxes, player, cord) {
   const ship = createShipPreview(player, cord);
   const shipBody = ship.build();
-  if (shipBody) renderShip(shipBody, boardBoxes, ship);
+  if (shipBody) {
+    renderShip(shipBody, boardBoxes, ship);
+  }
 }

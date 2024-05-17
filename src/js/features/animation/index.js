@@ -43,7 +43,6 @@ export function addAttackAnimation(boardBoxes, player) {
 
 // Function for adding animation
 export function addShipHoverAnimation(boardBoxes, player) {
-  console.log(boardBoxes);
   boardBoxes.forEach((box) => {
     const cord = box.dataset.pos
       .split(',')

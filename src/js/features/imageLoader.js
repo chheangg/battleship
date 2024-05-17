@@ -5,7 +5,6 @@
  */
 
 /* eslint-disable no-param-reassign */
-import { dirs, getDirIndex } from './direction';
 
 // Import all ship images
 function importAll(r) {
@@ -24,6 +23,8 @@ function loadIcon(type, num) {
 
 function getDirClassName(dir) {
   switch (dir) {
+    case 0:
+      return 'x-pos';
     case 1:
       return 'y-neg';
     case 2:
@@ -34,16 +35,21 @@ function getDirClassName(dir) {
       return null;
   }
 }
-function renderShipImg(element, img, givenDir = null) {
-  const dirIndex = getDirIndex();
-  const dir = givenDir || dirs[dirIndex];
-  const dirClassName = getDirClassName(dir);
 
+export function getDirClassNameFromShip(ship) {
+  const { dir } = ship;
+  const dirClassName = getDirClassName(dir);
+  return dirClassName;
+}
+
+/**
+ *
+ * @param {*} element
+ * @param {*} img
+ * @param {*} givenDir
+ */
+function renderShipImg(element, img, dirClassName) {
   element.style.backgroundImage = `url('${img}')`;
-  const lastDirClassName = dirs
-    .map((d) => getDirClassName(d))
-    .find((d) => element.classList.contains(d));
-  element.classList.remove(lastDirClassName);
   element.classList.add(dirClassName);
 }
 
