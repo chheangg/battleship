@@ -1,10 +1,13 @@
 /* eslint-disable no-undef */
 import { createTestPlayer } from '../js/utilities';
 import Ship, { Ships } from '../js/objects/ship';
+import Coordinate from '../js/objects/coordinate';
+import Direction from '../js/objects/direction';
+import ShipType from '../js/objects/ShipType';
 
 it('Path #1.1: Create main object horizontally', () => {
   const player = createTestPlayer();
-  expect(new Ship(Ships[3], player, 0, [0, 0]))
+  expect(new Ship(ShipType.Battleship, player, Direction.positiveX, Coordinate(0, 0)))
     .toMatchObject({
       length: 4,
       damage: [],
@@ -20,7 +23,7 @@ it('Path #1.1: Create main object horizontally', () => {
 
 it('Path #1.2: Create main object vertically', () => {
   const player = createTestPlayer();
-  expect(new Ship(Ships[3], player, 1, [0, 0]))
+  expect(new Ship(ShipType.Battleship, player, Direction.negativeY, Coordinate(0, 0)))
     .toMatchObject({
       length: 4,
       damage: [],
@@ -36,7 +39,7 @@ it('Path #1.2: Create main object vertically', () => {
 
 it('Path #1.3: Create a small object', () => {
   const player = createTestPlayer();
-  expect(new Ship(Ships[0], player, 0, [0, 0]))
+  expect(new Ship(ShipType.Patrol, player, Direction.positiveX, Coordinate(0, 0)))
     .toMatchObject({
       length: 2,
       damage: [],
@@ -50,7 +53,7 @@ it('Path #1.3: Create a small object', () => {
 
 it('Path #2.1: Damage an object horziontally', () => {
   const player = createTestPlayer();
-  const prop = new Ship(Ships[3], player, 0, [0, 0]);
+  const prop = new Ship(Ships.Battleship, player, Direction.positiveX, Coordinate(0, 0));
   prop.hit([0, 1]);
 
   expect(prop.damage).toEqual([[0, 1]]);

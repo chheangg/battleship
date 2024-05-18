@@ -35,6 +35,7 @@ npm run start
 4. Now, you can access the project at the link: ```http://localhost:8080/```
 
 ## Roadmap
+- [ ] Refactor Project
 - [x] Base Game Functionalities
 - [ ] Refactor Coordinate, Directon, Ship Enums into objects with documentation
 - [ ] Attack Mode Styling

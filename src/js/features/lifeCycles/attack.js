@@ -1,6 +1,7 @@
 import { addAttackAnimation, cleanupAnimation } from '../animation';
 import { getBoardBoxes, withEventListener } from '../../utilities';
-import { renderFOW, renderShips, unrenderShips } from '../render/board';
+import { renderFOW, unrenderFOW } from '../render/board';
+import { renderShips, unrenderShips } from '../render/ship';
 import { attackPlayer, botAttack } from '../attack';
 
 const eventListeners = [];
@@ -38,8 +39,11 @@ export default function attackMode(gameObject) {
 
   const oppositeBoxes = getBoardBoxes(oppositePlayer);
 
+  unrenderFOW(currentPlayer);
   renderShips(currentPlayer);
+
   unrenderShips(oppositePlayer);
+  renderFOW(oppositePlayer);
   cleanupAnimation(currentPlayer);
   renderFOW(oppositePlayer);
 

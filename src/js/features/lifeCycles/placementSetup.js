@@ -1,4 +1,5 @@
-import { renderShips, unrenderShips } from '../render/board';
+import { renderFOW, unrenderFOW } from '../render/board';
+import { renderShips, unrenderShips } from '../render/ship';
 import { Ships } from '../../objects/ship';
 import { dirs } from '../direction';
 import addPassDelay from '../pass';
@@ -19,7 +20,9 @@ function firstPlayerSetup(gameObject) {
   const { playerOne, playerTwo, cb } = gameObject;
   if (!playerOne.isBot) {
     renderShips(playerOne);
+    unrenderFOW(playerOne);
     unrenderShips(playerTwo);
+    renderFOW(playerTwo);
   } else {
     // Initialize bot
     botSetup(playerOne);
@@ -37,6 +40,9 @@ function secondPlayerSetup(gameObject, numOfShipsPlayerTwo) {
       }
     }
     unrenderShips(playerOne);
+    renderFOW(playerOne);
+    // Unload Fog of War
+    unrenderFOW(playerTwo);
     renderShips(playerTwo);
   } else {
     // Initialize bot

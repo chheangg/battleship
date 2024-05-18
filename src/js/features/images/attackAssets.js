@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
-import targetIcon from '../../assets/target.svg';
-import waveIcon from '../../assets/board/fog.svg';
-import missedOppIcon from '../../assets/board/missed.svg';
+import targetIcon from '../../../assets/target.svg';
+import waveIcon from '../../../assets/board/fog.svg';
+import missedOppIcon from '../../../assets/board/missed.svg';
 
 const attackAssets = [
   {
@@ -18,7 +18,7 @@ const attackAssets = [
   },
 ];
 
-export function getAttackAsset(index) {
+export function getAttackModeAsset(index) {
   const attackAsset = attackAssets[index];
   const imageElement = new Image();
 

@@ -1,8 +1,7 @@
 import { convertCordToIndex } from '../../utilities';
-import { renderShip } from '../render/board';
+import { renderShip, getDirClassNameFromShip } from '../render/ship';
 import { dirs, getDirIndex } from '../direction';
 import Ship, { Ships } from '../../objects/ship';
-import { getDirClassNameFromShip } from '../imageLoader';
 
 function createShipPreview(player, cord) {
   const playerShips = player.board.list;
