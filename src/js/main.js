@@ -3,7 +3,7 @@
 /* eslint-disable prefer-arrow-callback */
 import { unrenderShips } from './features/render/ship';
 
-import addPassDelay from './features/pass';
+import addPassDelay from './features/lifeCycles/pass';
 import attackMode from './features/lifeCycles/attack';
 import setupPlacementMode from './features/lifeCycles/placementSetup';
 import { enterPlacementEvent } from './features/lifeCycles/placementEvent';

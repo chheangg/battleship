@@ -2,7 +2,7 @@ import { renderFOW, unrenderFOW } from '../render/board';
 import { renderShips, unrenderShips } from '../render/ship';
 import { Ships } from '../../objects/ship';
 import { dirs } from '../direction';
-import addPassDelay from '../pass';
+import addPassDelay from './pass';
 
 const maxShip = 5;
 function botSetup(player) {
