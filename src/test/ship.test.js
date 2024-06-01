@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import { createTestPlayer } from '../js/utilities';
-import Ship, { Ships } from '../js/objects/ship';
+import Ship from '../js/objects/ship';
 import Coordinate from '../js/objects/coordinate';
 import Direction from '../js/objects/direction';
 import ShipType from '../js/objects/ShipType';
@@ -61,7 +61,7 @@ it('Path #2.1: Damage an object horziontally', () => {
 
 it('Path #2.2: Damage an object vertically', () => {
   const player = createTestPlayer();
-  const prop = new Ship(Ships[3], player, 1, [0, 0]);
+  const prop = new Ship(Ships.Battleship, player, Direction.negativeY, Coordinate(0, 0));
   prop.hit([1, 0]);
 
   expect(prop.damage).toEqual([[1, 0]]);
@@ -69,7 +69,7 @@ it('Path #2.2: Damage an object vertically', () => {
 
 it('Path #2.3: Hit is out of range, horizontal object is fine', () => {
   const player = createTestPlayer();
-  const prop = new Ship(Ships[2], player, 0, [0, 0]);
+  const prop = new Ship(ShipType.Destroyer, player, Direction.positiveX, Coordinate(0, 0));
   prop.hit([0, 4]);
 
   expect(prop.damage).toEqual([]);
@@ -77,7 +77,7 @@ it('Path #2.3: Hit is out of range, horizontal object is fine', () => {
 
 it('Path #2.4: Hit is out of range, vertical object is fine', () => {
   const player = createTestPlayer();
-  const prop = new Ship(Ships[2], player, 0, [0, 0]);
+  const prop = new Ship(ShipType.Destroyer, player, Direction.positiveX, Coordinate(0, 0));
   prop.hit([4, 0]);
 
   expect(prop.damage).toEqual([]);
@@ -85,7 +85,7 @@ it('Path #2.4: Hit is out of range, vertical object is fine', () => {
 
 it('Path #2.5: Check damage', () => {
   const player = createTestPlayer();
-  const prop = new Ship(Ships[3], player, 1, [0, 0]);
+  const prop = new Ship(ShipType.Battleship, player, Direction.negativeY, Coordinate(0, 0));
   prop.hit([1, 0]);
   prop.hit([2, 0]);
 
@@ -94,7 +94,7 @@ it('Path #2.5: Check damage', () => {
 
 it('Path #3.1: Sink a horizontal boat', () => {
   const player = createTestPlayer();
-  const prop = new Ship(Ships[2], player, 0, [0, 0]);
+  const prop = new Ship(ShipType.Destroyer, player, Direction.positiveX, Coordinate(0, 0));
   prop.hit([0, 0]);
   prop.hit([0, 1]);
   prop.hit([0, 2]);
@@ -103,7 +103,7 @@ it('Path #3.1: Sink a horizontal boat', () => {
 
 it('Path #3.2: Sink a vertical boat', () => {
   const player = createTestPlayer();
-  const prop = new Ship(Ships[2], player, 1, [0, 0]);
+  const prop = new Ship(ShipType.Destroyer, player, 1, Coordinate(0, 0));
   prop.hit([0, 0]);
   prop.hit([1, 0]);
   prop.hit([2, 0]);
@@ -112,7 +112,7 @@ it('Path #3.2: Sink a vertical boat', () => {
 
 it('Path #3.3: boat isn\'t sinked', () => {
   const player = createTestPlayer();
-  const prop = new Ship(Ships[2], player, 0, [0, 0]);
+  const prop = new Ship(ShipType.Destroyer, player, 0, Coordinate(0, 0));
   prop.hit([0, 0]);
   prop.hit([1, 0]);
   prop.hit([2, 0]);
@@ -121,7 +121,7 @@ it('Path #3.3: boat isn\'t sinked', () => {
 
 it('Path #3.4: single boat sinked', () => {
   const player = createTestPlayer();
-  const prop = new Ship(Ships[0], player, 0, [0, 0]);
+  const prop = new Ship(ShipType.Patrol, player, 0, Coordinate(0, 0));
   prop.hit([0, 0]);
   prop.hit([0, 1]);
   expect(prop.isSunk()).toBe(true);

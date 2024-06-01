@@ -24,7 +24,6 @@ export function shipWithdrawEvent(boardBoxes, player, cord) {
       const boardIndex = convertCordToIndex(shipCord);
       const box = boardBoxes[boardIndex];
       box.style.backgroundImage = '';
-      console.log(dirClassName);
       box.classList.remove(dirClassName);
     });
   }

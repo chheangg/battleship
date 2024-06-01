@@ -41,7 +41,6 @@ function secondPlayerSetup(gameObject, numOfShipsPlayerTwo) {
     }
     unrenderShips(playerOne);
     renderFOW(playerOne);
-    // Unload Fog of War
     unrenderFOW(playerTwo);
     renderShips(playerTwo);
   } else {

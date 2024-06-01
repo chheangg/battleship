@@ -11,38 +11,6 @@ import _ from 'underscore';
  * 3: y-pos
  */
 
-export const Ships = [
-  {
-    name: 'patrol',
-    filename: 'pa',
-    length: 2,
-    order: 1,
-  },
-  {
-    name: 'submarine',
-    filename: 'sb',
-    length: 3,
-    order: 2,
-  },
-  {
-    name: 'destroyer',
-    filename: 'de',
-    length: 3,
-    order: 3,
-  },
-  {
-    name: 'battleship',
-    filename: 'ba',
-    length: 4,
-    order: 4,
-  },
-  {
-    name: 'carrier',
-    filename: 'ac',
-    length: 5,
-    order: 5,
-  },
-];
 export default class Ship {
   constructor(ship, player, dir, coordinate) {
     this.length = ship.length;

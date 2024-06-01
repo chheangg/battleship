@@ -6,12 +6,11 @@ import { attackPlayer, botAttack } from '../attack';
 
 const eventListeners = [];
 
-function addAttackEventListener(cb, gameObjectState, currentPlayer, oppositePlayer) {
+function addAttackEventListener(cb, currentPlayer, oppositePlayer) {
   const oppositeBoxes = getBoardBoxes(oppositePlayer);
   oppositeBoxes.forEach((box) => {
     const eventListener = () => {
       const cord = box.dataset.pos.split(',').map((x) => parseInt(x, 10));
-      console.log(currentPlayer, oppositePlayer);
       attackPlayer(
         currentPlayer,
         oppositePlayer,
@@ -44,12 +43,13 @@ export default function attackMode(gameObject) {
 
   unrenderShips(oppositePlayer);
   renderFOW(oppositePlayer);
+
   cleanupAnimation(currentPlayer);
   renderFOW(oppositePlayer);
 
   if (!currentPlayer.isBot) {
     addAttackAnimation(oppositeBoxes, oppositePlayer);
-    addAttackEventListener(cb, gameObject, currentPlayer, oppositePlayer);
+    addAttackEventListener(cb, currentPlayer, oppositePlayer);
   } else {
     botAttack(currentPlayer, oppositePlayer);
     cb();
