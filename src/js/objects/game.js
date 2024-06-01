@@ -2,7 +2,7 @@
 /* eslint-disable import/no-mutable-exports */
 /* eslint-disable no-unused-expressions */
 
-import Player from './player';
+import Player from './Player';
 
 function decideIfPlayerIsBot(isMultiplayer) {
   // Randomly decide bot status if it is multiplayer

@@ -1,98 +1,100 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-undef */
-import { Ships } from '../js/objects/ship';
+import Coordinate from '../js/objects/Coordinate';
+import Direction from '../js/objects/Direction';
+import ShipType from '../js/objects/ShipType';
 import { createTestGameBoard } from '../js/utilities';
 
 it('Path #1.1 Placing a ship', () => {
   const board = createTestGameBoard();
-  board.place(Ships[0], 0, [0, 0]);
+  board.place(ShipType.Patrol, Direction.PositiveX, new Coordinate(0, 0));
   expect(board.list[0])
     .toMatchObject({
       length: 2,
       damage: [],
-      dir: 0,
+      dir: Direction.PositiveX,
       position: [
-        [0, 0],
-        [0, 1],
+        new Coordinate(0, 0),
+        new Coordinate(1, 0),
       ],
     });
 });
 
 it('Path #1.2 Placing two ship', () => {
   const board = createTestGameBoard();
-  board.place(Ships[0], 0, [0, 0]);
-  board.place(Ships[0], 0, [1, 0]);
+  board.place(ShipType.Patrol, Direction.PositiveX, new Coordinate(0, 0));
+  board.place(ShipType.Patrol, Direction.PositiveX, new Coordinate(0, 1));
   expect(board.list[0])
     .toMatchObject({
       length: 2,
       damage: [],
-      dir: 0,
+      dir: Direction.PositiveX,
       position: [
-        [0, 0],
-        [0, 1],
+        new Coordinate(0, 0),
+        new Coordinate(1, 0),
       ],
     });
   expect(board.list[1])
     .toMatchObject({
       length: 2,
       damage: [],
-      dir: 0,
+      dir: Direction.PositiveX,
       position: [
-        [1, 0],
-        [1, 1],
+        new Coordinate(0, 1),
+        new Coordinate(1, 1),
       ],
     });
 });
 
 it('Path #1.3 Placing a destroyer', () => {
   const board = createTestGameBoard();
-  board.place(Ships[2], 0, [0, 0]);
+  board.place(ShipType.Destroyer, Direction.PositiveX, new Coordinate(0, 0));
   expect(board.list[0])
     .toMatchObject({
       length: 3,
       damage: [],
-      dir: 0,
+      dir: Direction.PositiveX,
       position: [
-        [0, 0],
-        [0, 1],
-        [0, 2],
+        new Coordinate(0, 0),
+        new Coordinate(1, 0),
+        new Coordinate(2, 0),
       ],
     });
 });
 
 it('Path #1.4 Placing a carrier', () => {
   const board = createTestGameBoard();
-  board.place(Ships[4], 0, [0, 0]);
+  board.place(ShipType.Carrier, Direction.PositiveX, new Coordinate(0, 0));
   expect(board.list[0])
     .toMatchObject({
       length: 5,
       damage: [],
-      dir: 0,
+      dir: Direction.PositiveX,
       position: [
-        [0, 0],
-        [0, 1],
-        [0, 2],
-        [0, 3],
-        [0, 4],
+        new Coordinate(0, 0),
+        new Coordinate(1, 0),
+        new Coordinate(2, 0),
+        new Coordinate(3, 0),
+        new Coordinate(4, 0),
       ],
     });
 });
 
 it('Path #2.1 cancel invalid placement (overlap)', () => {
   const board = createTestGameBoard();
-  board.place(Ships[4], 0, [0, 0]);
-  board.place(Ships[4], 3, [0, 1]);
+  board.place(ShipType.Carrier, Direction.PositiveX, new Coordinate(0, 0));
+  board.place(ShipType.Carrier, Direction.NegativeX, new Coordinate(0, 1));
   expect(board.list[0])
     .toMatchObject({
       length: 5,
       damage: [],
-      dir: 0,
+      dir: Direction.PositiveX,
       position: [
-        [0, 0],
-        [0, 1],
-        [0, 2],
-        [0, 3],
-        [0, 4],
+        new Coordinate(0, 0),
+        new Coordinate(1, 0),
+        new Coordinate(2, 0),
+        new Coordinate(3, 0),
+        new Coordinate(4, 0),
       ],
     });
   expect(board.list[1])
@@ -101,43 +103,43 @@ it('Path #2.1 cancel invalid placement (overlap)', () => {
 
 it('Path #2.2 cancel invalid placement (out of boundary)', () => {
   const board = createTestGameBoard();
-  board.place(Ships[4], 0, [0, 9]);
+  board.place(ShipType.Carrier, Direction.PositiveX, new Coordinate(9, 0));
   expect(board.list[0])
     .toBeUndefined();
 });
 
 it('Path #2.3 cancel invalid placement (out of boundary + overlap)', () => {
   const board = createTestGameBoard();
-  board.place(Ships[4], 0, [0, 9]);
-  board.place(Ships[4], 1, [0, 1]);
-  board.place(Ships[4], 0, [0, 1]);
+  board.place(ShipType.Carrier, Direction.PositiveX, new Coordinate(9, 0));
+  board.place(ShipType.Carrier, Direction.PositiveY, new Coordinate(0, 1));
+  board.place(ShipType.Carrier, Direction.PositiveX, new Coordinate(0, 1));
   expect(board.list[0])
     .toMatchObject({
       length: 5,
       damage: [],
-      dir: 1,
+      dir: Direction.PositiveY,
       position: [
-        [0, 1],
-        [1, 1],
-        [2, 1],
-        [3, 1],
-        [4, 1],
+        new Coordinate(0, 1),
+        new Coordinate(0, 2),
+        new Coordinate(0, 3),
+        new Coordinate(0, 4),
+        new Coordinate(0, 5),
       ],
     });
 });
 
 it('Path #3.1 Check hits', () => {
   const board = createTestGameBoard();
-  board.place(Ships[0], 0, [0, 0]);
-  board.receiveAttack([0, 0]);
+  board.place(ShipType.Patrol, Direction.PositiveY, new Coordinate(0, 0));
+  board.receiveAttack(new Coordinate(0, 0));
   expect(board.hits[0])
-    .toMatchObject([0, 0]);
+    .toMatchObject(new Coordinate(0, 0));
 });
 
 it('Path #3.2 Check misses', () => {
   const board = createTestGameBoard();
-  board.place(Ships[0], 1, [0, 0]);
-  board.receiveAttack([0, 1]);
+  board.place(ShipType.Patrol, Direction.PositiveY, new Coordinate(0, 0));
+  board.receiveAttack(new Coordinate(1, 0));
   expect(board.misses[0])
-    .toMatchObject([0, 1]);
+    .toMatchObject(new Coordinate(1, 0));
 });

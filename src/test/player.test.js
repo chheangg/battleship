@@ -1,6 +1,8 @@
 /* eslint-disable no-undef */
-import { Ships } from '../js/objects/ship';
-import Player from '../js/objects/player';
+import Coordinate from '../js/objects/Coordinate';
+import Direction from '../js/objects/Direction';
+import Player from '../js/objects/Player';
+import ShipType from '../js/objects/ShipType';
 import { createTestGameObject } from '../js/utilities';
 
 it('Path #1.1 Player gets their board', () => {
@@ -25,21 +27,21 @@ it('Path #1.2 Multiple players', () => {
 });
 
 it('Path #1.3 Attacking other player', () => {
-  const gameObject = createTestGameObject;
+  const gameObject = createTestGameObject();
   const { playerOne, playerTwo } = gameObject;
-  playerOne.board.place(Ships[0], 0, [0, 0]);
-  playerTwo.board.place(Ships[0], 1, [0, 0]);
-  playerOne.attack(playerTwo, [0, 0]);
+  playerOne.board.place(ShipType.Patrol, Direction.PositiveX, new Coordinate(0, 0));
+  playerTwo.board.place(ShipType.Patrol, Direction.PositiveY, new Coordinate(0, 0));
+  playerOne.attack(playerTwo, new Coordinate(0, 0));
   expect(playerTwo.board.hits)
-    .toMatchObject([[0, 0]]);
+    .toMatchObject([new Coordinate(0, 0)]);
 
-  playerTwo.attack(playerOne, [1, 0]);
+  playerTwo.attack(playerOne, new Coordinate(0, 1));
   expect(playerOne.board.misses)
-    .toMatchObject([[1, 0]]);
+    .toMatchObject([new Coordinate(0, 1)]);
 
-  playerOne.attack(playerTwo, [1, 0]);
+  playerOne.attack(playerTwo, new Coordinate(0, 1));
   expect(playerTwo.board.hits)
-    .toMatchObject([[0, 0], [1, 0]]);
+    .toMatchObject([new Coordinate(0, 0), new Coordinate(0, 1)]);
   expect(playerTwo.board.list[0].isSunk()).toBe(true);
 });
 

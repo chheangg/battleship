@@ -6,11 +6,11 @@
  */
 
 export default class Direction {
-  static positiveX = 0;
+  static PositiveX = 0;
 
-  static negativeY = 1;
+  static NegativeY = 1;
 
-  static negativeX = 2;
+  static NegativeX = 2;
 
-  static positveY = 3;
+  static PositiveY = 3;
 }

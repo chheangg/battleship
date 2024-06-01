@@ -1,7 +1,7 @@
 // This will use a coordinate-to-coordinate calculation instead of array
 export default class Coordinate {
-  Coordinate(posX, posY) {
-    this.posX = posX;
-    this.posY = posY;
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
   }
 }

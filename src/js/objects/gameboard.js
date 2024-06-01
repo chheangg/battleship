@@ -3,7 +3,7 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable no-use-before-define */
 
-import Ship from './ship';
+import Ship from './Ship';
 
 /**
  * Direction Enums
@@ -26,12 +26,12 @@ export default class GameBoard {
   // Check if two set of array contain similar elements
   static intersect(a, b) {
     return a.find((pos) => b
-      .find((currentPos) => currentPos[0] === pos[0] && currentPos[1] === pos[1]));
+      .find((currentPos) => currentPos.x === pos.x && currentPos.y === pos.y));
   }
 
   // Return false if ship body is over 9 (which is over the board boundary)
   static hitBoundary(position) {
-    return position.find((pos) => (pos[1] < 0) || (pos[1] > 9) || (pos[0] < 0) || (pos[0] > 9));
+    return position.find((pos) => (pos.x < 0) || (pos.y > 9) || (pos.x < 0) || (pos.y > 9));
   }
 
   // Check if ship can be placed on a certain square, without collision
@@ -39,7 +39,7 @@ export default class GameBoard {
   // takes all the ship as argument to check for collison
   isValid(position) {
     if (!position.length) return false;
-    // Check if ship overlaps over any other ships
+    // Check if ship overlaps over any other ships;
     const hasCollision = this.list
       .find((ship) => GameBoard.intersect(ship.position, position));
     // Check if the ship doesn't overlap with the boundary
@@ -58,9 +58,10 @@ export default class GameBoard {
   place(ship, dir, coordinate) {
     const initializedShip = new Ship(ship, this.player, dir, coordinate);
 
-    if (!this.isValid(initializedShip.position)) {
+    if (!initializedShip || !this.isValid(initializedShip.position)) {
       return false;
     }
+
     this.list.push(initializedShip);
     return initializedShip;
   }
@@ -75,7 +76,7 @@ export default class GameBoard {
   // If it is valid, checks if a ship is hit; modify ship if hit
   isValidAttack(cord) {
     const attackExist = this
-      .attacks.find((attack) => attack[0] === cord[0] && attack[1] === cord[1]);
+      .attacks.find((attackCord) => attackCord.x === cord.x && attackCord.y === cord.y);
     return !attackExist;
   }
 

@@ -4,7 +4,7 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable no-use-before-define */
 
-import Gameboard from './gameboard';
+import Gameboard from './Gameboard';
 
 export default class Player {
   constructor(gameObject, isBot, initialTurn) {

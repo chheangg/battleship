@@ -3,6 +3,8 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable no-use-before-define */
 import _ from 'underscore';
+import Coordinate from './Coordinate';
+import Direction from './Direction';
 
 /**
  * 0: x-pos
@@ -20,23 +22,24 @@ export default class Ship {
     this.damage = [];
     this.player = player;
     this.filename = ship.filename;
-    this.attributes = ship;
+    this.attributes = ship; // SHIP TYPE
     this.build();
   }
 
-  static constructBody(start, length, dirIndex) {
+  constructBody(start) {
+    const { length } = this.attributes;
     return Array(length)
       .fill()
       .map((_pos, index) => {
-        switch (dirIndex) {
-          case 0:
-            return [start[0], start[1] + index];
-          case 1:
-            return [start[0] + index, start[1]];
-          case 2:
-            return [start[0], start[1] - index];
-          case 3:
-            return [start[0] - index, start[1]];
+        switch (this.dir) {
+          case Direction.PositiveX:
+            return new Coordinate(start.x + index, start.y);
+          case Direction.NegativeY:
+            return new Coordinate(start.x, start.y - index);
+          case Direction.NegativeX:
+            return new Coordinate(start.x - index, start.y);
+          case Direction.PositiveY:
+            return new Coordinate(start.x, start.y + index);
           default:
             throw new Error('Error: Invalid Coord Index');
         }
@@ -45,10 +48,10 @@ export default class Ship {
 
   static isShipOverflowing(shipBody) {
     return shipBody
-      .find((pos) => (pos[1] < 0) || (pos[1] > 9) || (pos[0] < 0) || (pos[0] > 9));
+      .find((cord) => (cord.x < 0) || (cord.x > 9) || (cord.y < 0) || (cord.y > 9));
   }
 
-  static isOverlapping(player, shipBody) {
+  static isOverlapping(shipBody, player) {
     return player
       .board
       .list
@@ -63,10 +66,9 @@ export default class Ship {
       return this.position;
     }
 
-    const start = [...this.coordinate];
-    const body = Ship.constructBody(start, this.length, this.dir);
+    const body = this.constructBody(this.coordinate);
 
-    const isShipValid = !Ship.isShipOverflowing(body) && !Ship.isOverlapping(this.player, body);
+    const isShipValid = !Ship.isShipOverflowing(body) && !Ship.isOverlapping(body, this.player);
     if (!isShipValid) return 0;
 
     this.position = body;
@@ -75,8 +77,8 @@ export default class Ship {
 
   // Take a cord and check if cord hits any body cord
   hit(cord) {
-    const isHit = this.position.some((pos) => {
-      const matchHitPos = cord[0] === pos[0] && cord[1] === pos[1];
+    const isHit = this.position.some((bodyCord) => {
+      const matchHitPos = cord.x === bodyCord.x && cord.y === bodyCord.y;
       if (matchHitPos) {
         this.damage.push(cord);
       }
