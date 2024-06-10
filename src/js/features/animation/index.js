@@ -3,6 +3,7 @@
 import { animationEventBuilder, withdrawEventBuilder } from './utility';
 import { attackHoverEvent, attackWithdrawEvent } from './attack';
 import { shipHoverEvent, shipWithdrawEvent } from './hover';
+import Coordinate from '../../objects/Coordinate';
 
 let firstPlayerBoard = [];
 let secondPlayerBoard = [];
@@ -44,9 +45,10 @@ export function addAttackAnimation(boardBoxes, player) {
 // Function for adding animation
 export function addShipHoverAnimation(boardBoxes, player) {
   boardBoxes.forEach((box) => {
-    const cord = box.dataset.pos
+    const rawCord = box.dataset.pos
       .split(',')
       .map((x) => parseInt(x, 10));
+    const cord = new Coordinate(rawCord[0], rawCord[1]);
     const shipHoverHandler = () => shipHoverEvent(boardBoxes, player, cord);
     const shipHoverRef = animationEventBuilder(box, shipHoverHandler);
 

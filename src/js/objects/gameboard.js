@@ -8,8 +8,8 @@ import Ship from './Ship';
 /**
  * Direction Enums
  * 0: x-pos
- * 1: x-neg
- * 2: y-neg
+ * 1: y-neg
+ * 2: x-neg
  * 3: y-pos
  */
 

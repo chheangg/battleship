@@ -29,5 +29,5 @@ export function getBoardBoxes(player) {
 }
 
 export function convertCordToIndex(cord) {
-  return cord[0] * 10 + cord[1];
+  return cord.y * 10 + cord.x;
 }

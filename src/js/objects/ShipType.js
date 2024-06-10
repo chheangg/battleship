@@ -33,4 +33,12 @@ export default class ShipType {
     length: 5,
     order: 5,
   };
+
+  static list = [
+    this.Patrol,
+    this.Submarine,
+    this.Destroyer,
+    this.Battleship,
+    this.Carrier,
+  ];
 }

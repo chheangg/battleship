@@ -4,6 +4,7 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable no-use-before-define */
 
+import Coordinate from './Coordinate';
 import Gameboard from './Gameboard';
 
 export default class Player {
@@ -16,10 +17,10 @@ export default class Player {
 
   // Bot create random attack cord on the board, keep retrying if it is not valid;
   botEval(player) {
-    const rand = [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
+    const rand = new Coordinate(Math.floor(Math.random() * 10), Math.floor(Math.random() * 10));
     const attackExist = player
       .board.attacks
-      .find((attempt) => attempt[0] === rand[0] && attempt[1] === rand[1]);
+      .find((attempt) => attempt.x === rand.x && attempt.y === rand.y);
 
     if (attackExist) {
       return this.botEval(player);

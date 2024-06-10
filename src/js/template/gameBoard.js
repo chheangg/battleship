@@ -31,16 +31,16 @@ export const playerInfoComponent = ({ name }) => `
 
 const cells = Array(10).fill().map((_c, i) => `
 <tr>
-  <td data-pos='${i},0' class="left-corner ${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
-  <td data-pos='${i},1' class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
-  <td data-pos='${i},2' class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
-  <td data-pos='${i},3' class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
-  <td data-pos='${i},4' class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
-  <td data-pos='${i},5' class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
-  <td data-pos='${i},6' class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
-  <td data-pos='${i},7' class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
-  <td data-pos='${i},8' class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
-  <td data-pos='${i},9' class="right-corner ${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
+  <td data-pos='0,${i}' class="left-corner ${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
+  <td data-pos='1,${i}' class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
+  <td data-pos='2,${i}' class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
+  <td data-pos='3,${i}' class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
+  <td data-pos='4,${i}' class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
+  <td data-pos='5,${i}' class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
+  <td data-pos='6,${i}' class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
+  <td data-pos='7,${i}' class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
+  <td data-pos='8,${i}' class="${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
+  <td data-pos='9,${i}' class="right-corner ${i === 0 ? 'top-corner' : ''}${i === 9 ? 'bottom-corner' : ''}"></td>
 </tr>
 `);
 

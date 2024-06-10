@@ -1,17 +1,17 @@
-import { Ships } from '../../objects/ship';
-import { dirs, getDirIndex } from '../direction';
+import ShipType from '../../objects/ShipType';
+import { getDirIndex } from '../direction';
 import { withEventListener, getBoardBoxes } from '../../utilities';
 import { cleanupAnimation, addShipHoverAnimation } from '../animation';
+import Coordinate from '../../objects/Coordinate';
 
 const firstPlayerBoard = [];
 const secondPlayerBoard = [];
 export const animationEvents = [];
 
 // Ship logical placement function onto the player's board
-function placeShip(player, ship, body) {
-  const dirIndex = getDirIndex();
-  const dir = dirs[dirIndex];
-  const initializedShip = player.board.place(ship, dir, body);
+function placeShip(player, ship, cord) {
+  const dir = getDirIndex();
+  const initializedShip = player.board.place(ship, dir, cord);
   if (!initializedShip) return false;
   return initializedShip;
 }
@@ -34,16 +34,17 @@ export function exitPlacementEvent(player) {
 // Placement Event
 function placementEvent(event, gameObject, player) {
   const playerShips = player.board.list;
-  const cord = event.target.dataset.pos.split(',')
+  const rawCord = event.target.dataset.pos.split(',')
     .map((x) => parseInt(x, 10));
 
-  const ship = Ships[playerShips.length];
+  const cord = new Coordinate(rawCord[0], rawCord[1]);
+
+  const ship = ShipType.list[playerShips.length];
 
   const isShipValid = placeShip(player, ship, cord);
   if (!isShipValid) return;
 
   exitPlacementEvent(player);
-  console.log('placement-event-called');
   // Call main loop
   gameObject.cb(gameObject.isMultiplayer, true);
 }

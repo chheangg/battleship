@@ -8,9 +8,9 @@ import Direction from './Direction';
 
 /**
  * 0: x-pos
- * 1: y-neg
+ * 1: y-pos
  * 2: x-neg
- * 3: y-pos
+ * 3: y-neg
  */
 
 export default class Ship {
@@ -35,11 +35,11 @@ export default class Ship {
           case Direction.PositiveX:
             return new Coordinate(start.x + index, start.y);
           case Direction.NegativeY:
-            return new Coordinate(start.x, start.y - index);
+            return new Coordinate(start.x, start.y + index);
           case Direction.NegativeX:
             return new Coordinate(start.x - index, start.y);
           case Direction.PositiveY:
-            return new Coordinate(start.x, start.y + index);
+            return new Coordinate(start.x, start.y - index);
           default:
             throw new Error('Error: Invalid Coord Index');
         }

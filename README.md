@@ -37,7 +37,9 @@ npm run start
 ## Roadmap
 - [ ] Refactor Project
 - [x] Base Game Functionalities
-- [ ] Refactor Coordinate, Directon, Ship Enums into objects with documentation
+- [x] Refactor Coordinate, Directon, Ship Enums into objects with documentation
+  - [ ] Documentation 
+  - [ ] Refactor Them into existing games
 - [ ] Attack Mode Styling
   - [x] Fog of War
   - [x] Hovering

@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import Game from '../../objects/game';
+import Game from '../../objects/Game';
 import { loadModal } from '../render/modal';
 
 // Load the page, and initialize Game object to be return
