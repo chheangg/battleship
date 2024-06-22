@@ -1,4 +1,4 @@
-import { convertCordToIndex } from '../../utilities';
+import { convertCordToIndex } from '../utilities';
 import { renderShip, getDirClassNameFromShip } from '../render/ship';
 import { getDirIndex } from '../direction';
 import ShipType from '../../objects/ShipType';

@@ -36,10 +36,11 @@ npm run start
 
 ## Roadmap
 - [ ] Refactor Project
+  - [ ] Document every lifeCycle functions
 - [x] Base Game Functionalities
 - [x] Refactor Coordinate, Directon, Ship Enums into objects with documentation
-  - [ ] Documentation 
-  - [ ] Refactor Them into existing games
+  - [ ] Documentation of these three using markdown files
+  - [x] Refactor Them into existing games
 - [ ] Attack Mode Styling
   - [x] Fog of War
   - [x] Hovering

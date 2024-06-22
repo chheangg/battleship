@@ -1,4 +1,4 @@
-import { convertCordToIndex, getBoardBoxes } from '../../utilities';
+import { convertCordToIndex, getBoardBoxes } from '../utilities';
 import loadShipPart from '../images/shipAssets';
 import Direction from '../../objects/Direction';
 

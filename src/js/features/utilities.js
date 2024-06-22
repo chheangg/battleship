@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
-import Game from './objects/Game';
-import Player from './objects/Player';
+import Game from '../objects/Game';
+import Player from '../objects/Player';
 
 // utility function for initializing Test's game object
 export function createTestGameObject() {

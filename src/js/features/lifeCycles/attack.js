@@ -1,5 +1,5 @@
 import { addAttackAnimation, cleanupAnimation } from '../animation';
-import { getBoardBoxes, withEventListener } from '../../utilities';
+import { getBoardBoxes, withEventListener } from '../utilities';
 import { renderFOW, unrenderFOW } from '../render/board';
 import { renderShips, unrenderShips } from '../render/ship';
 import { attackPlayer, botAttack } from '../attack';

@@ -1,4 +1,4 @@
-import { getBoardBoxes } from '../../utilities';
+import { getBoardBoxes } from '../utilities';
 
 export function applyAttackStyle(player, cord, isHit) {
   const hitStyle = isHit ? 'hit' : 'miss';

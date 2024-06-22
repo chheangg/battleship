@@ -1,4 +1,4 @@
-import { withEventListener } from '../../utilities';
+import { withEventListener } from '../utilities';
 
 export const animationEventBuilder = (el, event) => withEventListener(
   el,

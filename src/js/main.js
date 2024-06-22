@@ -7,31 +7,31 @@ import addPassDelay from './features/lifeCycles/pass';
 import attackMode from './features/lifeCycles/attack';
 import setupPlacementMode from './features/lifeCycles/placementSetup';
 import { enterPlacementEvent } from './features/lifeCycles/placementEvent';
-import renderMenu from './features/lifeCycles/menu';
 import initializeBoard from './features/lifeCycles/board';
-import populateMenuEvent from './features/lifeCycles/gameObjectSetup';
+import initializeMenu from './features/lifeCycles/menu';
 
+/**
+ *
+ * @param {*} gameObject - Central game state object
+ */
 function prepareBoard(gameObject) {
-  // Both player finishes placement
-  gameObject.isStarted = true;
-
-  // Signal to the second player to pass the game to the first player
   if (gameObject.isMultiplayer) {
     unrenderShips(gameObject.playerTwo);
     addPassDelay();
   }
-
-  // eslint-disable-next-line no-param-reassign
   gameObject.isStarted = true;
 }
 
 let menuOpened = false;
 let boardRendered = false;
 
+/**
+ *
+ * @param {*} gameObject - Central game state object
+ */
 export default function mainLoop(gameObject) {
   if (!menuOpened) {
-    renderMenu();
-    populateMenuEvent(mainLoop);
+    initializeMenu(mainLoop);
     menuOpened = true;
     return;
   }

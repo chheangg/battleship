@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { gameBoardTemplate } from '../../template/gameBoard';
-import { getBoardBoxes, convertCordToIndex } from '../../utilities';
+import { getBoardBoxes, convertCordToIndex } from '../utilities';
 import { getAttackModeAsset } from '../images/attackAssets';
 import { rotateShip } from '../direction';
 

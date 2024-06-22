@@ -1,6 +1,6 @@
 import ShipType from '../../objects/ShipType';
 import { getDirIndex } from '../direction';
-import { withEventListener, getBoardBoxes } from '../../utilities';
+import { withEventListener, getBoardBoxes } from '../utilities';
 import { cleanupAnimation, addShipHoverAnimation } from '../animation';
 import Coordinate from '../../objects/Coordinate';
 
