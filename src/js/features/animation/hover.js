@@ -1,8 +1,8 @@
-import { convertCordToIndex } from '../utilities';
-import { renderShip, getDirClassNameFromShip } from '../render/ship';
-import { getDirIndex } from '../direction';
-import ShipType from '../../objects/ShipType';
-import Ship from '../../objects/Ship';
+import { convertCordToIndex } from "../utilities";
+import { renderShip, getDirClassNameFromShip } from "../render/ship";
+import { getDirIndex } from "../direction";
+import ShipType from "../../objects/ShipType";
+import Ship from "../../objects/Ship";
 
 function createShipPreview(player, cord) {
   const playerShips = player.board.list;
@@ -23,7 +23,7 @@ export function shipWithdrawEvent(boardBoxes, player, cord) {
     shipBody.forEach((shipCord) => {
       const boardIndex = convertCordToIndex(shipCord);
       const box = boardBoxes[boardIndex];
-      box.style.backgroundImage = '';
+      box.style.backgroundImage = "";
       box.classList.remove(dirClassName);
     });
   }

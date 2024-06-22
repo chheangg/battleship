@@ -14,5 +14,10 @@ export default class Direction {
 
   static PositiveY = 3;
 
-  static list = [this.PositiveX, this.NegativeY, this.NegativeX, this.PositiveY];
+  static list = [
+    this.PositiveX,
+    this.NegativeY,
+    this.NegativeX,
+    this.PositiveY,
+  ];
 }

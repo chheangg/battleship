@@ -1,20 +1,20 @@
 /* eslint-disable import/prefer-default-export */
-import targetIcon from '../../../assets/target.svg';
-import waveIcon from '../../../assets/board/fog.svg';
-import missedOppIcon from '../../../assets/board/missed.svg';
+import targetIcon from "../../../assets/target.svg";
+import waveIcon from "../../../assets/board/fog.svg";
+import missedOppIcon from "../../../assets/board/missed.svg";
 
 const attackAssets = [
   {
     src: targetIcon,
-    className: 'target-icon',
+    className: "target-icon",
   },
   {
     src: waveIcon,
-    className: 'fog-icon',
+    className: "fog-icon",
   },
   {
     src: missedOppIcon,
-    className: 'missed-opp-icon',
+    className: "missed-opp-icon",
   },
 ];
 

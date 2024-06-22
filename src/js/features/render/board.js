@@ -1,13 +1,13 @@
-/* eslint-disable no-param-reassign */
-import { gameBoardTemplate } from '../../template/gameBoard';
-import { getBoardBoxes, convertCordToIndex } from '../utilities';
-import { getAttackModeAsset } from '../images/attackAssets';
-import { rotateShip } from '../direction';
+ 
+import { gameBoardTemplate } from "../../template/gameBoard";
+import { getBoardBoxes, convertCordToIndex } from "../utilities";
+import { getAttackModeAsset } from "../images/attackAssets";
+import { rotateShip } from "../direction";
 
 export default function renderGameboard(gameObject, infoHeader) {
   document.body.innerHTML = gameBoardTemplate(gameObject, infoHeader);
-  const rotateBtn = document.querySelector('#rotate-btn');
-  rotateBtn.addEventListener('click', rotateShip);
+  const rotateBtn = document.querySelector("#rotate-btn");
+  rotateBtn.addEventListener("click", rotateShip);
 }
 
 // unload Fog of War
@@ -26,8 +26,9 @@ export function renderFOW(player) {
   const fowClassName = `.${fowSample.className}`;
   const missedClassName = `.${missedSample.className}`;
 
-  const containsAsset = boardBoxes[0].querySelector(fowClassName)
-  || boardBoxes[0].querySelector(missedClassName);
+  const containsAsset =
+		boardBoxes[0].querySelector(fowClassName) ||
+		boardBoxes[0].querySelector(missedClassName);
 
   if (containsAsset) {
     return;

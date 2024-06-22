@@ -1,4 +1,4 @@
-import { getAttackModeAsset } from '../images/attackAssets';
+import { getAttackModeAsset } from "../images/attackAssets";
 
 export function attackHoverEvent(_event, box) {
   const target = getAttackModeAsset(0);

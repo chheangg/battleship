@@ -1,9 +1,9 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-plusplus */
-import { animationEventBuilder, withdrawEventBuilder } from './utility';
-import { attackHoverEvent, attackWithdrawEvent } from './attack';
-import { shipHoverEvent, shipWithdrawEvent } from './hover';
-import Coordinate from '../../objects/Coordinate';
+ 
+ 
+import { animationEventBuilder, withdrawEventBuilder } from "./utility";
+import { attackHoverEvent, attackWithdrawEvent } from "./attack";
+import { shipHoverEvent, shipWithdrawEvent } from "./hover";
+import Coordinate from "../../objects/Coordinate";
 
 let firstPlayerBoard = [];
 let secondPlayerBoard = [];
@@ -15,7 +15,7 @@ export const animationEvents = [];
 // box.style.backgroundImage = `url('${img}')`;
 
 export function cleanupAnimation(player) {
-  if (player.board.className === 'first-player') {
+  if (player.board.className === "first-player") {
     firstPlayerBoard.forEach((fn) => fn());
     firstPlayerBoard = [];
   } else {
@@ -32,7 +32,7 @@ export function addAttackAnimation(boardBoxes, player) {
     const attackEventRef = animationEventBuilder(box, attackAnimationHandler);
     const withdrawEventRef = withdrawEventBuilder(box, withdrawAttackHandler);
 
-    if (player.board.className === 'first-player') {
+    if (player.board.className === "first-player") {
       firstPlayerBoard.push(attackEventRef);
       firstPlayerBoard.push(withdrawEventRef);
     } else {
@@ -45,17 +45,16 @@ export function addAttackAnimation(boardBoxes, player) {
 // Function for adding animation
 export function addShipHoverAnimation(boardBoxes, player) {
   boardBoxes.forEach((box) => {
-    const rawCord = box.dataset.pos
-      .split(',')
-      .map((x) => parseInt(x, 10));
+    const rawCord = box.dataset.pos.split(",").map((x) => parseInt(x, 10));
     const cord = new Coordinate(rawCord[0], rawCord[1]);
     const shipHoverHandler = () => shipHoverEvent(boardBoxes, player, cord);
     const shipHoverRef = animationEventBuilder(box, shipHoverHandler);
 
-    const shipWithdrawHandler = () => shipWithdrawEvent(boardBoxes, player, cord);
+    const shipWithdrawHandler = () =>
+      shipWithdrawEvent(boardBoxes, player, cord);
     const shipWithdrawRef = withdrawEventBuilder(box, shipWithdrawHandler);
 
-    if (player.board.className === 'first-player') {
+    if (player.board.className === "first-player") {
       firstPlayerBoard.push(shipHoverRef);
       firstPlayerBoard.push(shipWithdrawRef);
     } else {

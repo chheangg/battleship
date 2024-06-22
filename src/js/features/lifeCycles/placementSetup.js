@@ -1,16 +1,19 @@
-import { renderFOW, unrenderFOW } from '../render/board';
-import { renderShips, unrenderShips } from '../render/ship';
-import ShipType from '../../objects/ShipType';
-import addPassDelay from './pass';
-import Direction from '../../objects/Direction';
-import Coordinate from '../../objects/Coordinate';
+import { renderFOW, unrenderFOW } from "../render/board";
+import { renderShips, unrenderShips } from "../render/ship";
+import ShipType from "../../objects/ShipType";
+import addPassDelay from "./pass";
+import Direction from "../../objects/Direction";
+import Coordinate from "../../objects/Coordinate";
 
 const maxShip = 5;
 function botSetup(player) {
   while (player.board.list.length < 5) {
     const shipIndex = player.board.list.length;
     const ship = ShipType.list[shipIndex];
-    const cord = new Coordinate(Math.floor(Math.random() * 10), Math.floor(Math.random() * 10));
+    const cord = new Coordinate(
+      Math.floor(Math.random() * 10),
+      Math.floor(Math.random() * 10),
+    );
     const dirIndex = Math.floor(Math.random() * 4);
     const dir = Direction.list[dirIndex];
     player.board.place(ship, dir, cord);

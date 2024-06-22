@@ -1,6 +1,6 @@
-/* eslint-disable no-param-reassign */
-import Game from '@/js/objects/Game';
-import { renderModal } from './render/renderModal';
+ 
+import Game from "@/js/objects/Game";
+import { renderModal } from "./render/renderModal";
 
 // Load the page, and initialize Game object to be return
 // to be used by other stages in the game
@@ -9,18 +9,18 @@ function collectNameFromFormHOF(gameObject) {
     const { isMultiplayer } = gameObject;
 
     if (isMultiplayer) {
-      const playerOneName = document.querySelector('#first-player').value;
-      const playerTwoName = document.querySelector('#first-player').value;
+      const playerOneName = document.querySelector("#first-player").value;
+      const playerTwoName = document.querySelector("#first-player").value;
       gameObject.playerOne.name = playerOneName;
       gameObject.playerTwo.name = playerTwoName;
     } else {
-      const playerName = document.querySelector('#player').value;
+      const playerName = document.querySelector("#player").value;
       if (gameObject.playerOne.isBot) {
         gameObject.playerTwo.name = playerName;
-        gameObject.playerOne.name = 'BOT';
+        gameObject.playerOne.name = "BOT";
       } else {
         gameObject.playerOne.name = playerName;
-        gameObject.playerTwo.name = 'BOT';
+        gameObject.playerTwo.name = "BOT";
       }
     }
     gameObject.cb();
@@ -32,8 +32,8 @@ function collectName(gameObject, collectNameCb) {
 }
 
 function addNameModalEvent(collectNameCb) {
-  const btn = document.querySelector('.name-form-btn');
-  btn.addEventListener('click', collectNameCb);
+  const btn = document.querySelector(".name-form-btn");
+  btn.addEventListener("click", collectNameCb);
 }
 
 function initGameModeEvent(isMultiplayer, cb) {
@@ -52,13 +52,13 @@ function initGameModeEvent(isMultiplayer, cb) {
 
 export default function populateMenuEvent(cb) {
   // Starting page
-  const singlePlayerBtn = document.querySelector('#singleplayer');
-  const multiPlayerbtn = document.querySelector('#multiplayer');
+  const singlePlayerBtn = document.querySelector("#singleplayer");
+  const multiPlayerbtn = document.querySelector("#multiplayer");
   // Create a bot and a player and start the game
 
   // Single player logic
-  singlePlayerBtn.addEventListener('click', () => initGameModeEvent(false, cb));
+  singlePlayerBtn.addEventListener("click", () => initGameModeEvent(false, cb));
 
   // Create two players logic and start the game
-  multiPlayerbtn.addEventListener('click', () => initGameModeEvent(true, cb));
+  multiPlayerbtn.addEventListener("click", () => initGameModeEvent(true, cb));
 }

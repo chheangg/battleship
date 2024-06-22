@@ -1,35 +1,36 @@
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export default class ShipType {
   static Patrol = {
-    name: 'patrol',
-    filename: 'pa',
+    name: "patrol",
+    filename: "pa",
     length: 2,
     order: 1,
   };
 
   static Submarine = {
-    name: 'submarine',
-    filename: 'sb',
+    name: "submarine",
+    filename: "sb",
     length: 3,
     order: 2,
   };
 
   static Destroyer = {
-    name: 'destroyer',
-    filename: 'de',
+    name: "destroyer",
+    filename: "de",
     length: 3,
     order: 3,
   };
 
   static Battleship = {
-    name: 'battleship',
-    filename: 'ba',
+    name: "battleship",
+    filename: "ba",
     length: 4,
     order: 4,
   };
 
   static Carrier = {
-    name: 'carrier',
-    filename: 'ac',
+    name: "carrier",
+    filename: "ac",
     length: 5,
     order: 5,
   };

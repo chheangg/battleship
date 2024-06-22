@@ -1,20 +1,20 @@
-import { convertCordToIndex, getBoardBoxes } from '../utilities';
-import loadShipPart from '../images/shipAssets';
-import Direction from '../../objects/Direction';
+import { convertCordToIndex, getBoardBoxes } from "../utilities";
+import loadShipPart from "../images/shipAssets";
+import Direction from "../../objects/Direction";
 
-/* eslint-disable no-param-reassign */
+ 
 function getDirClassName(dir) {
   switch (dir) {
-    case Direction.PositiveX:
-      return 'x-pos';
-    case Direction.NegativeY:
-      return 'y-neg';
-    case Direction.NegativeX:
-      return 'x-neg';
-    case Direction.PositiveY:
-      return 'y-pos';
-    default:
-      return null;
+  case Direction.PositiveX:
+    return "x-pos";
+  case Direction.NegativeY:
+    return "y-neg";
+  case Direction.NegativeX:
+    return "x-neg";
+  case Direction.PositiveY:
+    return "y-pos";
+  default:
+    return null;
   }
 }
 
@@ -64,7 +64,7 @@ export function renderShips(player) {
 export function unrenderShips(player) {
   const boxes = getBoardBoxes(player);
   boxes.forEach((box) => {
-    box.style.backgroundImage = '';
+    box.style.backgroundImage = "";
     // remove directions classes applied to loaded board
     box.classList.remove(...Direction.list);
   });

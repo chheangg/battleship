@@ -1,8 +1,8 @@
-import ShipType from '../../objects/ShipType';
-import { getDirIndex } from '../direction';
-import { withEventListener, getBoardBoxes } from '../utilities';
-import { cleanupAnimation, addShipHoverAnimation } from '../animation';
-import Coordinate from '../../objects/Coordinate';
+import ShipType from "../../objects/ShipType";
+import { getDirIndex } from "../direction";
+import { withEventListener, getBoardBoxes } from "../utilities";
+import { cleanupAnimation, addShipHoverAnimation } from "../animation";
+import Coordinate from "../../objects/Coordinate";
 
 const firstPlayerBoard = [];
 const secondPlayerBoard = [];
@@ -18,10 +18,14 @@ function placeShip(player, ship, cord) {
 
 export function depopulatePlacementEvent(player) {
   if (player.isTurn) {
-    firstPlayerBoard.forEach((fn) => fn());
+    for (const fn in firstPlayerBoard) {
+      fn();
+    }
     firstPlayerBoard.splice(0, firstPlayerBoard.length);
   } else {
-    secondPlayerBoard.forEach((fn) => fn());
+    for (const fn of secondPlayerBoard) {
+      fn();
+    }
     secondPlayerBoard.splice(0, secondPlayerBoard.length);
   }
 }
@@ -34,8 +38,9 @@ export function exitPlacementEvent(player) {
 // Placement Event
 function placementEvent(event, gameObject, player) {
   const playerShips = player.board.list;
-  const rawCord = event.target.dataset.pos.split(',')
-    .map((x) => parseInt(x, 10));
+  const rawCord = event.target.dataset.pos
+    .split(",")
+    .map((x) => Number.parseInt(x, 10));
 
   const cord = new Coordinate(rawCord[0], rawCord[1]);
 
@@ -56,14 +61,13 @@ export function populatePlacementEvent(gameObject, boardBoxes, player) {
   const eventRef = (event) => {
     setTimeout(() => placementEvent(event, gameObject, player), 0);
   };
-  boardBoxes.forEach((box) => {
+  for (const box of boardBoxes) {
     if (player.isTurn) {
-      firstPlayerBoard.push(withEventListener(box, 'click', eventRef));
+      firstPlayerBoard.push(withEventListener(box, "click", eventRef));
     } else {
-      secondPlayerBoard.push(withEventListener(box, 'click', eventRef));
+      secondPlayerBoard.push(withEventListener(box, "click", eventRef));
     }
-    // eslint-disable-next-line no-unused-expressions
-  });
+  }
 }
 
 export function enterPlacementEvent(gameObject, player) {

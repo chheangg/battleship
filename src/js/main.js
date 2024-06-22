@@ -1,11 +1,11 @@
-import { unrenderShips } from './features/render/ship';
+import { unrenderShips } from "./features/render/ship";
 
-import addPassDelay from './features/lifeCycles/pass';
-import attackMode from './features/lifeCycles/attack';
-import setupPlacementMode from './features/lifeCycles/placementSetup';
-import { enterPlacementEvent } from './features/lifeCycles/placementEvent';
-import initializeBoard from './features/lifeCycles/board';
-import initializeMenu from './features/lifeCycles/menu';
+import addPassDelay from "./features/lifeCycles/pass";
+import attackMode from "./features/lifeCycles/attack";
+import setupPlacementMode from "./features/lifeCycles/placementSetup";
+import { enterPlacementEvent } from "./features/lifeCycles/placementEvent";
+import initializeBoard from "./features/lifeCycles/board";
+import initializeMenu from "./features/lifeCycles/menu";
 
 /**
  *
@@ -38,9 +38,7 @@ export default function mainLoop(gameObject) {
     boardRendered = true;
   }
 
-  const {
-    playerOne, playerTwo, isStarted, isMultiplayer,
-  } = gameObject;
+  const { playerOne, playerTwo, isStarted, isMultiplayer } = gameObject;
   // Check if there's a game winner, if there is end the game
   if (gameObject.winner) {
     return;

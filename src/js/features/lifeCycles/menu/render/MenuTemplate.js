@@ -1,5 +1,5 @@
-import logo from '@/public/logo.svg';
-import '@/style/main-menu.scss';
+import logo from "@/public/logo.svg";
+import "@/style/main-menu.scss";
 
 const MenuTemplate = `
 <div class="main-menu">

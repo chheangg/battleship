@@ -1,6 +1,6 @@
-import { gameBoardTemplate, shipPlacementComponent } from './gameBoard';
-import { startScreen } from './startScreen';
-import { singlePlayerModal, multiPlayerModal } from './nameFormModal';
+import { gameBoardTemplate, shipPlacementComponent } from "./gameBoard";
+import { startScreen } from "./startScreen";
+import { singlePlayerModal, multiPlayerModal } from "./nameFormModal";
 
 export {
   startScreen,

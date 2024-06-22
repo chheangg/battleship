@@ -1,5 +1,5 @@
-import renderMenuTemplate from './render/renderMenuTemplate';
-import populateMenuEvent from './gameObjectSetup';
+import renderMenuTemplate from "./render/renderMenuTemplate";
+import populateMenuEvent from "./gameObjectSetup";
 
 /**
  *

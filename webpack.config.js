@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+// biome-ignore lint/style/useNodejsImportProtocol: <explanation>
 const path = require('path');
 const htmlWebpackPlugin = require('html-webpack-plugin');
 
@@ -15,7 +17,6 @@ module.exports = {
     path: path.resolve(__dirname, './dist'),
   },
   plugins: [
-    // eslint-disable-next-line new-cap
     new htmlWebpackPlugin({
       template: './src/template.html',
       favicon: './src/public/favicon.ico',
