@@ -1,4 +1,4 @@
-import renderMainScreen from './render';
+import renderMenuTemplate from './render/renderMenuTemplate';
 import populateMenuEvent from './gameObjectSetup';
 
 /**
@@ -6,6 +6,6 @@ import populateMenuEvent from './gameObjectSetup';
  * @param {*} gameObject - Central game state object
  */
 export default function initializeMenu(mainLoopCb) {
-  renderMainScreen();
+  renderMenuTemplate();
   populateMenuEvent(mainLoopCb);
 }

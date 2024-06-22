@@ -1,6 +1,3 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-import-assign */
-/* eslint-disable prefer-arrow-callback */
 import { unrenderShips } from './features/render/ship';
 
 import addPassDelay from './features/lifeCycles/pass';

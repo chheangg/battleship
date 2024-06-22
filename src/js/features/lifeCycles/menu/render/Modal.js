@@ -1,5 +1,5 @@
-import '../../style/name-form-modal.scss';
-import closeBtn from '../../assets/close.svg';
+import '@/style/name-form-modal.scss';
+import closeBtn from '@/assets/close.svg';
 
 export const singlePlayerModal = `
   <div class="name-modal-wrapper">

@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import Game from '@/js/objects/Game';
-import { loadModal } from '../../render/modal';
+import { renderModal } from './render/renderModal';
 
 // Load the page, and initialize Game object to be return
 // to be used by other stages in the game
@@ -28,7 +28,7 @@ function collectNameFromFormHOF(gameObject) {
 }
 
 function collectName(gameObject, collectNameCb) {
-  loadModal(gameObject, collectNameCb);
+  renderModal(gameObject, collectNameCb);
 }
 
 function addNameModalEvent(collectNameCb) {
