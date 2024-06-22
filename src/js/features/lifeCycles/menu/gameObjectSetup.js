@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
-import Game from '../../objects/Game';
-import { loadModal } from '../render/modal';
+import Game from '@/js/objects/Game';
+import { loadModal } from '../../render/modal';
 
 // Load the page, and initialize Game object to be return
 // to be used by other stages in the game

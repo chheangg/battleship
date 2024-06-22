@@ -46,4 +46,10 @@ module.exports = {
       },
     ],
   },
+  resolve: {
+    alias: {
+      '@': path.resolve('src'),
+      images: path.resolve('assets'),
+    },
+  },
 };

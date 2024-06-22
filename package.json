@@ -37,6 +37,7 @@
     "webpack-dev-server": "^4.7.4"
   },
   "dependencies": {
+    "eslint-import-resolver-webpack": "^0.13.8",
     "glob": "^10.2.2",
     "normalize.css": "^8.0.1",
     "underscore": "^1.13.6"

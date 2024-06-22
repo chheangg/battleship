@@ -1,4 +1,4 @@
-import renderMainScreen from '../render/menu';
+import renderMainScreen from './render';
 import populateMenuEvent from './gameObjectSetup';
 
 /**

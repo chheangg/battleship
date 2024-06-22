@@ -12,4 +12,11 @@ module.exports = {
   },
   rules: {
   },
+  'import/resolver': {
+    alias: {
+      map: [
+        ['@', './src']
+      ]
+    },
+  },
 };

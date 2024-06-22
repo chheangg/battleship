@@ -1,8 +1,7 @@
-/* eslint-disable import/prefer-default-export */
-import logo from '../../public/logo.svg';
-import '../../style/main-menu.scss';
+import logo from '@/public/logo.svg';
+import '@/style/main-menu.scss';
 
-export const startScreen = `
+const MenuTemplate = `
 <div class="main-menu">
   <div class="main-menu-container">
     <div class="main-menu-wrapper">
@@ -20,3 +19,5 @@ export const startScreen = `
   </div>
 </div>
 `;
+
+export default MenuTemplate;
