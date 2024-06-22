@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import Game from "../objects/Game";
 import Player from "../objects/Player";
 

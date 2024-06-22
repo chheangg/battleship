@@ -1,5 +1,3 @@
- 
- 
 import { animationEventBuilder, withdrawEventBuilder } from "./utility";
 import { attackHoverEvent, attackWithdrawEvent } from "./attack";
 import { shipHoverEvent, shipWithdrawEvent } from "./hover";
@@ -16,16 +14,20 @@ export const animationEvents = [];
 
 export function cleanupAnimation(player) {
   if (player.board.className === "first-player") {
-    firstPlayerBoard.forEach((fn) => fn());
+    for (const fn of firstPlayerBoard) {
+      fn();
+    }
     firstPlayerBoard = [];
   } else {
-    secondPlayerBoard.forEach((fn) => fn());
+    for (const fn of secondPlayerBoard) {
+      fn();
+    }
     secondPlayerBoard = [];
   }
 }
 
 export function addAttackAnimation(boardBoxes, player) {
-  boardBoxes.forEach((box) => {
+  for (const box of boardBoxes) {
     const attackAnimationHandler = (e) => attackHoverEvent(e, box);
     const withdrawAttackHandler = (e) => attackWithdrawEvent(e, box);
 
@@ -39,13 +41,15 @@ export function addAttackAnimation(boardBoxes, player) {
       secondPlayerBoard.push(attackEventRef);
       secondPlayerBoard.push(withdrawEventRef);
     }
-  });
+  }
 }
 
 // Function for adding animation
 export function addShipHoverAnimation(boardBoxes, player) {
-  boardBoxes.forEach((box) => {
-    const rawCord = box.dataset.pos.split(",").map((x) => parseInt(x, 10));
+  for(const box of boardBoxes) {
+    const rawCord = box.dataset.pos
+      .split(",")
+      .map((x) => Number.parseInt(x, 10));
     const cord = new Coordinate(rawCord[0], rawCord[1]);
     const shipHoverHandler = () => shipHoverEvent(boardBoxes, player, cord);
     const shipHoverRef = animationEventBuilder(box, shipHoverHandler);
@@ -61,5 +65,5 @@ export function addShipHoverAnimation(boardBoxes, player) {
       secondPlayerBoard.push(shipHoverRef);
       secondPlayerBoard.push(shipWithdrawRef);
     }
-  });
+  }
 }

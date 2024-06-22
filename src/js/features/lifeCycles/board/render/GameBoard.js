@@ -1,23 +1,4 @@
-/* eslint-disable import/prefer-default-export */
-import "../../style/game-board.scss";
-import rotateIcon from "../../assets/rotate.svg";
-
-export const shipPlacementComponent = (shipImg) => `
-  <div class="ship-placement-container">
-    <div class="ship-preview-info-container">
-      Ship - 
-      ${shipImg || ""}
-    </div>
-    <div class="ship-orient-container">
-      <button id="rotate-btn">
-        <img src="${rotateIcon}"/>
-        <span>
-          Rotate
-        </span>
-      </button>
-    </div>
-  </div>
-`;
+import "@/style/game-board.scss";
 
 export const playerInfoComponent = ({ name }) => `
   <div class="player-info">
@@ -48,7 +29,7 @@ const cells = Array(10)
 `,
   );
 
-export const gameBoardTemplate = (gameObject, infoHeader) => `
+export default (gameObject, infoHeader) => `
   <div class="game-board">
     <div class="info-header">
       <div class="info-container">

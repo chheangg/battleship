@@ -1,4 +1,4 @@
-import { renderFOW, unrenderFOW } from "../render/board";
+import { renderFOW, unrenderFOW } from "../render/fow";
 import { renderShips, unrenderShips } from "../render/ship";
 import ShipType from "../../objects/ShipType";
 import addPassDelay from "./pass";

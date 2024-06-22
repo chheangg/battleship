@@ -18,7 +18,7 @@ function placeShip(player, ship, cord) {
 
 export function depopulatePlacementEvent(player) {
   if (player.isTurn) {
-    for (const fn in firstPlayerBoard) {
+    for (const fn of firstPlayerBoard) {
       fn();
     }
     firstPlayerBoard.splice(0, firstPlayerBoard.length);
